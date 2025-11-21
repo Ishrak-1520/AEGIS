@@ -124,11 +124,24 @@ class ThreatPreventionSystem:
                 if success:
                     response['actions_taken'].append('FILE_QUARANTINED')
         
+        # Block execution (Process Kill) if enabled
+        if auto_respond and policy['block_execution']:
+            # If source is a PID or we have a PID in details
+            pid = details.get('pid')
+            if pid:
+                if self._kill_process(pid):
+                    response['actions_taken'].append('PROCESS_KILLED')
+        
         # Block domain/IP if network threat
         if threat_type in ['PHISHING_DETECTED', 'MALICIOUS_URL', 'SUSPICIOUS_CONNECTION']:
             if 'domain' in details:
                 self.block_domain(details['domain'])
-                response['actions_taken'].append('DOMAIN_BLOCKED')
+                # Also block in hosts file for true prevention
+                if self._block_domain_hosts(details['domain']):
+                    response['actions_taken'].append('DOMAIN_BLOCKED_HOSTS')
+                else:
+                    response['actions_taken'].append('DOMAIN_BLOCKED_DB_ONLY')
+                    
             if 'ip' in details:
                 self.block_ip(details['ip'])
                 response['actions_taken'].append('IP_BLOCKED')
@@ -160,6 +173,66 @@ class ThreatPreventionSystem:
         
         return response
     
+    def _kill_process(self, pid: int) -> bool:
+        """
+        Kill a malicious process
+        
+        Args:
+            pid: Process ID
+            
+        Returns:
+            True if successful
+        """
+        try:
+            import psutil
+            process = psutil.Process(pid)
+            process.terminate()
+            process.wait(timeout=3)
+            return True
+        except Exception as e:
+            print(f"Error killing process {pid}: {e}")
+            # Try forceful kill if terminate fails
+            try:
+                process.kill()
+                return True
+            except Exception:
+                return False
+
+    def _block_domain_hosts(self, domain: str) -> bool:
+        """
+        Block domain using Windows hosts file
+        
+        Args:
+            domain: Domain to block
+            
+        Returns:
+            True if successful
+        """
+        try:
+            hosts_path = r"C:\Windows\System32\drivers\etc\hosts"
+            redirect = "127.0.0.1"
+            
+            if not os.path.exists(hosts_path):
+                return False
+                
+            # Check if already blocked
+            with open(hosts_path, 'r') as f:
+                content = f.read()
+                if domain in content:
+                    return True
+            
+            # Append to hosts file
+            with open(hosts_path, 'a') as f:
+                f.write(f"\n{redirect} {domain} # Blocked by CyberGuard Pro")
+                
+            return True
+        except PermissionError:
+            print("Permission denied: Cannot modify hosts file. Run as Administrator.")
+            return False
+        except Exception as e:
+            print(f"Error modifying hosts file: {e}")
+            return False
+
     def block_domain(self, domain: str):
         """
         Add domain to blocklist
@@ -199,6 +272,20 @@ class ThreatPreventionSystem:
         if domain in self.blocked_domains:
             self.blocked_domains.remove(domain)
             self._save_blocked_lists()
+            
+            # Also try to remove from hosts file
+            try:
+                hosts_path = r"C:\Windows\System32\drivers\etc\hosts"
+                if os.path.exists(hosts_path):
+                    with open(hosts_path, 'r') as f:
+                        lines = f.readlines()
+                    
+                    with open(hosts_path, 'w') as f:
+                        for line in lines:
+                            if domain not in line:
+                                f.write(line)
+            except Exception:
+                pass
     
     def unblock_ip(self, ip: str):
         """Remove IP from blocklist"""

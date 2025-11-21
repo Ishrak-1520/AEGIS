@@ -256,16 +256,16 @@ class DatabaseManager:
     # ==================== Quarantine Management ====================
     
     def add_to_quarantine(self, original_path: str, quarantine_path: str,
-                         file_hash: str, threat_type: str) -> int:
+                         file_hash: str, threat_type: str, encryption_key: str = None) -> int:
         """Add file to quarantine"""
         conn = self._get_connection()
         cursor = conn.cursor()
         
         cursor.execute(
             """INSERT INTO quarantine 
-               (original_path, quarantine_path, file_hash, threat_type)
-               VALUES (?, ?, ?, ?)""",
-            (original_path, quarantine_path, file_hash, threat_type)
+               (original_path, quarantine_path, file_hash, threat_type, encryption_key)
+               VALUES (?, ?, ?, ?, ?)""",
+            (original_path, quarantine_path, file_hash, threat_type, encryption_key)
         )
         conn.commit()
         return cursor.lastrowid

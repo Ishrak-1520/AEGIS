@@ -9,6 +9,8 @@ import shutil
 from typing import Dict, List, Optional
 from datetime import datetime
 import sys
+import base64
+import secrets
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -40,7 +42,7 @@ class QuarantineManager:
     def quarantine_file(self, file_path: str, threat_type: str,
                        threat_name: str) -> bool:
         """
-        Move file to quarantine
+        Move file to quarantine (Encrypted)
         
         Args:
             file_path: Path to infected file
@@ -65,22 +67,38 @@ class QuarantineManager:
             quarantine_name = f"{timestamp}_{file_hash[:8]}_{original_name}.quarantine"
             quarantine_path = os.path.join(self.quarantine_dir, quarantine_name)
             
-            # Move file to quarantine
-            shutil.move(file_path, quarantine_path)
+            # Generate unique encryption key for this file
+            key = secrets.token_bytes(32)
+            key_b64 = base64.b64encode(key).decode('utf-8')
             
-            # Add to database
+            # Read and encrypt file content
+            with open(file_path, 'rb') as f:
+                content = f.read()
+            
+            encrypted_content_b64 = encryption_manager.encrypt_bytes(content, key)
+            
+            # Write encrypted content to quarantine
+            with open(quarantine_path, 'w') as f:
+                f.write(encrypted_content_b64)
+            
+            # Securely delete original file
+            # For now, just remove it. Secure wipe is harder on SSDs.
+            os.remove(file_path)
+            
+            # Add to database with encryption key
             db_manager.add_to_quarantine(
                 file_path,
                 quarantine_path,
                 file_hash,
-                f"{threat_type}: {threat_name}"
+                f"{threat_type}: {threat_name}",
+                encryption_key=key_b64
             )
             
             # Log event
             db_manager.log_event(
                 'FILE_QUARANTINED',
                 'INFO',
-                f'File quarantined: {original_name}',
+                f'File quarantined (Encrypted): {original_name}',
                 f'Threat: {threat_name}'
             )
             
@@ -116,13 +134,39 @@ class QuarantineManager:
             record = dict(record)
             original_path = record['original_path']
             quarantine_path = record['quarantine_path']
+            encryption_key_b64 = record.get('encryption_key')
+            
+            print(f"DEBUG: Restoring {quarantine_path} -> {original_path}")
+            print(f"DEBUG: Key present: {bool(encryption_key_b64)}")
             
             if not os.path.exists(quarantine_path):
+                print(f"DEBUG: Quarantine file not found: {quarantine_path}")
                 return False
             
             # Restore file
             os.makedirs(os.path.dirname(original_path), exist_ok=True)
-            shutil.move(quarantine_path, original_path)
+            
+            if encryption_key_b64:
+                # Decrypt
+                try:
+                    key = base64.b64decode(encryption_key_b64)
+                    with open(quarantine_path, 'r') as f:
+                        encrypted_content_b64 = f.read()
+                    
+                    decrypted_content = encryption_manager.decrypt_bytes(encrypted_content_b64, key)
+                    
+                    if decrypted_content is None:
+                        print("DEBUG: Failed to decrypt quarantined file (decrypt_bytes returned None)")
+                        return False
+                    
+                    with open(original_path, 'wb') as f:
+                        f.write(decrypted_content)
+                except Exception as e:
+                    print(f"DEBUG: Decryption exception: {e}")
+                    return False
+            else:
+                # Legacy support (unencrypted move)
+                shutil.move(quarantine_path, original_path)
             
             # Update database
             db_manager.restore_from_quarantine(quarantine_id)

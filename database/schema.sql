@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS quarantine (
     threat_type TEXT,
     quarantined_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     restored BOOLEAN DEFAULT 0,
-    deleted BOOLEAN DEFAULT 0
+    deleted BOOLEAN DEFAULT 0,
+    encryption_key TEXT
 );
 
 -- System events log

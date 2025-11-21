@@ -146,6 +146,15 @@ class NLPThreatDetector:
             'এখনই পেমেন্ট', 'পেমেন্ট পদ্ধতি'
         ]
         
+        # PII Regex Patterns (FR-NLP-03)
+        self.pii_patterns = {
+            'Credit Card': r'\b(?:\d[ -]*?){13,16}\b',
+            'SSN': r'\b\d{3}-\d{2}-\d{4}\b',
+            'Email': r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
+            'Phone': r'\b(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})\b',
+            'IPv4': r'\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b'
+        }
+        
     def analyze_text(self, text: str) -> Dict:
         """
         Analyze text for threats (FR-NLP-01)
@@ -230,6 +239,14 @@ class NLPThreatDetector:
         if self._check_financial_request(text_lower):
             threat_score += 20
             patterns_detected.append('Financial Request')
+            
+        # PII Detection
+        pii_matches = self._find_pii(text)
+        if pii_matches:
+            threat_score += len(pii_matches) * 25
+            for pii_type, count in pii_matches.items():
+                patterns_detected.append(f"PII Detected: {pii_type} ({count})")
+                keywords_found.append(f"PII: {pii_type}")
         
         # Classify threat level (FR-NLP-04)
         threat_class, threat_level, confidence = self._classify_threat(threat_score)
@@ -329,6 +346,21 @@ class NLPThreatDetector:
         # Check Bangla (case-sensitive - original text)
         original_text = text  # Use original for Bangla Unicode
         return any(phrase in original_text for phrase in self.financial_keywords_bangla)
+    
+    def _find_pii(self, text: str) -> Dict[str, int]:
+        """Find PII in text using regex"""
+        matches = {}
+        for pii_type, pattern in self.pii_patterns.items():
+            found = re.findall(pattern, text)
+            if found:
+                # Filter out likely false positives for Credit Cards (e.g. simple numbers)
+                if pii_type == 'Credit Card':
+                    valid_cc = [cc for cc in found if sum(c.isdigit() for c in cc) >= 13]
+                    if valid_cc:
+                        matches[pii_type] = len(valid_cc)
+                else:
+                    matches[pii_type] = len(found)
+        return matches
     
     def _classify_threat(self, threat_score: int) -> tuple:
         """

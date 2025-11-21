@@ -113,6 +113,19 @@ class EncryptionManager:
         Returns:
             Base64 encoded encrypted data (nonce + tag + ciphertext)
         """
+        return self.encrypt_bytes(plaintext.encode('utf-8'), key)
+
+    def encrypt_bytes(self, data: bytes, key: bytes) -> str:
+        """
+        Encrypt bytes using AES-256-GCM
+        
+        Args:
+            data: Bytes to encrypt
+            key: 256-bit encryption key
+            
+        Returns:
+            Base64 encoded encrypted data
+        """
         # Generate random nonce (12 bytes for GCM)
         nonce = secrets.token_bytes(12)
         
@@ -125,7 +138,7 @@ class EncryptionManager:
         encryptor = cipher.encryptor()
         
         # Encrypt
-        ciphertext = encryptor.update(plaintext.encode('utf-8')) + encryptor.finalize()
+        ciphertext = encryptor.update(data) + encryptor.finalize()
         
         # Combine nonce + tag + ciphertext
         encrypted_data = nonce + encryptor.tag + ciphertext
@@ -143,6 +156,20 @@ class EncryptionManager:
             
         Returns:
             Decrypted plaintext or None if decryption fails
+        """
+        decrypted_bytes = self.decrypt_bytes(encrypted_b64, key)
+        return decrypted_bytes.decode('utf-8') if decrypted_bytes else None
+
+    def decrypt_bytes(self, encrypted_b64: str, key: bytes) -> Optional[bytes]:
+        """
+        Decrypt data to bytes
+        
+        Args:
+            encrypted_b64: Base64 encoded encrypted data
+            key: 256-bit decryption key
+            
+        Returns:
+            Decrypted bytes or None if decryption fails
         """
         try:
             # Decode base64
@@ -162,9 +189,8 @@ class EncryptionManager:
             decryptor = cipher.decryptor()
             
             # Decrypt
-            plaintext = decryptor.update(ciphertext) + decryptor.finalize()
+            return decryptor.update(ciphertext) + decryptor.finalize()
             
-            return plaintext.decode('utf-8')
         except Exception as e:
             print(f"Decryption error: {e}")
             return None

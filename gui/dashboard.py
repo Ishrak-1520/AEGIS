@@ -109,6 +109,9 @@ class Dashboard(QMainWindow):
         self.file_scanner = FileScanner()
         self.scan_worker = None  # Track active scan worker
         
+        # Initialize password_table to None (will be created in view)
+        self.password_table = None
+        
         # Real-Time Protection
         self.rtp_active = False
         if RTP_AVAILABLE:
@@ -4419,6 +4422,10 @@ Your Bank Security Team""")
     def load_passwords(self):
         """Load passwords from database"""
         try:
+            # Safety check: ensure password_table exists
+            if self.password_table is None:
+                return
+                
             passwords = password_manager.get_all_passwords()
             self.password_table.setRowCount(len(passwords))
             

@@ -18,6 +18,13 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from database.db_manager import db_manager
 from security.encryption import encryption_manager
 
+try:
+    import yara
+    YARA_AVAILABLE = True
+except ImportError:
+    YARA_AVAILABLE = False
+    print("YARA not available. Install yara-python for advanced scanning.")
+
 
 class FileScanner:
     """
@@ -55,6 +62,35 @@ class FileScanner:
             'threats_found': 0,
             'scan_time': 0
         }
+        
+        # Initialize YARA rules
+        self.yara_rules = None
+        if YARA_AVAILABLE:
+            self._compile_yara_rules()
+
+    def _compile_yara_rules(self):
+        """Compile YARA rules from rules directory"""
+        try:
+            rules_dir = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                'core',
+                'rules'
+            )
+            
+            # Find all .yar files
+            filepaths = {}
+            if os.path.exists(rules_dir):
+                for root, dirs, files in os.walk(rules_dir):
+                    for file in files:
+                        if file.endswith('.yar') or file.endswith('.yara'):
+                            filepaths[file] = os.path.join(root, file)
+            
+            if filepaths:
+                self.yara_rules = yara.compile(filepaths=filepaths)
+                print(f"Compiled {len(filepaths)} YARA rule files.")
+            
+        except Exception as e:
+            print(f"Error compiling YARA rules: {e}")
     
     def _load_signatures(self) -> Dict[str, Dict]:
         """
@@ -168,6 +204,7 @@ class FileScanner:
                     }
                     
                     # Log threat
+                    # Log threat
                     db_manager.log_threat(
                         'MALWARE_DETECTED',
                         sig_data['level'],
@@ -175,7 +212,6 @@ class FileScanner:
                         f"Malware detected: {sig_data['name']}",
                         'FILE_QUARANTINED'
                     )
-                    
                     break
             
             # Check database signatures
@@ -189,6 +225,22 @@ class FileScanner:
                         'level': db_sig['threat_level'],
                         'description': db_sig.get('description', '')
                     }
+
+            # Perform YARA scan if still clean
+            if result['status'] == 'CLEAN' and self.yara_rules:
+                yara_match = self._scan_with_yara(file_path)
+                if yara_match:
+                    result['status'] = 'INFECTED'
+                    result['threat'] = yara_match
+                    
+                    # Log threat
+                    db_manager.log_threat(
+                        'MALWARE_DETECTED',
+                        yara_match['level'],
+                        file_path,
+                        f"YARA Detection: {yara_match['name']}",
+                        'FILE_QUARANTINED'
+                    )
             
         except Exception as e:
             result['status'] = 'ERROR'
@@ -400,6 +452,44 @@ class FileScanner:
             List of scan records
         """
         return db_manager.get_scan_history(limit)
+
+
+    def _scan_with_yara(self, file_path: str) -> Optional[Dict]:
+        """
+        Scan file with YARA rules
+        
+        Args:
+            file_path: Path to file
+            
+        Returns:
+            Threat details if matched, else None
+        """
+        if not self.yara_rules:
+            return None
+            
+        try:
+            matches = self.yara_rules.match(file_path)
+            if matches:
+                # Return the first match (highest priority usually)
+                # Sort by severity if possible, but for now take first
+                match = matches[0]
+                
+                # Get metadata
+                meta = match.meta
+                severity = meta.get('severity', 'HIGH')
+                description = meta.get('description', 'Detected by YARA rule')
+                
+                return {
+                    'id': f"YARA:{match.rule}",
+                    'name': f"YARA: {match.rule}",
+                    'level': severity,
+                    'description': description
+                }
+                
+        except Exception as e:
+            print(f"YARA scan error on {file_path}: {e}")
+            
+        return None
 
 
 # Global scanner instance

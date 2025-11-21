@@ -627,3 +627,7 @@
 2025-11-21 16:58:47 - app - INFO - User logged in: admin
 2025-11-21 16:58:58 - app - INFO - Real-Time Protection started
 2025-11-21 16:59:50 - app - INFO - Real-Time Protection stopped. Scans: 16, Threats: 3
+2025-11-21 17:30:51 - app - INFO - Real-Time Protection initialized
+2025-11-21 17:30:51 - app - INFO - Database initialized successfully
+2025-11-21 17:30:51 - app - INFO - CyberGuard Pro application started
+2025-11-21 17:30:57 - app - INFO - User logged in: admin
