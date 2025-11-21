@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cybersecurity NLP Threat Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "safe": "#22C55E",
+                        "low": "#39FF14",
+                        "medium": "#EAB308",
+                        "high": "#F97316",
+                        "critical": "#EF4444",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display">
+<div class="flex h-screen bg-[#101922]">
+<aside class="w-64 bg-[#111a22] p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="John Doe's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBhx6o3M4d8z0wV0CwEBwJqQR5CTz8zBWtRzSl42lJ1-RdqK2uEWXLULBIccEXuuFNj8NLyU2LDoxzMYKHd8GMEQN9qgVWIZLqh97YiscAB1w0oGqL7dOWTiIz93tSoCbb_CbmHzKqJ_VrIZMJPKBycWVpd_RdPM-c8-UcQU17KH1nLy4U_yoK7DlqL-2cGlvfRD3j5tvmLfM0DIPOjt4QxBFGC1AS29F2s_duPlH34iyo4Yj3HO_P-CvWO5A2hpoLbNaB_fSjWdGk");'></div>
+<div>
+<h1 class="text-white text-base font-medium leading-normal">John Doe</h1>
+<p class="text-[#92adc9] text-sm font-normal leading-normal">john.doe@example.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 text-white hover:bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-white bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">psychology</span>
+<span class="text-sm font-medium">NLP Threat Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-white hover:bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">shield</span>
+<span class="text-sm font-medium">Scan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-white hover:bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-white hover:bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-sm font-medium">Profile</span>
+</a>
+</nav>
+</div>
+<div>
+<button class="w-full flex items-center justify-center rounded-lg h-10 px-4 bg-[#1172d4] text-white text-sm font-bold leading-normal tracking-[0.015em] mb-4">
+                New Scan
+            </button>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-white hover:bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-sm font-medium">Help</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-white hover:bg-[#233648] rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</a>
+</div>
+</div>
+</aside>
+<main class="flex-1 p-8 overflow-y-auto">
+<header class="mb-8">
+<h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">NLP Threat Analysis</h1>
+</header>
+<div class="grid grid-cols-1 @container xl:grid-cols-2 gap-8">
+<div class="bg-[#111a22] p-6 rounded-xl flex flex-col">
+<h2 class="text-white text-xl font-bold mb-4">Content for Analysis</h2>
+<div class="flex-grow flex flex-col">
+<textarea class="form-input flex-grow w-full resize-none rounded-lg text-white focus:outline-0 focus:ring-2 focus:ring-[#1172d4] border border-[#324d67] bg-[#192633] placeholder:text-[#92adc9] p-4 text-base font-normal leading-normal" placeholder="Paste email body, URL, or any text here...">Dear Customer,
+We have detected unusual activity on your account. Please verify your identity by clicking the link below to avoid suspension.
+http://your-bank-security-update.com/verify
+Thank you,
+Your Bank Security Team</textarea>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 cursor-pointer text-white text-sm font-medium hover:text-[#1172d4]">
+<span class="material-symbols-outlined">upload_file</span>
+                                Upload File
+                            </button>
+<button class="flex items-center gap-2 cursor-pointer text-white text-sm font-medium hover:text-[#1172d4]">
+<span class="material-symbols-outlined">link</span>
+                                Analyze URL
+                            </button>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-[#39FF14] text-black text-base font-bold leading-normal tracking-[0.015em]">
+                            Analyze
+                        </button>
+</div>
+</div>
+</div>
+<div class="bg-[#111a22] p-6 rounded-xl">
+<h2 class="text-white text-xl font-bold mb-4">FR-NLP-01: Algorithm Analysis</h2>
+<div class="space-y-6">
+<div>
+<p class="text-white text-base font-medium mb-2">FR-NLP-04: Overall Threat Level</p>
+<div class="relative w-full h-10 bg-[#192633] rounded-full overflow-hidden flex items-center justify-between px-2 text-sm font-bold text-white">
+<div class="absolute left-0 top-0 h-full bg-gradient-to-r from-safe via-medium to-critical" style="width: 100%;"></div>
+<span class="z-10">Safe</span>
+<span class="z-10">Low</span>
+<span class="z-10">Medium</span>
+<span class="z-10">High</span>
+<span class="z-10">Critical</span>
+<div class="absolute top-0 h-full w-1 bg-white transform -translate-x-1/2" style="left: 85%;">
+<div class="absolute -top-2 -left-1/2 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+<p class="text-right text-high font-bold mt-1">High</p>
+</div>
+<div class="space-y-4">
+<div>
+<h3 class="text-white text-lg font-bold mb-2">FR-NLP-02: Phishing Patterns Detected</h3>
+<div class="bg-[#192633] p-4 rounded-lg border-l-4 border-high">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-white font-semibold">Suspicious Link</h4>
+<p class="text-sm text-[#92adc9] mt-1">URL mimics a known entity but is not official.</p>
+</div>
+<div class="text-right flex-shrink-0 ml-4">
+<p class="text-xs font-bold text-high">Severity: High</p>
+<p class="text-xs text-[#92adc9]">FR-NLP-05: Confidence: 95%</p>
+</div>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-white text-lg font-bold mb-2">FR-NLP-03: Social Engineering Attempts</h3>
+<div class="space-y-3">
+<div class="bg-[#192633] p-4 rounded-lg border-l-4 border-medium">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-white font-semibold">Urgency &amp; Threat</h4>
+<p class="text-sm text-[#92adc9] mt-1">"avoid suspension" creates a sense of urgency.</p>
+</div>
+<div class="text-right flex-shrink-0 ml-4">
+<p class="text-xs font-bold text-medium">Severity: Medium</p>
+<p class="text-xs text-[#92adc9]">FR-NLP-05: Confidence: 88%</p>
+</div>
+</div>
+</div>
+<div class="bg-[#192633] p-4 rounded-lg border-l-4 border-low">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-white font-semibold">Impersonation</h4>
+<p class="text-sm text-[#92adc9] mt-1">Claims to be from "Your Bank Security Team".</p>
+</div>
+<div class="text-right flex-shrink-0 ml-4">
+<p class="text-xs font-bold text-low">Severity: Low</p>
+<p class="text-xs text-[#92adc9]">FR-NLP-05: Confidence: 70%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<h3 class="text-white text-lg font-bold">FR-NLP-05: Overall Confidence Score</h3>
+<div class="relative w-full max-w-xs h-2 bg-[#192633] rounded-full">
+<div class="h-full bg-primary rounded-full" style="width: 92%;"></div>
+</div>
+<span class="text-white font-bold text-lg">92%</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

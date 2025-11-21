@@ -1,0 +1,14 @@
+{
+  "eicar_test": {
+    "hash": "44d88612fea8a8f36de82e1278abb02f",
+    "name": "EICAR Test File",
+    "level": "LOW",
+    "description": "Standard antivirus test file - not actually malicious"
+  },
+  "sample_malware_1": {
+    "hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "name": "Sample Malware Signature 1",
+    "level": "HIGH",
+    "description": "Example malware signature for demonstration"
+  }
+}

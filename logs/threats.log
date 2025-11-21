@@ -1,0 +1,53 @@
+2025-11-07 22:51:50 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Phishing Indicators, Social Engineering, Financial Request, Confidence: 90.0%
+2025-11-07 22:52:58 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Phishing Indicators, Suspicious URLs, Confidence: 82.0%
+2025-11-07 22:53:07 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Phishing Indicators, Suspicious URLs, Confidence: 93.8%
+2025-11-07 22:53:10 - threat - WARNING - [LOW] SCREEN_THREAT: Patterns: Phishing Indicators, Confidence: 70.0%
+2025-11-07 22:53:24 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Social Engineering, Scam Indicators, Urgency Language, Financial Request, Confidence: 95.0%
+2025-11-07 23:07:35 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Social Engineering, Scam Indicators, Urgency Language, Financial Request, Confidence: 95.0%
+2025-11-07 23:08:11 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Scam Indicators, Suspicious URLs, Confidence: 95.0%
+2025-11-07 23:08:22 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Phishing Indicators, Social Engineering, Confidence: 82.8%
+2025-11-07 23:08:38 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Scam Indicators, Suspicious URLs, Confidence: 95.0%
+2025-11-07 23:09:54 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-07 23:09:57 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-07 23:11:40 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Phishing Indicators, Scam Indicators, Suspicious URLs, Urgency Language, Confidence: 95.0%
+2025-11-07 23:20:39 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Scam Indicators, Suspicious URLs, Confidence: 95.0%
+2025-11-07 23:20:44 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%
+2025-11-07 23:36:46 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-07 23:39:08 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-08 00:09:29 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-08 00:18:18 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-08 00:18:30 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-08 01:19:39 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-08 01:19:48 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-08 13:11:16 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-08 13:11:21 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 02:29:50 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 02:29:52 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 02:29:58 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Phishing Indicators, Urgency Language, Confidence: 91.2%
+2025-11-21 02:37:42 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 02:37:51 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 02:46:44 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 15:28:05 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 15:29:29 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 15:32:50 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 15:32:59 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Phishing Indicators, Social Engineering, Urgency Language, Credential Request, Financial Request, Confidence: 95.0%
+2025-11-21 15:33:05 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 82.0%
+2025-11-21 15:33:08 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Credential Request, Confidence: 82.0%
+2025-11-21 15:33:22 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 15:34:23 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Social Engineering, Suspicious URLs, Financial Request, Confidence: 80.8%
+2025-11-21 15:34:41 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Social Engineering, Suspicious URLs, Financial Request, Confidence: 90.5%
+2025-11-21 15:34:50 - threat - WARNING - [HIGH] SCREEN_THREAT: Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%
+2025-11-21 15:44:04 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 15:44:07 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 15:44:10 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%
+2025-11-21 15:44:13 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Social Engineering, Urgency Language, Credential Request, Financial Request, Confidence: 95.0%
+2025-11-21 15:51:43 - threat - INFO - Suppressed MEDIUM alert in Game Mode (Process: game.exe)
+2025-11-21 16:45:46 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 16:46:31 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 16:46:37 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 16:48:21 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 16:56:55 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Social Engineering, Urgency Language, Credential Request, Financial Request, Confidence: 95.0%
+2025-11-21 16:56:57 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Social Engineering, Urgency Language, Credential Request, Financial Request, Confidence: 95.0%
+2025-11-21 16:58:59 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 16:59:20 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 16:59:29 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%

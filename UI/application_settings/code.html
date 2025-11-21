@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cybersecurity Application Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<div class="flex flex-1">
+<aside class="w-64 bg-[#111a22] p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="John Doe's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBnFG8wxd3TDh6IcfOuLRq7CferktWp_K-d3mtzujNMgRLGesg-Id4DPpM6F6niFziLMQiXZBTGBsZHu3kK2D2ufc7kV6J1xLmbq4iZ5oD_j8NtdCVGN4ThbJYvS2FBRxxNmXZ9JwwzIYIEBkVubL3MUkqYax-n914SAK8OP-y2Xex_cno4RfEFgUmjHHaDSVCuiRAEVma-a4jS7eVz9oHmrWn78AhRfBdMfYfVEDxDwkydHGgo7p0BmJePG0vaURghVCD3sLhyh2E");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">John Doe</h1>
+<p class="text-[#92adc9] text-sm font-normal leading-normal">john.doe@example.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#233648]" href="#">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">settings</span>
+<p class="text-white text-sm font-medium leading-normal">General</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]/60" href="#">
+<span class="material-symbols-outlined text-white">security</span>
+<p class="text-white text-sm font-medium leading-normal">Security Modules</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]/60" href="#">
+<span class="material-symbols-outlined text-white">calendar_today</span>
+<p class="text-white text-sm font-medium leading-normal">Scan Scheduler</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]/60" href="#">
+<span class="material-symbols-outlined text-white">person</span>
+<p class="text-white text-sm font-medium leading-normal">Account</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]/60" href="#">
+<span class="material-symbols-outlined text-white">system_update</span>
+<p class="text-white text-sm font-medium leading-normal">Updates</p>
+</a>
+</nav>
+</div>
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90">
+<span class="truncate">Logout</span>
+</button>
+</aside>
+<main class="flex-1 p-10">
+<div class="max-w-4xl mx-auto">
+<header class="mb-8">
+<div class="flex flex-wrap justify-between gap-3">
+<div class="flex min-w-72 flex-col gap-3">
+<p class="text-gray-800 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">General Settings</p>
+<p class="text-gray-500 dark:text-[#92adc9] text-base font-normal leading-normal">Configure application preferences and behavior.</p>
+</div>
+</div>
+</header>
+<div class="space-y-8">
+<div class="bg-white dark:bg-[#111a22] rounded-xl shadow-md p-6">
+<div class="flex items-center gap-4 py-3 border-b border-gray-200 dark:border-gray-700">
+<div class="text-gray-600 dark:text-white flex items-center justify-center rounded-lg bg-gray-200 dark:bg-[#233648] shrink-0 size-10">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div class="flex-1">
+<p class="text-gray-800 dark:text-white text-base font-medium leading-normal">Real-time protection</p>
+<p class="text-gray-500 dark:text-[#92adc9] text-sm">Continuously monitor your computer for threats.</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-gray-300 dark:bg-[#233648] p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 py-3 border-b border-gray-200 dark:border-gray-700">
+<div class="text-gray-600 dark:text-white flex items-center justify-center rounded-lg bg-gray-200 dark:bg-[#233648] shrink-0 size-10">
+<span class="material-symbols-outlined">power_settings_new</span>
+</div>
+<div class="flex-1">
+<p class="text-gray-800 dark:text-white text-base font-medium leading-normal">Automatic startup</p>
+<p class="text-gray-500 dark:text-[#92adc9] text-sm">Launch the application when you start your computer.</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-gray-300 dark:bg-[#233648] p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+<div class="flex items-center gap-4 py-3">
+<div class="text-gray-600 dark:text-white flex items-center justify-center rounded-lg bg-gray-200 dark:bg-[#233648] shrink-0 size-10">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="flex-1">
+<p class="text-gray-800 dark:text-white text-base font-medium leading-normal">Notification preferences</p>
+<p class="text-gray-500 dark:text-[#92adc9] text-sm">Manage how you receive alerts.</p>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-gray-300 dark:bg-[#233648] p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary">
+<div class="h-full w-[27px] rounded-full bg-white" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#111a22] rounded-xl shadow-md p-6">
+<div class="flex flex-wrap gap-6 items-end">
+<div class="flex-1 min-w-[200px]">
+<label class="text-gray-800 dark:text-white text-base font-medium leading-normal block mb-2" for="xai-level">X-AI Explanation Level</label>
+<p class="text-gray-500 dark:text-[#92adc9] text-sm mb-4">Choose the level of detail for AI-driven threat explanations.</p>
+<div class="flex rounded-lg bg-gray-100 dark:bg-[#192633] p-1">
+<button class="flex-1 px-4 py-2 text-sm font-medium rounded-md bg-primary text-white shadow">Brief</button>
+<button class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-opacity-50 dark:hover:bg-gray-600 rounded-md">Detailed</button>
+<button class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-opacity-50 dark:hover:bg-gray-600 rounded-md">Technical</button>
+</div>
+</div>
+<div class="flex-1 min-w-[200px]">
+<label class="flex flex-col">
+<p class="text-gray-800 dark:text-white text-base font-medium leading-normal pb-2">Language</p>
+<select class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-800 dark:text-white focus:outline-0 focus:ring-0 border border-gray-300 dark:border-[#324d67] bg-gray-50 dark:bg-[#192633] focus:border-primary h-14 bg-no-repeat bg-right pr-8 placeholder:text-[#92adc9] p-[15px] text-base font-normal leading-normal" style="appearance: none; background-image: url('data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(146,173,201)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M215.39,92.61a8,8,0,0,0-11.31,0L128,168.69,51.92,92.61a8,8,0,0,0-11.32,11.32l80,80a8,8,0,0,0,11.32,0l80-80A8,8,0,0,0,215.39,92.61Z%27%3e%3c/path%3e%3c/svg%3e');">
+<option value="en">English (US)</option>
+<option value="es">Español</option>
+<option value="fr">Français</option>
+<option value="de">Deutsch</option>
+</select>
+</label>
+</div>
+</div>
+</div>
+<div class="flex justify-end gap-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-[#233648] text-gray-800 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-gray-300 dark:hover:bg-[#233648]/80">
+<span class="truncate">Cancel</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90">
+<span class="truncate">Save Changes</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>
