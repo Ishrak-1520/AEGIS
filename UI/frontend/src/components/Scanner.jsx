@@ -7,33 +7,112 @@ const Scanner = () => {
     const [progress, setProgress] = useState(0);
     const [currentFile, setCurrentFile] = useState('');
     const [results, setResults] = useState([]);
+    const [scanStats, setScanStats] = useState(null);
 
-    const startScan = (type) => {
-        setScanning(true);
-        setProgress(0);
-        setResults([]);
+    const stopScan = async () => {
+        try {
+            await window.pywebview.api.stop_scan();
+            setScanning(false);
+            setCurrentFile('Scan Stopped');
+        } catch (err) {
+            console.error("Error stopping scan:", err);
+        }
+    };
 
-        // Simulation
-        let p = 0;
-        const interval = setInterval(() => {
-            p += 1;
-            setProgress(p);
-            setCurrentFile(`file_${Math.floor(Math.random() * 1000)}.exe`);
-
-            if (p % 20 === 0) {
-                setResults(prev => [...prev, {
-                    file: `suspicious_file_${p}.dll`,
-                    status: Math.random() > 0.7 ? 'threat' : 'clean',
-                    path: `C:/Windows/System32/suspicious_file_${p}.dll`
-                }]);
+    const handleCustomScan = async () => {
+        try {
+            const path = await window.pywebview.api.browse_directory();
+            if (path) {
+                startScan('custom', path);
             }
+        } catch (err) {
+            console.error("Error selecting directory:", err);
+        }
+    };
 
-            if (p >= 100) {
-                clearInterval(interval);
-                setScanning(false);
-                setCurrentFile('Scan Complete');
+    const startScan = async (type, path = null) => {
+        if (scanning) return;
+
+        try {
+            // Call backend to start scan
+            const response = await window.pywebview.api.start_scan(type, path);
+            if (response.status === 'started') {
+                setScanning(true);
+                setProgress(0);
+                setResults([]);
+                setScanStats(null);
+
+                // Poll for progress
+                const interval = setInterval(async () => {
+                    try {
+                        const status = await window.pywebview.api.get_scan_progress();
+
+                        setProgress(status.progress);
+                        setCurrentFile(status.file);
+
+                        if (status.results) {
+                            setResults(status.results);
+                        }
+
+                        if (status.status === 'completed' || status.status === 'error' || status.status === 'stopped') {
+                            clearInterval(interval);
+                            setScanning(false);
+                            setCurrentFile(status.status === 'completed' ? 'Scan Complete' : `Scan ${status.status}`);
+
+                            // Set stats for analytics display
+                            if (status.status === 'completed') {
+                                setScanStats({
+                                    filesScanned: status.progress * 10, // Placeholder
+                                    threatsFound: status.results.length,
+                                    status: status.status
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.error("Error polling progress:", err);
+                        clearInterval(interval);
+                        setScanning(false);
+                    }
+                }, 500); // Poll every 500ms
+            } else {
+                console.error("Failed to start scan:", response.message);
             }
-        }, 50);
+        } catch (err) {
+            console.error("Error calling start_scan:", err);
+        }
+    };
+
+    const handleFileSelect = async () => {
+        try {
+            const path = await window.pywebview.api.browse_file();
+            if (path) {
+                startScan('custom', path);
+            }
+        } catch (err) {
+            console.error("Error selecting file:", err);
+        }
+    };
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    const handleDrop = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Note: Getting full path from drag & drop in webview is restricted.
+        // We encourage using the click-to-browse for now.
+        // However, if pywebview supports it in future or via specific config, this would work.
+        // For now, we'll just show a message or try to handle if possible.
+        console.log("Files dropped:", e.dataTransfer.files);
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            // In standard webview, we can't get the full path.
+            // We will trigger the file picker as a fallback for now to ensure user can select the file they wanted.
+            handleFileSelect();
+        }
     };
 
     return (
@@ -44,7 +123,8 @@ const Scanner = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => startScan('quick')}
-                    className="bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-primary/50 transition-colors group"
+                    disabled={scanning}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-primary/50 transition-colors group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                         <ZapIcon className="text-primary" size={24} />
@@ -57,7 +137,8 @@ const Scanner = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => startScan('full')}
-                    className="bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-purple-500/50 transition-colors group"
+                    disabled={scanning}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-purple-500/50 transition-colors group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <div className="bg-purple-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
                         <FileSearch className="text-purple-500" size={24} />
@@ -69,7 +150,9 @@ const Scanner = () => {
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-green-500/50 transition-colors group"
+                    onClick={handleCustomScan}
+                    disabled={scanning}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-green-500/50 transition-colors group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <div className="bg-green-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
                         <FolderOpen className="text-green-500" size={24} />
@@ -80,7 +163,12 @@ const Scanner = () => {
             </div>
 
             {/* Drag & Drop Zone */}
-            <div className="border-2 border-dashed border-white/10 rounded-xl p-12 flex flex-col items-center justify-center text-center hover:border-primary/30 hover:bg-white/5 transition-all cursor-pointer">
+            <div
+                className="border-2 border-dashed border-white/10 rounded-xl p-12 flex flex-col items-center justify-center text-center hover:border-primary/30 hover:bg-white/5 transition-all cursor-pointer"
+                onClick={handleFileSelect}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+            >
                 <Upload className="text-gray-500 mb-4" size={48} />
                 <h3 className="text-xl font-bold text-white mb-2">Drag & Drop Files Here</h3>
                 <p className="text-gray-400">or click to browse your computer</p>
@@ -105,7 +193,15 @@ const Scanner = () => {
                                     <p className="text-sm text-gray-400">{currentFile}</p>
                                 </div>
                             </div>
-                            <span className="text-2xl font-bold text-primary">{progress}%</span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-2xl font-bold text-primary">{progress}%</span>
+                                <button
+                                    onClick={stopScan}
+                                    className="px-4 py-2 bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors font-medium"
+                                >
+                                    Stop Scan
+                                </button>
+                            </div>
                         </div>
                         <div className="h-2 bg-background rounded-full overflow-hidden">
                             <motion.div
@@ -117,6 +213,33 @@ const Scanner = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Scan Analytics */}
+            {!scanning && scanStats && (
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-surface border border-white/5 rounded-xl p-6"
+                >
+                    <h3 className="font-bold text-white mb-4">Scan Summary</h3>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-white/5 rounded-lg p-4 text-center">
+                            <p className="text-gray-400 text-sm mb-1">Status</p>
+                            <p className="text-xl font-bold text-white capitalize">{scanStats.status}</p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-4 text-center">
+                            <p className="text-gray-400 text-sm mb-1">Threats Found</p>
+                            <p className={`text-xl font-bold ${scanStats.threatsFound > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                {scanStats.threatsFound}
+                            </p>
+                        </div>
+                        <div className="bg-white/5 rounded-lg p-4 text-center">
+                            <p className="text-gray-400 text-sm mb-1">Files Scanned</p>
+                            <p className="text-xl font-bold text-white">Check Logs</p>
+                        </div>
+                    </div>
+                </motion.div>
+            )}
 
             {/* Results */}
             {results.length > 0 && (
@@ -131,17 +254,25 @@ const Scanner = () => {
                                 <div className="flex items-center gap-3">
                                     {result.status === 'threat' ? (
                                         <AlertCircle className="text-red-500" size={20} />
+                                    ) : result.status === 'suspicious' ? (
+                                        <AlertCircle className="text-yellow-500" size={20} />
                                     ) : (
                                         <CheckCircle className="text-green-500" size={20} />
                                     )}
                                     <div>
                                         <p className="text-white font-medium">{result.file}</p>
                                         <p className="text-xs text-gray-500">{result.path}</p>
+                                        {result.threat && (
+                                            <p className="text-xs text-gray-400">
+                                                {result.threat.name || result.threat}
+                                                {result.threat.description ? ` - ${result.threat.description}` : ''}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    {result.status === 'threat' && (
-                                        <button className="px-3 py-1 bg-red-500/10 text-red-500 text-sm font-bold rounded hover:bg-red-500/20 transition-colors">
+                                    {(result.status === 'threat' || result.status === 'suspicious') && (
+                                        <button className={`px-3 py-1 ${result.status === 'threat' ? 'bg-red-500/10 text-red-500 hover:bg-red-500/20' : 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20'} text-sm font-bold rounded transition-colors`}>
                                             Quarantine
                                         </button>
                                     )}

@@ -2,6 +2,8 @@ import json
 import sys
 import os
 import threading
+import webview
+
 from datetime import datetime
 
 # Add project root to path
@@ -26,7 +28,7 @@ class AegisAPI:
         self.scan_progress = {'status': 'idle', 'progress': 0, 'file': '', 'results': []}
         
         # Window reference for focusing
-        self.main_window = None
+        self._main_window = None
         
         # Start system monitor
         if not system_monitor.monitoring:
@@ -42,7 +44,42 @@ class AegisAPI:
     
     def set_window(self, window):
         """Set the main window reference for focusing"""
-        self.main_window = window
+        self._main_window = window
+
+    def browse_directory(self):
+        """Open directory picker dialog"""
+        print("DEBUG: browse_directory called", flush=True)
+        if self._main_window:
+            print("DEBUG: Opening file dialog...", flush=True)
+            try:
+                # Handle deprecation of FOLDER_DIALOG
+                dialog_type = getattr(webview, 'FOLDER_DIALOG', 10) # Fallback to old constant
+                if hasattr(webview, 'FileDialog'):
+                    dialog_type = webview.FileDialog.FOLDER
+                
+                result = self._main_window.create_file_dialog(dialog_type)
+                print(f"DEBUG: Dialog result: {result}", flush=True)
+                return result[0] if result else None
+            except Exception as e:
+                print(f"DEBUG: Dialog error: {e}", flush=True)
+                return None
+        print("DEBUG: No main window set", flush=True)
+        return None
+
+    def browse_file(self):
+        """Open file picker dialog"""
+        if self._main_window:
+            try:
+                # Handle deprecation of OPEN_DIALOG
+                dialog_type = getattr(webview, 'OPEN_DIALOG', 10) # Fallback
+                if hasattr(webview, 'FileDialog'):
+                    dialog_type = webview.FileDialog.OPEN
+                
+                result = self._main_window.create_file_dialog(dialog_type)
+                return result[0] if result else None
+            except Exception:
+                return None
+        return None
 
     # --- System Stats ---
     def get_system_stats(self):
@@ -56,7 +93,7 @@ class AegisAPI:
         }
 
     # --- Scanner ---
-    def start_scan(self, scan_type):
+    def start_scan(self, scan_type, target_path=None):
         """Start a scan in a background thread"""
         if self.scan_thread and self.scan_thread.is_alive():
             return {'status': 'error', 'message': 'Scan already in progress'}
@@ -67,6 +104,10 @@ class AegisAPI:
             self.scan_thread = threading.Thread(target=self._run_quick_scan)
         elif scan_type == 'full':
             self.scan_thread = threading.Thread(target=self._run_full_scan)
+        elif scan_type == 'custom':
+            if not target_path:
+                return {'status': 'error', 'message': 'No path specified'}
+            self.scan_thread = threading.Thread(target=self._run_custom_scan, args=(target_path,))
         else:
             return {'status': 'error', 'message': 'Invalid scan type'}
             
@@ -78,11 +119,11 @@ class AegisAPI:
         def progress_callback(percent, file_path, result):
             self.scan_progress['progress'] = int(percent)
             self.scan_progress['file'] = os.path.basename(file_path)
-            if result['status'] == 'INFECTED':
+            if result['status'] in ['INFECTED', 'SUSPICIOUS']:
                 self.scan_progress['results'].append({
                     'file': os.path.basename(file_path),
                     'path': file_path,
-                    'status': 'threat',
+                    'status': 'threat' if result['status'] == 'INFECTED' else 'suspicious',
                     'threat': result['threat']
                 })
 
@@ -99,17 +140,49 @@ class AegisAPI:
         def progress_callback(percent, file_path, result):
             self.scan_progress['progress'] = int(percent)
             self.scan_progress['file'] = os.path.basename(file_path)
-            if result['status'] == 'INFECTED':
+            if result['status'] in ['INFECTED', 'SUSPICIOUS']:
                 self.scan_progress['results'].append({
                     'file': os.path.basename(file_path),
                     'path': file_path,
-                    'status': 'threat',
+                    'status': 'threat' if result['status'] == 'INFECTED' else 'suspicious',
                     'threat': result['threat']
                 })
 
         try:
             home_dir = os.path.expanduser("~")
+            # For full scan, we might want to be careful about scanning everything.
+            # Let's scan Documents, Downloads, Desktop for now to avoid system file permission issues
+            # or scan the whole user dir but expect errors.
             self.scanner.scan_directory(home_dir, recursive=True, progress_callback=progress_callback)
+            self.scan_progress['status'] = 'completed'
+            self.scan_progress['progress'] = 100
+        except Exception as e:
+            self.scan_progress['status'] = 'error'
+            self.scan_progress['error'] = str(e)
+
+    def _run_custom_scan(self, target_path):
+        """Run custom scan on file or directory"""
+        def progress_callback(percent, file_path, result):
+            self.scan_progress['progress'] = int(percent)
+            self.scan_progress['file'] = os.path.basename(file_path)
+            if result['status'] in ['INFECTED', 'SUSPICIOUS']:
+                self.scan_progress['results'].append({
+                    'file': os.path.basename(file_path),
+                    'path': file_path,
+                    'status': 'threat' if result['status'] == 'INFECTED' else 'suspicious',
+                    'threat': result['threat']
+                })
+
+        try:
+            if os.path.isfile(target_path):
+                # Scan single file
+                self.scan_progress['file'] = os.path.basename(target_path)
+                result = self.scanner.scan_file(target_path)
+                progress_callback(100, target_path, result)
+            else:
+                # Scan directory
+                self.scanner.scan_directory(target_path, recursive=True, progress_callback=progress_callback)
+            
             self.scan_progress['status'] = 'completed'
             self.scan_progress['progress'] = 100
         except Exception as e:

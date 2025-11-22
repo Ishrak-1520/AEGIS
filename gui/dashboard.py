@@ -4351,9 +4351,9 @@ Your Bank Security Team""")
         self.scan_progress.setValue(100)
         
         # Format results
-        output = "=" * 50 + "\n"
+        output = "=" * 60 + "\n"
         output += "SCAN COMPLETED\n"
-        output += "=" * 50 + "\n\n"
+        output += "=" * 60 + "\n\n"
         
         output += f"Files Scanned: {result.get('files_scanned', 0)}\n"
         output += f"Threats Found: {result.get('threats_found', 0)}\n"
@@ -4365,27 +4365,37 @@ Your Bank Security Team""")
         
         output += "\n"
         
-        # List infected files
+        # List infected/suspicious files
         if result.get('threats_found', 0) > 0:
-            output += "=" * 50 + "\n"
-            output += "THREATS DETECTED\n"
-            output += "=" * 50 + "\n\n"
+            output += "=" * 60 + "\n"
+            output += "THREATS & SUSPICIOUS FILES DETECTED\n"
+            output += "=" * 60 + "\n\n"
             
             for infected in result.get('infected_files', []):
-                output += f"\nFile: {infected['path']}\n"
+                output += f"File: {infected['path']}\n"
                 threat = infected.get('threat', {})
                 if isinstance(threat, dict):
-                    output += f"  Threat: {threat.get('name', 'Unknown')}\n"
-                    output += f"  Level: {threat.get('level', 'Unknown')}\n"
-                    output += f"  Description: {threat.get('description', 'N/A')}\n"
+                    threat_name = threat.get('name', 'Unknown')
+                    level = threat.get('level', 'Unknown')
+                    desc = threat.get('description', 'N/A')
+                    
+                    if 'Heuristic' in threat_name:
+                        output += f"  [SUSPICIOUS] {threat_name}\n"
+                        output += f"  Level: {level}\n"
+                        output += f"  Reason: {desc}\n"
+                    else:
+                        output += f"  [THREAT] {threat_name}\n"
+                        output += f"  Level: {level}\n"
+                        output += f"  Description: {desc}\n"
                 else:
                     output += f"  Threat: {threat}\n"
+                output += "-" * 40 + "\n"
             
             # Show alert
             QMessageBox.warning(
                 self,
                 "Threats Detected",
-                f"{result.get('threats_found', 0)} threat(s) found!\n\nPlease review the scan results."
+                f"{result.get('threats_found', 0)} threat(s) or suspicious file(s) found!\n\nPlease review the scan results."
             )
         else:
             output += "\n✅ No threats detected. Your system is clean!\n"

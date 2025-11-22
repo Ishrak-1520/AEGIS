@@ -10,5 +10,11 @@
     "name": "Sample Malware Signature 1",
     "level": "HIGH",
     "description": "Example malware signature for demonstration"
+  },
+  "TEST_VIRUS": {
+    "hash": "3c3a9c9ebef9eb19406986fb44ee5b33",
+    "name": "Test Virus",
+    "level": "LOW",
+    "description": ""
   }
 }

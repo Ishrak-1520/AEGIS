@@ -1,0 +1,42 @@
+Compiled 1 YARA rule files.
+FFF
+Compiled 1 YARA rule files.
+Hash calculation error: [Errno 22] Invalid argument: 'C:\\xampp\\htdocs\\CGP-2\\tests\\temp_scan\\test_threat.zip' for file: 'C:\\xampp\\htdocs\\CGP-2\\tests\\temp_scan\\test_threat.zip'
+YARA scan error on C:\xampp\htdocs\CGP-2\tests\temp_scan\test_threat.zip: could not open file "C:\xampp\htdocs\CGP-2\tests\temp_scan\test_threat.zip"
+Archive scan failed: {'file': 'C:\\xampp\\htdocs\\CGP-2\\tests\\temp_scan\\test_threat.zip', 'status': 'CLEAN', 'threat': None, 'hash': '', 'size': 184, 'timestamp': datetime.datetime(2025, 11, 22, 18, 1, 50, 797395)}
+Compiled 1 YARA rule files.
+Compiled 1 YARA rule files.
+Hash calculation error: [Errno 22] Invalid argument: 'C:\\xampp\\htdocs\\CGP-2\\tests\\temp_scan\\infected.txt' for file: 'C:\\xampp\\htdocs\\CGP-2\\tests\\temp_scan\\infected.txt'
+YARA scan error on C:\xampp\htdocs\CGP-2\tests\temp_scan\infected.txt: could not open file "C:\xampp\htdocs\CGP-2\tests\temp_scan\infected.txt"
+======================================================================
+FAIL: test_archive_scanning (__main__.TestAdvancedScanner.test_archive_scanning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\tests\test_scanner_advanced.py", line 57, in test_archive_scanning
+    self.assertEqual(result['status'], 'INFECTED')
+AssertionError: 'CLEAN' != 'INFECTED'
+Summary: {'directory': 'C:\\xampp\\htdocs\\CGP-2\\tests\\temp_scan', 'files_scanned': 21, 'threats_found': 0, 'clean_files': 21, 'errors': 0, 'infected_files': [], 'scan_time': 0.014475345611572266}
+- CLEAN
++ INFECTED
+
+
+======================================================================
+FAIL: test_heuristic_analysis (__main__.TestAdvancedScanner.test_heuristic_analysis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\tests\test_scanner_advanced.py", line 71, in test_heuristic_analysis
+    self.assertIn('Script Shell Object', result['threat']['name'])
+AssertionError: 'Script Shell Object' not found in 'Suspicious Command Execution'
+
+======================================================================
+FAIL: test_parallel_scanning (__main__.TestAdvancedScanner.test_parallel_scanning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\tests\test_scanner_advanced.py", line 96, in test_parallel_scanning
+    self.assertEqual(summary['threats_found'], 1)
+AssertionError: 0 != 1
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.375s
+
+FAILED (failures=3)

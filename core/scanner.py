@@ -11,6 +11,10 @@ import time
 from typing import Dict, List, Optional, Callable
 from datetime import datetime
 import threading
+import concurrent.futures
+import zipfile
+import re
+
 
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -53,8 +57,9 @@ class FileScanner:
         # File extensions to scan
         self.scan_extensions = [
             '.exe', '.dll', '.bat', '.cmd', '.ps1', '.vbs', '.js',
-            '.jar', '.py', '.sh', '.scr', '.com', '.pif'
+            '.jar', '.py', '.sh', '.scr', '.com', '.pif', '.zip'
         ]
+
         
         # Scan statistics
         self.stats = {
@@ -190,6 +195,11 @@ class FileScanner:
             
             # Calculate file hash
             file_hash = self._calculate_file_hash(file_path)
+            if not file_hash:
+                result['status'] = 'SKIPPED'
+                result['threat'] = 'Access denied or invalid file'
+                return result
+                
             result['hash'] = file_hash
             
             # Check against signatures
@@ -242,6 +252,28 @@ class FileScanner:
                         'FILE_QUARANTINED'
                     )
             
+            # Heuristic analysis if still clean
+            if result['status'] == 'CLEAN':
+                heuristic_threat = self._heuristic_analysis(file_path)
+                if heuristic_threat:
+                    result['status'] = 'SUSPICIOUS'
+                    result['threat'] = heuristic_threat
+                    
+                    # Log threat
+                    db_manager.log_threat(
+                        'HEURISTIC_DETECTION',
+                        heuristic_threat['level'],
+                        file_path,
+                        f"Heuristic Detection: {heuristic_threat['name']}",
+                        'FILE_QUARANTINED'
+                    )
+            
+            # Archive scanning
+            if file_path.lower().endswith('.zip'):
+                archive_result = self._scan_archive(file_path)
+                if archive_result['status'] == 'INFECTED':
+                    result = archive_result
+            
         except Exception as e:
             result['status'] = 'ERROR'
             result['threat'] = str(e)
@@ -292,29 +324,39 @@ class FileScanner:
             
             total_files = len(files_to_scan)
             
-            # Scan each file
-            for idx, file_path in enumerate(files_to_scan):
-                if not self.scanning:
-                    break
+            # Use ThreadPoolExecutor for parallel scanning
+            with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+                future_to_file = {executor.submit(self.scan_file, file_path): file_path for file_path in files_to_scan}
                 
-                result = self.scan_file(file_path)
-                summary['files_scanned'] += 1
-                
-                if result['status'] == 'INFECTED':
-                    summary['threats_found'] += 1
-                    summary['infected_files'].append({
-                        'path': file_path,
-                        'threat': result['threat']
-                    })
-                elif result['status'] == 'CLEAN':
-                    summary['clean_files'] += 1
-                elif result['status'] == 'ERROR':
-                    summary['errors'] += 1
-                
-                # Progress callback
-                if progress_callback:
-                    progress = (idx + 1) / total_files * 100
-                    progress_callback(progress, file_path, result)
+                for idx, future in enumerate(concurrent.futures.as_completed(future_to_file)):
+                    if not self.scanning:
+                        executor.shutdown(wait=False)
+                        break
+                    
+                    file_path = future_to_file[future]
+                    try:
+                        result = future.result()
+                        summary['files_scanned'] += 1
+                        
+                        if result['status'] == 'INFECTED' or result['status'] == 'SUSPICIOUS':
+                            summary['threats_found'] += 1
+                            summary['infected_files'].append({
+                                'path': file_path,
+                                'threat': result['threat']
+                            })
+                        elif result['status'] == 'CLEAN':
+                            summary['clean_files'] += 1
+                        elif result['status'] == 'ERROR':
+                            summary['errors'] += 1
+                        
+                        # Progress callback
+                        if progress_callback:
+                            progress = (idx + 1) / total_files * 100
+                            progress_callback(progress, file_path, result)
+                            
+                    except Exception as e:
+                        print(f"Error scanning file {file_path}: {e}")
+                        summary['errors'] += 1
             
             summary['scan_time'] = time.time() - start_time
             
@@ -406,18 +448,13 @@ class FileScanner:
         Returns:
             True if file should be scanned
         """
-        # Check file extension
-        _, ext = os.path.splitext(file_path.lower())
+        # Scan all files as requested by user
         
-        # Scan executable files and scripts
-        if ext in self.scan_extensions:
-            return True
-        
-        # Scan files without extension
-        if not ext:
-            return True
-        
-        return False
+        # Skip WindowsApps directory (reparse points/execution aliases cause issues)
+        if 'WindowsApps' in file_path:
+            return False
+            
+        return True
     
     def _calculate_file_hash(self, file_path: str, algorithm: str = 'md5') -> str:
         """
@@ -437,6 +474,9 @@ class FileScanner:
                 for chunk in iter(lambda: f.read(4096), b''):
                     hash_func.update(chunk)
             return hash_func.hexdigest()
+        except (PermissionError, OSError):
+            # Silently skip permission errors and invalid arguments (common in system files)
+            return ''
         except Exception as e:
             print(f"Hash calculation error: {e}")
             return ''
@@ -486,10 +526,103 @@ class FileScanner:
                     'description': description
                 }
                 
+        except (yara.Error, PermissionError, OSError):
+            # Silently skip YARA errors on protected files
+            return None
         except Exception as e:
             print(f"YARA scan error on {file_path}: {e}")
             
         return None
+
+    def _scan_archive(self, file_path: str) -> Dict:
+        """
+        Scan files inside a zip archive
+        """
+        result = {
+            'file': file_path,
+            'status': 'CLEAN',
+            'threat': None,
+            'hash': None,
+            'size': os.path.getsize(file_path),
+            'timestamp': datetime.now()
+        }
+        
+        try:
+            with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                for file_info in zip_ref.infolist():
+                    # Skip directories
+                    if file_info.is_dir():
+                        continue
+                        
+                    # Read file content from zip
+                    with zip_ref.open(file_info) as f:
+                        content = f.read()
+                        
+                    # Calculate hash of content
+                    file_hash = hashlib.md5(content).hexdigest()
+                    
+                    # Check against signatures
+                    for sig_id, sig_data in self.signatures.items():
+                        if file_hash == sig_data['hash']:
+                            result['status'] = 'INFECTED'
+                            result['threat'] = {
+                                'id': sig_id,
+                                'name': f"{sig_data['name']} (in archive)",
+                                'level': sig_data['level'],
+                                'description': f"Found in {file_info.filename}"
+                            }
+                            return result
+                            
+                    # Basic heuristic check on content
+                    if b'X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*' in content:
+                         result['status'] = 'INFECTED'
+                         result['threat'] = {
+                            'id': 'EICAR_TEST',
+                            'name': 'EICAR Test File (in archive)',
+                            'level': 'LOW',
+                            'description': f"Found in {file_info.filename}"
+                        }
+                         return result
+
+        except zipfile.BadZipFile:
+            result['status'] = 'ERROR'
+            result['threat'] = 'Invalid zip file'
+        except Exception as e:
+            result['status'] = 'ERROR'
+            result['threat'] = str(e)
+            
+        return result
+
+    def _heuristic_analysis(self, file_path: str) -> Optional[Dict]:
+        """
+        Perform heuristic analysis on file
+        """
+        try:
+            with open(file_path, 'rb') as f:
+                content = f.read(1024 * 1024) # Read first 1MB
+                
+            # Check for suspicious strings/patterns
+            suspicious_patterns = [
+                (b'cmd.exe /c', 'Suspicious Command Execution'),
+                (b'powershell -enc', 'Encoded PowerShell'),
+                (b'WScript.Shell', 'Script Shell Object'),
+                (b'eval(', 'Suspicious Eval Call'),
+            ]
+            
+            for pattern, name in suspicious_patterns:
+                if pattern in content:
+                    return {
+                        'id': 'HEURISTIC',
+                        'name': name,
+                        'level': 'MEDIUM',
+                        'description': 'Heuristic detection based on suspicious pattern'
+                    }
+                    
+        except Exception:
+            pass
+            
+        return None
+
 
 
 # Global scanner instance
