@@ -51,3 +51,116 @@
 2025-11-21 16:58:59 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
 2025-11-21 16:59:20 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
 2025-11-21 16:59:29 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 23:28:38 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 23:29:25 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-21 23:36:17 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-21 23:36:42 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-21 23:40:40 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-21 23:41:33 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: msedgewebview2.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 86.0%
+2025-11-21 23:41:34 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: msedgewebview2.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-21 23:41:52 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: msedgewebview2.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-21 23:43:09 - threat - INFO - Suppressed MEDIUM alert in Game Mode (Process: snippingtool.exe)
+2025-11-21 23:43:17 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-21 23:44:20 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: PII Detected: Credit Card (1), PII Detected: Phone (2), Confidence: 80.0%
+2025-11-21 23:44:34 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Suspicious URLs, PII Detected: Email (5), PII Detected: Phone (1), Confidence: 88.0%
+2025-11-21 23:46:06 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (3), Confidence: 91.2%
+2025-11-21 23:46:08 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-21 23:46:28 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: PII Detected: Credit Card (2), PII Detected: Phone (1), Confidence: 80.0%
+2025-11-22 10:31:21 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:31:39 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 91.2%
+2025-11-22 10:31:55 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Urgency Language, Confidence: 91.2%
+2025-11-22 10:34:47 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:35:05 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Phishing Indicators, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 10:36:09 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 10:36:55 - threat - INFO - Suppressed HIGH alert in Game Mode (Process: snippingtool.exe)
+2025-11-22 10:37:01 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:37:15 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:40:22 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-22 10:40:29 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-22 10:42:31 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:42:43 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Phishing Indicators, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 10:47:06 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:47:43 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:48:41 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:48:44 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 10:48:54 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:51:08 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:51:27 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (2), Confidence: 95.0%
+2025-11-22 10:51:30 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:51:33 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:51:48 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 10:53:11 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (4), Confidence: 95.0%
+2025-11-22 10:53:16 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:53:19 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 10:53:29 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (2), Confidence: 95.0%
+2025-11-22 10:53:32 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 10:53:41 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (1), Confidence: 95.0%
+2025-11-22 10:53:44 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (3), Confidence: 95.0%
+2025-11-22 10:54:02 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (4), Confidence: 95.0%
+2025-11-22 10:54:05 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (5), Confidence: 95.0%
+2025-11-22 10:54:08 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (3), Confidence: 91.2%
+2025-11-22 10:54:14 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-22 10:54:17 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (6), Confidence: 95.0%
+2025-11-22 10:54:20 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (6), Confidence: 95.0%
+2025-11-22 10:54:43 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (11), Confidence: 95.0%
+2025-11-22 10:54:47 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: applicationframehost.exe, Patterns: Scam Indicators, PII Detected: Credit Card (6), Confidence: 84.4%
+2025-11-22 10:55:40 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:55:42 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Suspicious URLs, PII Detected: Email (1), PII Detected: IPv4 (1), Confidence: 88.0%
+2025-11-22 10:55:45 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-22 10:55:48 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: msedgewebview2.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-22 10:55:51 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (1), Confidence: 90.0%
+2025-11-22 10:55:54 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: msedgewebview2.exe, Patterns: Phishing Indicators, Suspicious URLs, PII Detected: IPv4 (1), Confidence: 84.0%
+2025-11-22 10:55:58 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, Urgency Language, PII Detected: IPv4 (7), Confidence: 95.0%
+2025-11-22 10:56:04 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (6), Confidence: 95.0%
+2025-11-22 10:58:31 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (2), Confidence: 86.0%
+2025-11-22 10:58:43 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 10:58:45 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 11:03:37 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:03:43 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 11:05:19 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-22 11:05:52 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:05:58 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 11:06:01 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Phishing Indicators, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 11:07:42 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Phishing Indicators, Suspicious URLs, Urgency Language, PII Detected: IPv4 (3), Confidence: 95.0%
+2025-11-22 11:07:44 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:11:03 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:11:22 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (2), Confidence: 95.0%
+2025-11-22 11:13:14 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:13:25 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (2), Confidence: 95.0%
+2025-11-22 11:13:56 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:14:13 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: msedgewebview2.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: Phone (1), PII Detected: IPv4 (5), Confidence: 95.0%
+2025-11-22 11:14:16 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, PII Detected: IPv4 (1), Confidence: 95.0%
+2025-11-22 11:14:19 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 11:14:33 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:20:04 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:20:18 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Suspicious URLs, Urgency Language, PII Detected: IPv4 (2), Confidence: 95.0%
+2025-11-22 11:20:20 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Urgency Language, Confidence: 91.2%
+2025-11-22 11:23:13 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-22 11:23:30 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:26:22 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, Urgency Language, PII Detected: IPv4 (5), Confidence: 95.0%
+2025-11-22 11:26:26 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, Urgency Language, PII Detected: IPv4 (2), Confidence: 90.0%
+2025-11-22 11:26:33 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:26:48 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, PII Detected: IPv4 (1), Confidence: 85.0%
+2025-11-22 11:29:12 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Suspicious URLs, Urgency Language, PII Detected: IPv4 (2), Confidence: 90.0%
+2025-11-22 11:29:17 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 11:29:23 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 11:29:39 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, Urgency Language, PII Detected: IPv4 (2), Confidence: 95.0%
+2025-11-22 11:29:42 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%
+2025-11-22 11:29:52 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%
+2025-11-22 11:57:03 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 91.2%
+2025-11-22 11:57:09 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 12:19:37 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 12:19:40 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: snippingtool.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 91.2%
+2025-11-22 12:19:43 - threat - INFO - Suppressed HIGH alert in Game Mode (Process: snippingtool.exe)
+2025-11-22 12:19:46 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 91.2%
+2025-11-22 12:19:49 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: shellexperiencehost.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 12:30:16 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 12:30:22 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 91.2%
+2025-11-22 12:38:33 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 12:38:36 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 82.0%
+2025-11-22 12:38:50 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 91.2%
+2025-11-22 12:39:07 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 12:51:46 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 12:51:56 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 13:05:59 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 13:06:34 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%

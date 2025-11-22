@@ -631,3 +631,301 @@
 2025-11-21 17:30:51 - app - INFO - Database initialized successfully
 2025-11-21 17:30:51 - app - INFO - CyberGuard Pro application started
 2025-11-21 17:30:57 - app - INFO - User logged in: admin
+2025-11-21 23:23:18 - app - INFO - Real-Time Protection initialized
+2025-11-21 23:27:50 - app - INFO - Real-Time Protection initialized
+2025-11-21 23:27:52 - app - INFO - Real-Time Protection started
+2025-11-21 23:28:38 - app - INFO - Real-Time Protection started
+2025-11-21 23:35:54 - app - INFO - Real-Time Protection initialized
+2025-11-21 23:36:04 - app - INFO - Real-Time Protection started
+2025-11-21 23:36:06 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:11 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:12 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:12 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:12 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:12 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:12 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:13 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:13 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:14 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:36:31 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:40:35 - app - INFO - Real-Time Protection initialized
+2025-11-21 23:40:39 - app - INFO - Real-Time Protection started
+2025-11-21 23:40:40 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:40:40 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:40:40 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:40:41 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:40:41 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:40:43 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:41:07 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:41:09 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:41:52 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:42:03 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:42:34 - app - WARNING - Real-Time Protection already active
+2025-11-21 23:44:10 - app - ERROR - OCR extraction error: (3221225477, 'Estimating resolution as 147 ObjectCache(00007ffe99776600)::~ObjectCache(): WARNING! LEAK! object 000002130f6d3a10 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-punc-dawg) ObjectCache(00007ffe99776600)::~ObjectCache(): WARNING! LEAK! object 000002130f6ef690 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-word-dawg) ObjectCache(00007ffe99776600)::~ObjectCache(): WARNING! LEAK! object 000002130f6ef620 still has count 1 (id C:\\Program Files\\Tesseract-OCR/tessdata/eng.traineddatalstm-number-dawg)')
+2025-11-21 23:44:11 - app - INFO - Real-Time Protection initialized
+2025-11-21 23:44:15 - app - ERROR - Screen capture error: screen grab failed
+2025-11-21 23:46:03 - app - INFO - Real-Time Protection started
+2025-11-22 10:29:42 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:30:47 - app - INFO - Real-Time Protection started
+2025-11-22 10:31:59 - app - INFO - Real-Time Protection stopped. Scans: 24, Threats: 3
+2025-11-22 10:32:02 - app - INFO - Real-Time Protection started
+2025-11-22 10:32:05 - app - INFO - Real-Time Protection stopped. Scans: 25, Threats: 3
+2025-11-22 10:33:48 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:34:34 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:34:41 - app - INFO - Real-Time Protection started
+2025-11-22 10:35:44 - app - INFO - Real-Time Protection stopped. Scans: 21, Threats: 2
+2025-11-22 10:35:48 - app - INFO - Real-Time Protection started
+2025-11-22 10:37:28 - app - INFO - Real-Time Protection stopped. Scans: 53, Threats: 5
+2025-11-22 10:39:23 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:40:17 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:40:21 - app - INFO - Real-Time Protection started
+2025-11-22 10:41:18 - app - INFO - Real-Time Protection stopped. Scans: 19, Threats: 2
+2025-11-22 10:41:43 - app - INFO - Real-Time Protection started
+2025-11-22 10:42:58 - app - INFO - Real-Time Protection stopped. Scans: 43, Threats: 4
+2025-11-22 10:46:24 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:47:02 - app - INFO - Real-Time Protection started
+2025-11-22 10:48:08 - app - INFO - Real-Time Protection stopped. Scans: 21, Threats: 2
+2025-11-22 10:48:21 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:48:29 - app - INFO - Real-Time Protection started
+2025-11-22 10:48:59 - app - INFO - Real-Time Protection stopped. Scans: 10, Threats: 3
+2025-11-22 10:50:09 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:51:01 - app - INFO - Real-Time Protection started
+2025-11-22 10:51:34 - app - INFO - Real-Time Protection stopped. Scans: 11, Threats: 4
+2025-11-22 10:51:36 - app - INFO - Real-Time Protection started
+2025-11-22 10:52:03 - app - INFO - Real-Time Protection stopped. Scans: 20, Threats: 5
+2025-11-22 10:52:31 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:53:05 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:53:09 - app - INFO - Real-Time Protection started
+2025-11-22 10:55:09 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:55:36 - app - INFO - Real-Time Protection started
+2025-11-22 10:56:09 - app - INFO - Real-Time Protection stopped. Scans: 11, Threats: 8
+2025-11-22 10:58:06 - app - INFO - Real-Time Protection initialized
+2025-11-22 10:58:30 - app - INFO - Real-Time Protection started
+2025-11-22 10:59:18 - app - INFO - Real-Time Protection stopped. Scans: 16, Threats: 3
+2025-11-22 11:01:47 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:03:30 - app - INFO - Real-Time Protection started
+2025-11-22 11:03:54 - app - INFO - Real-Time Protection stopped. Scans: 8, Threats: 2
+2025-11-22 11:05:08 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:05:17 - app - INFO - Real-Time Protection started
+2025-11-22 11:05:35 - app - INFO - Real-Time Protection stopped. Scans: 6, Threats: 1
+2025-11-22 11:05:40 - app - INFO - Real-Time Protection started
+2025-11-22 11:06:07 - app - INFO - Real-Time Protection stopped. Scans: 15, Threats: 4
+2025-11-22 11:07:35 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:07:40 - app - INFO - Real-Time Protection started
+2025-11-22 11:07:58 - app - INFO - Real-Time Protection stopped. Scans: 6, Threats: 2
+2025-11-22 11:08:07 - app - INFO - Real-Time Protection started
+2025-11-22 11:08:34 - app - INFO - Real-Time Protection stopped. Scans: 15, Threats: 2
+2025-11-22 11:10:10 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:10:42 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:10:52 - app - INFO - Real-Time Protection started
+2025-11-22 11:11:28 - app - INFO - Real-Time Protection stopped. Scans: 12, Threats: 2
+2025-11-22 11:11:45 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:11:53 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 282, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:11:53 - app - INFO - Real-Time Protection started
+2025-11-22 11:11:56 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 282, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:11:59 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 282, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:12:02 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 282, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:12:05 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 282, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:12:08 - app - INFO - Real-Time Protection stopped. Scans: 0, Threats: 0
+2025-11-22 11:12:22 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:13:08 - app - INFO - Real-Time Protection started
+2025-11-22 11:13:32 - app - INFO - Real-Time Protection stopped. Scans: 8, Threats: 2
+2025-11-22 11:13:37 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:13:37 - app - INFO - Real-Time Protection started
+2025-11-22 11:14:04 - app - INFO - Real-Time Protection stopped. Scans: 9, Threats: 1
+2025-11-22 11:14:08 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:14:08 - app - INFO - Real-Time Protection started
+2025-11-22 11:14:47 - app - INFO - Real-Time Protection stopped. Scans: 13, Threats: 4
+2025-11-22 11:15:27 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:16:09 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:09 - app - INFO - Real-Time Protection started
+2025-11-22 11:16:12 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:15 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:18 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:21 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:24 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:27 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:30 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:33 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:36 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:39 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:42 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:45 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:48 - app - INFO - Real-Time Protection stopped. Scans: 0, Threats: 0
+2025-11-22 11:16:50 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:16:50 - app - INFO - Real-Time Protection started
+2025-11-22 11:16:53 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:17:20 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:17:25 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:17:25 - app - INFO - Real-Time Protection started
+2025-11-22 11:17:28 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:17:31 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:17:34 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:17:37 - app - INFO - Real-Time Protection stopped. Scans: 0, Threats: 0
+2025-11-22 11:18:37 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:18:37 - app - ERROR - Screen scan error: 'RealTimeProtection' object has no attribute '_capture_screen'
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 288, in _perform_screen_scan
+    screenshot = self._capture_screen()
+                 ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'RealTimeProtection' object has no attribute '_capture_screen'
+2025-11-22 11:18:37 - app - INFO - Real-Time Protection started
+2025-11-22 11:19:01 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:19:01 - app - INFO - Real-Time Protection started
+2025-11-22 11:19:52 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:19:57 - app - INFO - Real-Time Protection started
+2025-11-22 11:20:33 - app - INFO - Real-Time Protection stopped. Scans: 12, Threats: 3
+2025-11-22 11:20:35 - app - INFO - Real-Time Protection started
+2025-11-22 11:22:23 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:23:12 - app - INFO - Real-Time Protection started
+2025-11-22 11:23:23 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:24:00 - app - INFO - Real-Time Protection stopped. Scans: 16, Threats: 2
+2025-11-22 11:26:01 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:26:17 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:26:20 - app - INFO - Real-Time Protection started
+2025-11-22 11:26:56 - app - INFO - Real-Time Protection stopped. Scans: 12, Threats: 4
+2025-11-22 11:27:59 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:28:25 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:29:03 - app - INFO - Real-Time Protection initialized
+2025-11-22 11:29:10 - app - INFO - Real-Time Protection started
+2025-11-22 11:30:23 - app - INFO - Real-Time Protection stopped. Scans: 24, Threats: 6
+2025-11-22 11:56:50 - app - INFO - Real-Time Protection started
+2025-11-22 11:57:33 - app - INFO - Real-Time Protection stopped. Scans: 38, Threats: 8
+2025-11-22 12:19:04 - app - INFO - Real-Time Protection started
+2025-11-22 12:19:28 - app - INFO - Real-Time Protection initialized
+2025-11-22 12:19:34 - app - INFO - Real-Time Protection started
+2025-11-22 12:20:07 - app - INFO - Real-Time Protection stopped. Scans: 11, Threats: 4
+2025-11-22 12:29:55 - app - INFO - Real-Time Protection initialized
+2025-11-22 12:30:01 - app - INFO - Real-Time Protection started
+2025-11-22 12:30:28 - app - INFO - Real-Time Protection stopped. Scans: 9, Threats: 2
+2025-11-22 12:38:22 - app - INFO - Real-Time Protection initialized
+2025-11-22 12:38:26 - app - INFO - Real-Time Protection started
+2025-11-22 12:39:11 - app - INFO - Real-Time Protection stopped. Scans: 15, Threats: 4
+2025-11-22 12:50:49 - app - INFO - Real-Time Protection initialized
+2025-11-22 12:51:32 - app - INFO - Real-Time Protection initialized
+2025-11-22 12:51:36 - app - INFO - Real-Time Protection started
+2025-11-22 12:51:53 - app - INFO - Real-Time Protection started
+2025-11-22 12:52:35 - app - INFO - Real-Time Protection stopped. Scans: 14, Threats: 1
+2025-11-22 13:05:48 - app - INFO - Real-Time Protection initialized
+2025-11-22 13:05:52 - app - INFO - Real-Time Protection started
+2025-11-22 13:06:44 - app - INFO - Real-Time Protection stopped. Scans: 17, Threats: 2

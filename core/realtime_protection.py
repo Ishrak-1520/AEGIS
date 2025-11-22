@@ -339,7 +339,7 @@ class RealTimeProtection:
         except Exception as e:
             system_logger.log_error(f"Screen capture error: {e}", 'app')
             return None
-    
+
     def _extract_text_from_image(self, image: Any) -> str:
         """
         Extract text from image using OCR
