@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Activity, Lock, FileSearch, Settings, FileWarning, Menu, Brain, FileText } from 'lucide-react'
+import { Shield, Activity, Lock, FileSearch, Settings, FileWarning, Menu, Brain, FileText, Wifi, ShieldCheck } from 'lucide-react'
 
 import Dashboard from './components/Dashboard';
 import Scanner from './components/Scanner';
@@ -11,14 +11,19 @@ import NLPAnalyzer from './components/NLPAnalyzer';
 import Reports from './components/Reports';
 import ThreatAlertManager from './components/ThreatAlertManager';
 
+import NetworkMonitor from './components/NetworkMonitor';
+import SiftScanner from './components/Sift/SiftScanner';
+
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Activity },
+    { id: 'network', label: 'Network', icon: Wifi },
     { id: 'scanner', label: 'Scanner', icon: FileSearch },
     { id: 'nlp', label: 'Threat AI', icon: Brain },
+    { id: 'sift', label: 'Sift Auditor', icon: ShieldCheck },
     { id: 'passwords', label: 'Passwords', icon: Lock },
     { id: 'quarantine', label: 'Quarantine', icon: FileWarning },
     { id: 'reports', label: 'Reports', icon: FileText },
@@ -123,8 +128,10 @@ function App() {
               className="h-full"
             >
               {activeTab === 'dashboard' && <Dashboard />}
+              {activeTab === 'network' && <NetworkMonitor />}
               {activeTab === 'scanner' && <Scanner />}
               {activeTab === 'nlp' && <NLPAnalyzer />}
+              {activeTab === 'sift' && <SiftScanner />}
               {activeTab === 'passwords' && <PasswordManager />}
               {activeTab === 'quarantine' && <Quarantine />}
               {activeTab === 'reports' && <Reports />}

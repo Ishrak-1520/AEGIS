@@ -11,15 +11,18 @@ Implements SRS Requirements:
 - FR-NLP-05: Provide confidence scores for threat assessments
 """
 
+import json
 import os
 import sys
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from database.db_manager import db_manager
+
+
 
 
 class NLPThreatDetector:
@@ -172,79 +175,131 @@ class NLPThreatDetector:
                 'keywords_found': [],
                 'patterns_detected': [],
                 'threat_level': 'SAFE',
-                'description': 'No content to analyze'
+                'description': 'No content to analyze',
+                'matches': []
             }
+            
+        # Limit text size to prevent DoS (100KB)
+        if len(text) > 100000:
+            text = text[:100000]
         
         text_lower = text.lower()
+        all_matches = []
         
         # Detect patterns and keywords (English + Bangla)
-        phishing_matches = self._find_keywords(text_lower, self.phishing_keywords)
-        phishing_matches.extend(self._find_keywords(text, self.phishing_keywords_bangla))  # Bangla (case-sensitive)
+        # We now collect detailed match info: (keyword, start_index, end_index, type)
         
-        social_eng_matches = self._find_keywords(text_lower, self.social_engineering_keywords)
-        social_eng_matches.extend(self._find_keywords(text, self.social_engineering_keywords_bangla))  # Bangla
+        phishing_matches = self._find_keywords_with_indices(text, self.phishing_keywords, 'Phishing')
+        phishing_matches.extend(self._find_keywords_with_indices(text, self.phishing_keywords_bangla, 'Phishing'))
+        all_matches.extend(phishing_matches)
         
-        scam_matches = self._find_keywords(text_lower, self.scam_keywords)
-        scam_matches.extend(self._find_keywords(text, self.scam_keywords_bangla))  # Bangla
+        social_eng_matches = self._find_keywords_with_indices(text, self.social_engineering_keywords, 'Social Engineering')
+        social_eng_matches.extend(self._find_keywords_with_indices(text, self.social_engineering_keywords_bangla, 'Social Engineering'))
+        all_matches.extend(social_eng_matches)
         
-        critical_matches = self._find_keywords(text_lower, self.critical_keywords)
-        critical_matches.extend(self._find_keywords(text, self.critical_keywords_bangla))  # Bangla
+        scam_matches = self._find_keywords_with_indices(text, self.scam_keywords, 'Scam')
+        scam_matches.extend(self._find_keywords_with_indices(text, self.scam_keywords_bangla, 'Scam'))
+        all_matches.extend(scam_matches)
         
-        url_matches = self._find_suspicious_urls(text)
+        critical_matches = self._find_keywords_with_indices(text, self.critical_keywords, 'Critical')
+        critical_matches.extend(self._find_keywords_with_indices(text, self.critical_keywords_bangla, 'Critical'))
+        all_matches.extend(critical_matches)
+        
+        url_matches = self._find_suspicious_urls_with_indices(text)
+        all_matches.extend(url_matches)
         
         # Calculate threat scores
         threat_score = 0
         keywords_found = []
         patterns_detected = []
         
+        # Helper to extract just the keyword strings for legacy support/logging
+        phishing_keywords = [m['text'] for m in phishing_matches]
+        social_eng_keywords = [m['text'] for m in social_eng_matches]
+        scam_keywords = [m['text'] for m in scam_matches]
+        critical_keywords = [m['text'] for m in critical_matches]
+        url_keywords = [m['text'] for m in url_matches]
+        
         # Critical threats (highest priority)
         if critical_matches:
             threat_score += len(critical_matches) * 30
-            keywords_found.extend(critical_matches)
+            keywords_found.extend(critical_keywords)
             patterns_detected.append('Malware/Exploit Keywords')
         
         # Phishing patterns (FR-NLP-02)
         if phishing_matches:
             threat_score += len(phishing_matches) * 15
-            keywords_found.extend(phishing_matches)
+            keywords_found.extend(phishing_keywords)
             patterns_detected.append('Phishing Indicators')
         
         # Social engineering (FR-NLP-03)
         if social_eng_matches:
             threat_score += len(social_eng_matches) * 12
-            keywords_found.extend(social_eng_matches)
+            keywords_found.extend(social_eng_keywords)
             patterns_detected.append('Social Engineering')
         
         # Scam patterns
         if scam_matches:
             threat_score += len(scam_matches) * 18
-            keywords_found.extend(scam_matches)
+            keywords_found.extend(scam_keywords)
             patterns_detected.append('Scam Indicators')
         
         # Suspicious URLs
         if url_matches:
             threat_score += len(url_matches) * 20
-            keywords_found.extend([f"Suspicious URL: {url[:50]}" for url in url_matches])
+            keywords_found.extend([f"Suspicious URL: {url[:50]}" for url in url_keywords])
             patterns_detected.append('Suspicious URLs')
         
-        # Additional pattern checks
-        if self._check_urgency_language(text_lower):
+        # Additional pattern checks (Urgency, Credential, Financial)
+        # Note: These are broader context checks, might not map to specific highlights easily without regex
+        # For now, we'll keep them as score modifiers but try to highlight if possible
+        
+        urgency_matches = self._find_keywords_with_indices(text, [
+            'act now', 'urgent', 'immediately', 'expires today',
+            'limited time', 'hurry', 'don\'t wait', 'expires soon',
+            'within 24 hours', 'last chance', 'expiring'
+        ] + self.urgency_keywords_bangla, 'Urgency')
+        
+        if urgency_matches:
             threat_score += 10
             patterns_detected.append('Urgency Language')
+            all_matches.extend(urgency_matches)
         
-        if self._check_credential_request(text_lower):
+        credential_matches = self._find_keywords_with_indices(text, [
+            'enter password', 'provide password', 'username and password',
+            'login credentials', 'account credentials', 'social security',
+            'credit card', 'card number', 'cvv', 'pin number',
+            'verify password', 'confirm password'
+        ] + self.credential_keywords_bangla, 'Credential Request')
+        
+        if credential_matches:
             threat_score += 25
             patterns_detected.append('Credential Request')
+            all_matches.extend(credential_matches)
+            
+        financial_matches = self._find_keywords_with_indices(text, [
+            'send money', 'wire transfer', 'bank account', 'routing number',
+            'transfer funds', 'payment required', 'make payment',
+            'send payment', 'processing fee', 'transaction fee',
+            'pay now', 'payment method'
+        ] + self.financial_keywords_bangla, 'Financial Request')
         
-        if self._check_financial_request(text_lower):
+        if financial_matches:
             threat_score += 20
             patterns_detected.append('Financial Request')
+            all_matches.extend(financial_matches)
             
         # PII Detection
-        pii_matches = self._find_pii(text)
-        if pii_matches:
-            threat_score += len(pii_matches) * 25
-            for pii_type, count in pii_matches.items():
+        pii_matches_list = self._find_pii_with_indices(text)
+        if pii_matches_list:
+            threat_score += len(pii_matches_list) * 25
+            pii_types = {}
+            for m in pii_matches_list:
+                pii_type = m['type']
+                pii_types[pii_type] = pii_types.get(pii_type, 0) + 1
+                all_matches.append(m)
+                
+            for pii_type, count in pii_types.items():
                 patterns_detected.append(f"PII Detected: {pii_type} ({count})")
                 keywords_found.append(f"PII: {pii_type}")
         
@@ -260,7 +315,8 @@ class NLPThreatDetector:
             'patterns_detected': patterns_detected,
             'threat_score': threat_score,
             'description': self._generate_description(threat_class, patterns_detected),
-            'timestamp': datetime.now().isoformat()
+            'timestamp': datetime.now().isoformat(),
+            'matches': all_matches # New field for frontend highlighting
         }
         
         # Log analysis to database
@@ -268,98 +324,158 @@ class NLPThreatDetector:
             db_manager.log_event(
                 'NLP_ANALYSIS',
                 'INFO' if threat_level == 'SAFE' else 'WARNING',
-                f"Text analyzed: {threat_class} (confidence: {confidence:.1f}%)"
+                f"Text analyzed: {threat_class} (confidence: {confidence:.1f}%)",
+                json.dumps(result)  # Store full result in details
             )
         except Exception as e:
             print(f"Error logging NLP analysis: {e}")
         
         return result
     
+    def _find_keywords_with_indices(self, text: str, keyword_list: List[str], match_type: str) -> List[Dict]:
+        """Find matching keywords with start/end indices"""
+        matches = []
+        text_lower = text.lower()
+        
+        for keyword in keyword_list:
+            keyword_lower = keyword.lower()
+            # Use regex escape to handle special chars in keywords
+            # Word boundary check is safer for English, but might break some Bangla phrases or compound words
+            # For simplicity and robustness with phrases, we'll just do substring search first
+            # To get indices, we use re.finditer
+            
+            try:
+                pattern = re.escape(keyword_lower)
+                # We iterate over the lowercased text to find matches
+                for m in re.finditer(pattern, text_lower):
+                    matches.append({
+                        'text': text[m.start():m.end()], # Get original text case
+                        'start': m.start(),
+                        'end': m.end(),
+                        'type': match_type
+                    })
+            except Exception:
+                continue
+                
+        return matches
+
     def _find_keywords(self, text: str, keyword_list: List[str]) -> List[str]:
-        """Find matching keywords in text"""
+        """Legacy method: Find matching keywords in text"""
         found = []
         for keyword in keyword_list:
-            if keyword in text:
+            if keyword.lower() in text.lower():
                 found.append(keyword)
         return found
     
-    def _find_suspicious_urls(self, text: str) -> List[str]:
-        """Find suspicious URLs in text"""
-        urls = []
+    def _find_suspicious_urls_with_indices(self, text: str) -> List[Dict]:
+        """Find suspicious URLs with indices"""
+        matches = []
+        
+        # Check specific patterns
         for pattern in self.suspicious_url_patterns:
-            matches = re.findall(pattern, text, re.IGNORECASE)
-            urls.extend(matches)
+            for m in re.finditer(pattern, text, re.IGNORECASE):
+                matches.append({
+                    'text': m.group(),
+                    'start': m.start(),
+                    'end': m.end(),
+                    'type': 'Suspicious URL'
+                })
         
-        # Also find http/https URLs
+        # Check generic HTTP/HTTPS URLs for suspicious keywords
         url_pattern = r'https?://[^\s]+'
-        all_urls = re.findall(url_pattern, text, re.IGNORECASE)
-        
-        # Check for suspicious domains
-        for url in all_urls:
+        for m in re.finditer(url_pattern, text, re.IGNORECASE):
+            url = m.group()
             if any(susp in url.lower() for susp in ['login', 'verify', 'account', 'secure', 'update']):
-                urls.append(url)
+                # Avoid duplicates if already caught by specific patterns
+                # Simple check: if this range isn't already covered
+                is_duplicate = False
+                for existing in matches:
+                    if existing['start'] == m.start() and existing['end'] == m.end():
+                        is_duplicate = True
+                        break
+                
+                if not is_duplicate:
+                    matches.append({
+                        'text': url,
+                        'start': m.start(),
+                        'end': m.end(),
+                        'type': 'Suspicious URL'
+                    })
         
-        return urls
+        return matches
+
+    def _find_suspicious_urls(self, text: str) -> List[str]:
+        """Legacy method"""
+        urls = []
+        matches = self._find_suspicious_urls_with_indices(text)
+        return [m['text'] for m in matches]
     
     def _check_urgency_language(self, text: str) -> bool:
         """Check for urgency-creating language (English + Bangla)"""
+        # Reusing the logic but just returning bool for score calculation
+        # The actual matches are now collected in analyze_text via _find_keywords_with_indices
         urgency_phrases = [
             'act now', 'urgent', 'immediately', 'expires today',
             'limited time', 'hurry', 'don\'t wait', 'expires soon',
             'within 24 hours', 'last chance', 'expiring'
         ]
-        # Check English (case-insensitive)
-        if any(phrase in text for phrase in urgency_phrases):
+        text_lower = text.lower()
+        if any(phrase in text_lower for phrase in urgency_phrases):
             return True
-        
-        # Check Bangla (case-sensitive - original text)
         return any(phrase in text for phrase in self.urgency_keywords_bangla)
     
     def _check_credential_request(self, text: str) -> bool:
-        """Check for credential/password requests (English + Bangla)"""
+        """Check for credential/password requests"""
         credential_phrases = [
             'enter password', 'provide password', 'username and password',
             'login credentials', 'account credentials', 'social security',
             'credit card', 'card number', 'cvv', 'pin number',
             'verify password', 'confirm password'
         ]
-        # Check English (case-insensitive)
-        if any(phrase in text for phrase in credential_phrases):
+        text_lower = text.lower()
+        if any(phrase in text_lower for phrase in credential_phrases):
             return True
-        
-        # Check Bangla (case-sensitive - original text, not lowercase)
-        original_text = text  # Use original for Bangla Unicode
-        return any(phrase in original_text for phrase in self.credential_keywords_bangla)
+        return any(phrase in text for phrase in self.credential_keywords_bangla)
     
     def _check_financial_request(self, text: str) -> bool:
-        """Check for financial/money requests (English + Bangla)"""
+        """Check for financial/money requests"""
         financial_phrases = [
             'send money', 'wire transfer', 'bank account', 'routing number',
             'transfer funds', 'payment required', 'make payment',
             'send payment', 'processing fee', 'transaction fee',
             'pay now', 'payment method'
         ]
-        # Check English (case-insensitive)
-        if any(phrase in text for phrase in financial_phrases):
+        text_lower = text.lower()
+        if any(phrase in text_lower for phrase in financial_phrases):
             return True
-        
-        # Check Bangla (case-sensitive - original text)
-        original_text = text  # Use original for Bangla Unicode
-        return any(phrase in original_text for phrase in self.financial_keywords_bangla)
+        return any(phrase in text for phrase in self.financial_keywords_bangla)
     
-    def _find_pii(self, text: str) -> Dict[str, int]:
-        """Find PII in text using regex"""
-        matches = {}
+    def _find_pii_with_indices(self, text: str) -> List[Dict]:
+        """Find PII with indices"""
+        matches = []
         for pii_type, pattern in self.pii_patterns.items():
-            found = re.findall(pattern, text)
-            if found:
-                # Filter out likely false positives for Credit Cards (e.g. simple numbers)
+            for m in re.finditer(pattern, text):
+                text_match = m.group()
+                # Filter out likely false positives for Credit Cards
                 if pii_type == 'Credit Card':
-                    valid_cc = [cc for cc in found if sum(c.isdigit() for c in cc) >= 13]
-                    if valid_cc:
-                        matches[pii_type] = len(valid_cc)
-                else:
-                    matches[pii_type] = len(found)
+                    if sum(c.isdigit() for c in text_match) < 13:
+                        continue
+                
+                matches.append({
+                    'text': text_match,
+                    'start': m.start(),
+                    'end': m.end(),
+                    'type': pii_type
+                })
+        return matches
+
+    def _find_pii(self, text: str) -> Dict[str, int]:
+        """Legacy method"""
+        matches = {}
+        found_list = self._find_pii_with_indices(text)
+        for m in found_list:
+            pii_type = m['type']
+            matches[pii_type] = matches.get(pii_type, 0) + 1
         return matches
     
     def _classify_threat(self, threat_score: int) -> tuple:

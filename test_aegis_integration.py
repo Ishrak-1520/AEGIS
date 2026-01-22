@@ -229,6 +229,42 @@ def test_version(api):
         print(f"❌ Version test failed: {e}")
         return False
 
+def test_nids_status(api):
+    """Test NIDS status retrieval"""
+    print("\n=== Testing NIDS Status ===")
+    try:
+        status = api.get_nids_status()
+        print(f"✅ NIDS status retrieved:")
+        print(f"   Active: {status.get('is_active', False)}")
+        print(f"   Total Packets: {status.get('total_packets', 0)}")
+        print(f"   Total Flows: {status.get('total_flows', 0)}")
+        print(f"   Threats Detected: {status.get('threats_detected', 0)}")
+        if status.get('error'):
+            print(f"   Error: {status.get('error')}")
+        return True
+    except Exception as e:
+        print(f"❌ NIDS status test failed: {e}")
+        return False
+
+def test_network_alerts(api):
+    """Test network alerts retrieval"""
+    print("\n=== Testing Network Alerts ===")
+    try:
+        alerts = api.get_network_alerts()
+        print(f"✅ Network alerts retrieved: {len(alerts)} pending")
+        if alerts:
+            print("   Sample alerts:")
+            for alert in alerts[:3]:
+                alert_type = alert.get('type', 'unknown')
+                if alert_type == 'network_threat':
+                    print(f"   - [THREAT] {alert.get('source_ip')} -> {alert.get('dest_ip')} ({alert.get('threat_type')})")
+                elif alert_type == 'system_error':
+                    print(f"   - [ERROR] {alert.get('msg')}")
+        return True
+    except Exception as e:
+        print(f"❌ Network alerts test failed: {e}")
+        return False
+
 def main():
     """Run all tests"""
     print("=" * 60)
@@ -246,6 +282,8 @@ def main():
         ("System Stats", lambda: test_system_stats(api)),
         ("RTP Status", lambda: test_rtp_status(api)),
         ("RTP Toggle", lambda: test_rtp_toggle(api)),
+        ("NIDS Status", lambda: test_nids_status(api)),
+        ("Network Alerts", lambda: test_network_alerts(api)),
         ("Password Manager", lambda: test_password_manager(api)),
         ("Quarantine", lambda: test_quarantine(api)),
         ("NLP Analyzer", lambda: test_nlp_analyzer(api)),

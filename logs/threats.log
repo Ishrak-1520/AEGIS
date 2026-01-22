@@ -164,3 +164,25 @@
 2025-11-22 12:51:56 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
 2025-11-22 13:05:59 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
 2025-11-22 13:06:34 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 88.0%
+2025-11-22 22:25:47 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (2), Confidence: 82.0%
+2025-11-22 22:25:58 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 91.2%
+2025-11-22 22:27:50 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2025-11-22 22:28:02 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-25 20:05:25 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (3), Confidence: 82.0%
+2025-11-25 20:05:51 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 92.5%
+2025-11-25 20:06:08 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 95.0%
+2025-11-27 22:21:13 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 95.0%
+2025-11-27 22:21:21 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, PII Detected: Email (1), Confidence: 91.2%
+2025-11-27 22:21:24 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Urgency Language, PII Detected: Email (1), Confidence: 95.0%
+2025-11-27 22:21:36 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2025-11-27 22:21:39 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 92.5%
+2025-11-27 22:21:42 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 95.0%
+2025-11-27 22:22:45 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 84.0%
+2026-01-13 15:38:27 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, Confidence: 95.0%
+2026-01-13 15:38:31 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: PII Detected: Email (2), Confidence: 80.0%
+2026-01-13 15:38:33 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: brave.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2026-01-13 15:38:52 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: brave.exe, Patterns: Phishing Indicators, PII Detected: Email (13), Confidence: 95.0%
+2026-01-13 15:38:54 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: brave.exe, Patterns: Phishing Indicators, PII Detected: Email (2), Confidence: 86.0%
+2026-01-13 15:38:57 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Confidence: 74.0%
+2026-01-13 15:39:03 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: python3.11.exe, Patterns: Malware/Exploit Keywords, Urgency Language, Confidence: 95.0%
+2026-01-13 15:39:12 - threat - WARNING - [MEDIUM] SCREEN_THREAT: Process: brave.exe, Patterns: Phishing Indicators, PII Detected: Email (1), Confidence: 82.0%

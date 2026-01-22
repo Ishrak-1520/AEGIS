@@ -443,6 +443,18 @@ class DatabaseManager:
         )
         conn.commit()
     
+    def delete_system_events(self, event_type: str = None):
+        """Delete system events, optionally filtered by type"""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        if event_type:
+            cursor.execute("DELETE FROM system_events WHERE event_type = ?", (event_type,))
+        else:
+            cursor.execute("DELETE FROM system_events")
+        
+        conn.commit()
+    
     def close(self):
         """Close database connections"""
         if hasattr(self._local, 'conn') and self._local.conn:

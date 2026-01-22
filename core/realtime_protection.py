@@ -389,9 +389,21 @@ class RealTimeProtection:
         if not NLP_AVAILABLE or get_nlp_detector is None:
             return
         
-        try:
+    try:
             # Get NLP detector
             detector = get_nlp_detector()
+            
+            # --- FIX: SILENCE VERBOSE LOGS ---
+            # Force the internal model to be quiet
+            try:
+                # Check for common model attributes and silence them
+                if hasattr(detector, 'model') and hasattr(detector.model, 'verbose'):
+                    detector.model.verbose = 0
+                elif hasattr(detector, 'verbose'):
+                    detector.verbose = 0
+            except Exception:
+                pass
+            # ---------------------------------
             
             # Analyze text
             result = detector.analyze_text(text)
@@ -405,7 +417,7 @@ class RealTimeProtection:
             if should_alert:
                 self._handle_threat_detection(text, result, process_name)
         
-        except Exception as e:
+    except Exception as e:
             system_logger.log_error(f"Screen text analysis error: {e}", 'app', exc_info=True)
     
     def _should_trigger_alert(self, threat_level: str, result: dict, process_name: str, is_fullscreen: bool) -> bool:

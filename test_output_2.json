@@ -1,0 +1,11 @@
+[
+  {
+    "dataset": "CodeMirage",
+    "id": "cm-0",
+    "result": {
+      "score": 100,
+      "summary": "The provided code is a simple, safe Python statement that prints 'hello world' to the console. There are no security vulnerabilities or coding issues.",
+      "issues": []
+    }
+  }
+]
