@@ -43,7 +43,6 @@ logs/
 
 # Build artifacts
 *.spec
-*
 *.zip
 *.pcap
 *.pcap_ISCX.csv
