@@ -1,19 +1,39 @@
-# Dependencies for CyberGuardPro (CGP-2)
+# ============================================================================
+# CyberGuardPro (CGP-2) - Python Dependencies
+# ============================================================================
+# Install all dependencies with: pip install -r dependencies.txt
+#
+# System Requirements:
+#   - Python 3.8+
+#   - Node.js 16+ (for frontend)
+#   - Tesseract OCR (optional, for image processing)
+#
+# Additional Setup Required After Installation:
+#   1. spaCy model: python -m spacy download en_core_web_sm
+#   2. Frontend deps: cd ui/frontend && npm install
+# ============================================================================
 
-## Python Dependencies (Backend & AI)
-# System Requirements: Python 3.8+
-# Install via: pip install -r requirements.txt
-
+# Core GUI Framework
 PyQt5>=5.15.9
 PyQt5-Qt5>=5.15.2
 PyQt5-sip>=12.12.0
 qtawesome>=1.2.0
+
+# System Monitoring
 psutil>=5.9.5
 watchdog>=3.0.0
+
+# Cryptography & Security
 cryptography>=41.0.0
+
+# Database
 SQLAlchemy>=2.0.0
+
+# Image Processing for Real-Time Protection
 Pillow>=10.0.0
 pytesseract>=0.3.10
+
+# AI/ML Libraries
 torch>=2.0.0
 transformers>=4.30.0
 scikit-learn>=1.3.0
@@ -22,62 +42,33 @@ spacy>=3.6.0
 pandas>=2.0.0
 numpy>=1.24.0
 joblib>=1.3.0
+
+# Explainable AI
 shap>=0.42.0
 lime>=0.2.0
+
+# Network Analysis (optional, safe mode)
 scapy>=2.5.0
+
+# Charting for Dashboard
 matplotlib>=3.7.0
 pyqtgraph>=0.13.0
+
+# PDF Generation for Reports
 reportlab>=4.0.0
+
+# Testing
 pytest>=7.4.0
 pytest-cov>=4.1.0
 pytest-mock>=3.11.0
 coverage>=7.2.0
+
+# Packaging
 PyInstaller>=5.13.0
+
+# Utilities
 requests>=2.31.0
 python-dateutil>=2.8.2
 openai>=1.0.0
 pygments>=2.15.0
 python-dotenv>=1.0.0
-
-## External Data & Model Dependencies
-# These must be downloaded/installed separately
-
-1. spaCy Model (English)
-   Command: python -m spacy download en_core_web_sm
-
-2. Transformers Model (DistilBERT)
-   Command: python -m transformers-cli download distilbert-base-uncased
-   (Note: Usually downloaded automatically on first run, but can be pre-downloaded)
-
-3. Tesseract OCR (System Dependency)
-   Required for Image Processing/OCR features.
-   Download: https://github.com/UB-Mannheim/tesseract/wiki
-   Windows Install: choco install tesseract
-   Note: Ensure Tesseract is in your system PATH.
-
-## Node.js Dependencies (Frontend)
-# System Requirements: Node.js 16+
-# Install via: npm install (in ui/frontend directory)
-
-dependencies:
-  clsx: ^2.1.1
-  framer-motion: ^12.23.24
-  lucide-react: ^0.554.0
-  react: ^19.2.0
-  react-dom: ^19.2.0
-  recharts: ^3.4.1
-  tailwind-merge: ^3.4.0
-
-devDependencies:
-  @eslint/js: ^9.39.1
-  @types/react: ^19.2.5
-  @types/react-dom: ^19.2.3
-  @vitejs/plugin-react: ^5.1.1
-  autoprefixer: ^10.4.22
-  eslint: ^9.39.1
-  eslint-plugin-react-hooks: ^7.0.1
-  eslint-plugin-react-refresh: ^0.4.24
-  globals: ^16.5.0
-  postcss: ^8.5.6
-  tailwindcss: ^3.4.17
-  vite: ^7.2.4
