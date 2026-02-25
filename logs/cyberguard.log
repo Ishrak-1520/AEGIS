@@ -1064,6 +1064,7 @@ Traceback (most recent call last):
                                    ^^^^
 NameError: name 'text' is not defined
 2026-01-19 23:02:42 - app - INFO - Real-Time Protection initialized
+<<<<<<< HEAD
 2026-02-22 00:14:20 - app - ERROR - Screen text analysis error: name 'text' is not defined
 Traceback (most recent call last):
   File "E:\personal projects\FYDP\FInal\AEGIS\core\realtime_protection.py", line 409, in RealTimeProtection
@@ -1337,3 +1338,75 @@ NameError: name 'text' is not defined. Did you mean: 'next'?
 2026-02-26 00:16:12 - app - INFO - NIDS auto-block (IPS) enabled
 2026-02-26 00:34:45 - app - INFO - NIDS Engine stopped
 2026-02-26 00:34:45 - app - INFO - Real-Time Protection stopped. Scans: 268, Threats: 0
+=======
+2026-02-22 06:14:54 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-22 06:14:54 - app - INFO - Real-Time Protection initialized
+2026-02-25 16:45:35 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 16:45:35 - app - INFO - Real-Time Protection initialized
+2026-02-25 16:53:03 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 16:53:03 - app - INFO - Real-Time Protection initialized
+2026-02-25 16:58:38 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 16:58:38 - app - INFO - Real-Time Protection initialized
+2026-02-25 17:00:50 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 17:00:50 - app - INFO - Real-Time Protection initialized
+2026-02-25 17:06:12 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 17:06:12 - app - INFO - Real-Time Protection initialized
+2026-02-25 17:08:49 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 17:08:49 - app - INFO - Real-Time Protection initialized
+2026-02-25 17:10:24 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 17:10:24 - app - INFO - Real-Time Protection initialized
+2026-02-25 17:12:19 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 17:12:19 - app - INFO - Real-Time Protection initialized
+2026-02-25 17:15:26 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\CGP-2\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined
+2026-02-25 17:15:26 - app - INFO - Real-Time Protection initialized
+>>>>>>> 4b14a1e (pulling now)

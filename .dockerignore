@@ -1,0 +1,28 @@
+# Ignore dataset folder containing local vulnerability datasets
+# This prevents large/local data from being sent to Docker build context
+datasets/
+
+# Python cache and environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.env
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
