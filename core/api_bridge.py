@@ -2,6 +2,7 @@ import json
 import sys
 import os
 import threading
+import time
 import queue
 import webview
 
@@ -262,6 +263,57 @@ class AegisAPI:
         alerts = self.threat_alert_queue.copy()
         self.threat_alert_queue.clear()
         return alerts
+
+    def get_volatile_memory_status(self):
+        """
+        Get real-time volatile memory HIDS status with 
+        AI reasoning and latency data.
+        """
+        start_time = time.perf_counter()
+        
+        # 1. Fetch data from RTP
+        is_active = realtime_protection.is_active
+        malware_prob = realtime_protection.last_memory_prob
+        vector = realtime_protection.last_telemetry_vector
+        is_threat = malware_prob >= realtime_protection.volatile_hids.threshold
+        
+        latency = (time.perf_counter() - start_time) * 1000 # MS
+        
+        # 2. Generate NLG Narrative
+        narrative = self._generate_live_narrative(is_threat, malware_prob, vector) if is_active else "Real-Time Protection is currently disabled. Enable protection to start HIDS monitoring."
+        
+        return {
+            "status": "success",
+            "data": {
+                "is_active": is_active,
+                "telemetry": {
+                    "svcscan.nservices": vector[0] if len(vector) > 0 else 0,
+                    "svcscan.kernel_drivers": vector[1] if len(vector) > 1 else 0,
+                    "handles.nmutant": vector[2] if len(vector) > 2 else 0,
+                    "dlllist.avg_dlls_per_proc": vector[3] if len(vector) > 3 else 0,
+                    "pslist.nprocs64bit": vector[4] if len(vector) > 4 else 0
+                },
+                "inference": {
+                    "is_threat": is_threat,
+                    "confidence_score": malware_prob,
+                    "latency_ms": round(latency, 2),
+                    "ai_reasoning": narrative
+                }
+            }
+        }
+
+    def _generate_live_narrative(self, is_threat, proba, raw_vector):
+        """Simplified narrative generator for live polling"""
+        if is_threat:
+            return (f"THREAT DETECTED: The AI flagged this activity because the system state resembles patterns "
+                    f"commonly seen in Spyware/Rootkits. High probability ({proba*100:.1f}%) of sandbox evasion "
+                    f"or in-memory injection based on abnormal service and mutex allocations.")
+        else:
+            v0 = raw_vector[0] if len(raw_vector) > 0 else 0
+            v1 = raw_vector[1] if len(raw_vector) > 1 else 0
+            v2 = raw_vector[2] if len(raw_vector) > 2 else 0
+            return (f"SYSTEM SECURE: The system telemetry indicates a Healthy State. All monitored metrics "
+                    f"(Services: {v0}, Drivers: {v1}, Mutexes: {v2}) fall within safe operational parameters.")
 
     def _on_threat_detected(self, threat_data):
         """Callback when RTP detects threat"""

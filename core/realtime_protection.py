@@ -79,6 +79,10 @@ except (ImportError, AttributeError):
     NLP_AVAILABLE = False
     get_nlp_detector = None  # type: ignore
 
+from core.monitor import live_telemetry
+from core.hids_analyzer import get_volatile_hids
+from core.threat_prevention import threat_prevention
+
 
 class RealTimeProtection:
     """
@@ -126,7 +130,32 @@ class RealTimeProtection:
         self.recent_threats = []
         self.max_threat_history = 10
         
+        self._tesseract_ok = self._check_tesseract()
+        
+        # Volatile Memory HIDS
+        self.volatile_hids = get_volatile_hids()
+        self.memory_monitor_thread = None
+        self.memory_scan_interval = 5.0
+        self.last_memory_prob = 0.0
+        self.last_telemetry_vector = []
+        
         system_logger.log_info("Real-Time Protection initialized", 'app')
+
+    def _check_tesseract(self) -> bool:
+        """Check Tesseract OCR availability once at init. Returns True if usable."""
+        if not TESSERACT_AVAILABLE or pytesseract is None:
+            system_logger.log_warning("Real-Time Protection: pytesseract module not installed.", 'app')
+            return False
+        try:
+            pytesseract.get_tesseract_version()
+            return True
+        except Exception:
+            system_logger.log_warning(
+                "Real-Time Protection: Tesseract OCR not found. "
+                "Screen scanning disabled. Install from: https://github.com/UB-Mannheim/tesseract/wiki",
+                'app'
+            )
+            return False
     
     def register_threat_callback(self, callback: Callable):
         """
@@ -157,18 +186,11 @@ class RealTimeProtection:
             system_logger.log_error("PIL (Pillow) not available for Real-Time Protection", 'app')
             return False
         
-        if not TESSERACT_AVAILABLE:
-            system_logger.log_error("pytesseract module not available for Real-Time Protection", 'app')
-            return False
-        
-        # Test if Tesseract OCR executable is actually accessible
-        if pytesseract is not None:
-            try:
-                pytesseract.get_tesseract_version()
-            except Exception as e:
-                system_logger.log_error(f"Tesseract OCR executable not found: {e}", 'app')
-                system_logger.log_error("Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki", 'app')
-                return False
+        if not self._tesseract_ok:
+            # Tesseract unavailable — start in degraded mode (screen scanning disabled)
+            self._use_screen_scan = False
+        else:
+            self._use_screen_scan = True
         
         self.is_active = True
         self.monitor_thread = threading.Thread(
@@ -176,6 +198,13 @@ class RealTimeProtection:
             daemon=True
         )
         self.monitor_thread.start()
+        
+        # Start Memory Monitor Thread
+        self.memory_monitor_thread = threading.Thread(
+            target=self._memory_monitoring_loop,
+            daemon=True
+        )
+        self.memory_monitor_thread.start()
         
         # Log to database
         db_manager.log_event(
@@ -235,6 +264,83 @@ class RealTimeProtection:
             except Exception as e:
                 system_logger.log_error(f"Real-Time Protection monitoring error: {e}", 'app', exc_info=True)
                 time.sleep(self.scan_interval)
+
+    def _memory_monitoring_loop(self):
+        """Dedicated loop for Volatile Memory HIDS analysis (runs every 5s)"""
+        system_logger.log_info("Volatile Memory HIDS monitoring loop started", 'app')
+        
+        while self.is_active:
+            try:
+                # 1. Extract Telemetry
+                vector = live_telemetry.get_live_telemetry_vector()
+                self.last_telemetry_vector = vector.tolist()
+                
+                # 2. Analyze with ML Model
+                is_threat, prob = self.volatile_hids.predict_memory_threat(vector)
+                self.last_memory_prob = prob
+                
+                # 3. Handle Detection
+                if is_threat:
+                    self._handle_volatile_memory_threat(prob, vector)
+                
+                time.sleep(self.memory_scan_interval)
+                
+            except Exception as e:
+                system_logger.log_error(f"Memory monitoring error: {e}", 'app', exc_info=True)
+                time.sleep(self.memory_scan_interval)
+
+    def _handle_volatile_memory_threat(self, probability: float, vector: Any):
+        """Handle detected volatile memory threat"""
+        self.threats_detected += 1
+        
+        threat_data = {
+            'type': 'VOLATILE_MEMORY_THREAT',
+            'level': 'CRITICAL',
+            'confidence': probability * 100,
+            'description': "In-Memory Threat Detected: High-probability fileless malware or exploit activity.",
+            'timestamp': datetime.now().isoformat(),
+            'source': 'Dynamic Volatile Memory HIDS',
+            'telemetry': vector.tolist(),
+            'malware_prob': probability,
+            'recommended_actions': [
+                "⚠️ Host network isolation triggered",
+                "🚫 Suspicious process termination initiated",
+                "🔍 Immediate full system scan recommended"
+            ]
+        }
+        
+        # Log to database
+        db_manager.log_threat(
+            threat_type='VOLATILE_MEMORY_THREAT',
+            threat_level='CRITICAL',
+            source='Volatile Memory HIDS',
+            details=str(threat_data),
+            action_taken='Automated Remediation Triggered',
+            confidence_score=probability * 100
+        )
+        
+        # Alert via system logger
+        system_logger.log_threat(
+            'VOLATILE_MEMORY_THREAT',
+            'CRITICAL',
+            f"Fileless malware detected with {probability*100:.1f}% probability. Triggering remediation."
+        )
+        
+        # Notify registered callbacks (Popups)
+        for callback in self.threat_callbacks:
+            try:
+                callback(threat_data)
+            except Exception as e:
+                system_logger.log_error(f"Threat callback error: {e}", 'app')
+                
+        # 4. Trigger Task 4: Automated EDR Remediation
+        try:
+            from core.threat_prevention import threat_prevention
+            # Assuming Task 4 implements this method
+            if hasattr(threat_prevention, 'remediate_volatile_threat'):
+                threading.Thread(target=threat_prevention.remediate_volatile_threat, daemon=True).start()
+        except Exception as e:
+            system_logger.log_error(f"Remediation trigger error: {e}", 'app')
     
     def _get_active_window_info(self) -> Dict[str, Any]:
         """Get info about the active window (process name, fullscreen status)"""
@@ -275,6 +381,10 @@ class RealTimeProtection:
     def _perform_screen_scan(self):
         """Capture screen and analyze for threats with Smart Scanning"""
         if not self.capture_enabled:
+            return
+        
+        # If running in degraded mode (no Tesseract), skip screen OCR
+        if not getattr(self, '_use_screen_scan', False):
             return
         
         try:
@@ -389,7 +499,7 @@ class RealTimeProtection:
         if not NLP_AVAILABLE or get_nlp_detector is None:
             return
         
-    try:
+        try:
             # Get NLP detector
             detector = get_nlp_detector()
             
@@ -417,7 +527,7 @@ class RealTimeProtection:
             if should_alert:
                 self._handle_threat_detection(text, result, process_name)
         
-    except Exception as e:
+        except Exception as e:
             system_logger.log_error(f"Screen text analysis error: {e}", 'app', exc_info=True)
     
     def _should_trigger_alert(self, threat_level: str, result: dict, process_name: str, is_fullscreen: bool) -> bool:

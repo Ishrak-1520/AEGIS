@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, FileText, AlertTriangle, Activity, Zap, CheckCircle, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Shield, FileText, AlertTriangle, Activity, Zap, CheckCircle, ShieldCheck, ShieldAlert, Brain } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
@@ -43,6 +43,22 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => (
 const Dashboard = () => {
     const [rtpStatus, setRtpStatus] = useState(null);
     const [systemStats, setSystemStats] = useState({ cpu: 0, memory: 0, disk: 0 });
+    const [volatileStatus, setVolatileStatus] = useState({
+        is_active: false,
+        telemetry: {
+            "svcscan.nservices": 0,
+            "svcscan.kernel_drivers": 0,
+            "handles.nmutant": 0,
+            "dlllist.avg_dlls_per_proc": 0,
+            "pslist.nprocs64bit": 0
+        },
+        inference: {
+            is_threat: false,
+            confidence_score: 0,
+            latency_ms: 0,
+            ai_reasoning: ""
+        }
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,6 +69,9 @@ const Dashboard = () => {
 
                     const stats = await window.pywebview.api.get_system_stats();
                     setSystemStats(stats);
+
+                    const volatile = await window.pywebview.api.get_volatile_memory_status();
+                    if (volatile && volatile.status === "success") setVolatileStatus(volatile.data);
                 } catch (error) {
                     console.error("Failed to fetch dashboard data:", error);
                 }
@@ -97,8 +116,8 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`border rounded-xl p-6 ${isProtected
-                        ? 'bg-green-500/10 border-green-500/30'
-                        : 'bg-red-500/10 border-red-500/30'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-red-500/10 border-red-500/30'
                     }`}
             >
                 <div className="flex items-center justify-between">
@@ -136,8 +155,8 @@ const Dashboard = () => {
                         <button
                             onClick={handleToggleProtection}
                             className={`px-6 py-3 rounded-lg font-bold transition-all ${isProtected
-                                    ? 'bg-red-500/20 text-red-400 border-2 border-red-500/50 hover:bg-red-500/30'
-                                    : 'bg-green-500/20 text-green-400 border-2 border-green-500/50 hover:bg-green-500/30'
+                                ? 'bg-red-500/20 text-red-400 border-2 border-red-500/50 hover:bg-red-500/30'
+                                : 'bg-green-500/20 text-green-400 border-2 border-green-500/50 hover:bg-green-500/30'
                                 }`}
                         >
                             {isProtected ? 'Disable Protection' : 'Enable Protection'}
@@ -235,49 +254,90 @@ const Dashboard = () => {
                             </button>
                         </div>
                     </div>
+                </div>
 
-                    <div className="bg-surface border border-white/5 rounded-xl p-6">
-                        <h3 className="text-lg font-bold text-white mb-4">System Status</h3>
-                        <div className="space-y-4">
-                            <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-400">CPU Usage</span>
-                                    <span className="text-white font-medium">{Math.round(systemStats.cpu)}%</span>
-                                </div>
-                                <div className="h-2 bg-background rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(systemStats.cpu, 100)}%` }}
-                                    />
-                                </div>
+                {/* Volatile Memory HIDS Widget */}
+                <motion.div
+                    animate={volatileStatus.is_active && volatileStatus.inference.is_threat ? {
+                        backgroundColor: ['rgba(30, 41, 59, 1)', 'rgba(239, 68, 68, 0.2)', 'rgba(30, 41, 59, 1)'],
+                        borderColor: ['rgba(255, 255, 255, 0.05)', 'rgba(239, 68, 68, 0.5)', 'rgba(255, 255, 255, 0.05)']
+                    } : {}}
+                    transition={volatileStatus.is_active && volatileStatus.inference.is_threat ? { repeat: Infinity, duration: 1.5 } : {}}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 relative ${!volatileStatus.is_active ? 'opacity-70' : ''}`}
+                >
+                    {!volatileStatus.is_active && (
+                        <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-10 rounded-xl overflow-hidden">
+                            <div className="bg-surface/80 border border-white/10 px-4 py-2 rounded-lg text-xs font-bold text-gray-400 flex items-center gap-2">
+                                <ShieldAlert size={14} />
+                                HIDS ENGINE DEACTIVATED
                             </div>
-                            <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-400">Memory</span>
-                                    <span className="text-white font-medium">{Math.round(systemStats.memory)}%</span>
-                                </div>
-                                <div className="h-2 bg-background rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-purple-500 rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(systemStats.memory, 100)}%` }}
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-400">Disk</span>
-                                    <span className="text-white font-medium">{Math.round(systemStats.disk)}%</span>
-                                </div>
-                                <div className="h-2 bg-background rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-green-500 rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(systemStats.disk, 100)}%` }}
-                                    />
-                                </div>
+                        </div>
+                    )}
+
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                            <Brain className={volatileStatus.is_active && volatileStatus.inference.is_threat ? "text-red-500" : "text-primary"} size={20} />
+                            Volatile Memory HIDS
+                        </h3>
+                        {volatileStatus.is_active && volatileStatus.inference.is_threat && (
+                            <span className="text-[10px] font-bold bg-red-500 text-white px-2 py-0.5 rounded animate-pulse">CRITICAL</span>
+                        )}
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center py-2">
+                        <div className="relative w-32 h-32 flex items-center justify-center">
+                            <svg className="w-full h-full transform -rotate-90">
+                                <circle
+                                    cx="64" cy="64" r="58"
+                                    stroke="currentColor" strokeWidth="8"
+                                    fill="transparent"
+                                    className="text-white/5"
+                                />
+                                <circle
+                                    cx="64" cy="64" r="58"
+                                    stroke="currentColor" strokeWidth="8"
+                                    fill="transparent"
+                                    strokeDasharray={364.4}
+                                    strokeDashoffset={364.4 * (1 - (volatileStatus.is_active ? volatileStatus.inference.confidence_score : 0))}
+                                    className={`${volatileStatus.is_active && volatileStatus.inference.is_threat ? 'text-red-500' : 'text-primary'} transition-all duration-1000`}
+                                />
+                            </svg>
+                            <div className="absolute flex flex-col items-center">
+                                <span className="text-2xl font-bold text-white">{(volatileStatus.is_active ? (volatileStatus.inference.confidence_score * 100).toFixed(1) : "0.0")}%</span>
+                                <span className="text-[10px] text-gray-400 uppercase tracking-tighter">Threat Prob</span>
                             </div>
                         </div>
                     </div>
-                </div>
+
+                    <div className="mt-4 space-y-2">
+                        <div className="flex justify-between text-[11px]">
+                            <span className="text-gray-400">Services:</span>
+                            <span className="text-white font-mono">{volatileStatus.telemetry["svcscan.nservices"]}</span>
+                        </div>
+                        <div className="flex justify-between text-[11px]">
+                            <span className="text-gray-400">Kernel Drivers:</span>
+                            <span className="text-white font-mono">{volatileStatus.telemetry["svcscan.kernel_drivers"]}</span>
+                        </div>
+                        <div className="flex justify-between text-[11px]">
+                            <span className="text-gray-400">Mutex Handles:</span>
+                            <span className="text-white font-mono">{volatileStatus.telemetry["handles.nmutant"]}</span>
+                        </div>
+                        <div className="flex justify-between text-[11px]">
+                            <span className="text-gray-400">Avg DLLs/Proc:</span>
+                            <span className="text-white font-mono">{volatileStatus.telemetry["dlllist.avg_dlls_per_proc"]}</span>
+                        </div>
+                        <div className="flex justify-between text-[11px]">
+                            <span className="text-gray-400">64-bit Procs:</span>
+                            <span className="text-white font-mono">{volatileStatus.telemetry["pslist.nprocs64bit"]}</span>
+                        </div>
+                    </div>
+
+                    {volatileStatus.is_active && volatileStatus.inference.is_threat && (
+                        <div className="mt-4 p-2 bg-red-500/10 border border-red-500/20 rounded text-[10px] text-red-400 leading-tight">
+                            <strong>SECURITY ALERT:</strong> In-Memory Threat Detected. Automated Remediation Triggered.
+                        </div>
+                    )}
+                </motion.div>
             </div>
         </div>
     );

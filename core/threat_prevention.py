@@ -9,6 +9,9 @@ import sys
 from typing import Dict, Optional, Callable, List
 from datetime import datetime
 import threading
+import time
+import subprocess
+import psutil
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -368,6 +371,87 @@ class ThreatPreventionSystem:
             'WARNING',
             'Threat prevention system disabled'
         )
+    
+    def remediate_volatile_threat(self):
+        """
+        Automated Response for Volatile Memory Threats:
+        1. Isolate host network (Windows Firewall)
+        2. Kill suspicious processes spawned in the last 60 seconds
+        """
+        print("[REMEDIATION] Initiating Volatile Threat Remediation...")
+        
+        # 1. Network Isolation
+        self._isolate_network()
+        
+        # 2. Terminate Recent Suspicious Processes
+        self._kill_recent_suspicious_processes()
+        
+        db_manager.log_event(
+            'VOLATILE_REMEDIATION_COMPLETE',
+            'CRITICAL',
+            'Automated remediation for fileless malware completed'
+        )
+
+    def _isolate_network(self):
+        """Block all outbound traffic except DNS/DHCP strictly for isolation"""
+        print("[REMEDIATION] Isolating network...")
+        try:
+            # Block all outbound traffic
+            subprocess.run([
+                'netsh', 'advfirewall', 'firewall', 'add', 'rule',
+                'name="AEGIS_ISOLATION_OUT"', 'dir=out', 'action=block'
+            ], check=True, capture_output=True)
+            
+            # Block all inbound traffic (extra safety)
+            subprocess.run([
+                'netsh', 'advfirewall', 'firewall', 'add', 'rule',
+                'name="AEGIS_ISOLATION_IN"', 'dir=in', 'action=block'
+            ], check=True, capture_output=True)
+            
+            print("[REMEDIATION] Network isolated via Windows Firewall")
+        except Exception as e:
+            print(f"[REMEDIATION] Network isolation failed: {e}")
+
+    def _kill_recent_suspicious_processes(self):
+        """Identify and kill processes created in the last 60 seconds that aren't whitelisted."""
+        print("[REMEDIATION] Checking for recent suspicious processes...")
+        now = time.time()
+        killed_count = 0
+        
+        # System whitelist to avoid BSOD
+        system_whitelist = {
+            'explorer.exe', 'services.exe', 'lsass.exe', 'wininit.exe', 
+            'csrss.exe', 'smss.exe', 'winlogon.exe', 'taskhostw.exe',
+            'python.exe' # Keep AEGIS alive
+        }
+        
+        try:
+            for proc in psutil.process_iter(['pid', 'name', 'create_time']):
+                try:
+                    pinfo = proc.info
+                    name = pinfo['name'].lower()
+                    create_time = pinfo['create_time']
+                    
+                    # If spawned in the last 60 seconds and not in whitelist
+                    if (now - create_time) < 60 and name not in system_whitelist:
+                        print(f"[REMEDIATION] Killing suspicious recent process: {name} (PID: {pinfo['pid']})")
+                        proc.kill()
+                        killed_count += 1
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    continue
+        except Exception as e:
+            print(f"[REMEDIATION] Process termination error: {e}")
+            
+        print(f"[REMEDIATION] Terminated {killed_count} suspicious processes")
+
+    def disable_isolation(self):
+        """Remove isolation rules (for recovery)"""
+        try:
+            subprocess.run(['netsh', 'advfirewall', 'firewall', 'delete', 'rule', 'name="AEGIS_ISOLATION_OUT"'], capture_output=True)
+            subprocess.run(['netsh', 'advfirewall', 'firewall', 'delete', 'rule', 'name="AEGIS_ISOLATION_IN"'], capture_output=True)
+            print("[REMEDIATION] Network isolation disabled")
+        except Exception:
+            pass
 
 
 # Global instance

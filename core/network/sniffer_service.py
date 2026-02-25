@@ -19,9 +19,16 @@ import numpy as np
 import joblib
 
 # Scapy imports (may fail without proper privileges)
+# Suppress Scapy's libpcap/WinPcap warning by redirecting stderr during import
 try:
-    from scapy.all import sniff, IP, TCP, UDP
-    SCAPY_AVAILABLE = True
+    import io
+    _stderr = sys.stderr
+    sys.stderr = io.StringIO()  # Swallow Scapy's libpcap warning
+    try:
+        from scapy.all import sniff, IP, TCP, UDP
+        SCAPY_AVAILABLE = True
+    finally:
+        sys.stderr = _stderr  # Always restore stderr
 except ImportError:
     SCAPY_AVAILABLE = False
 

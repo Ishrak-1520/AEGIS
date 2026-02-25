@@ -1,0 +1,6 @@
+text,label,explanation
+Urgent: Your account has been suspended. Click here to verify your identity immediately.,PHISHING,Contains urgency tactics and verification requests
+"Congratulations! You've won $1,000,000. Send your bank details to claim your prize.",SCAM,Lottery scam requesting financial information
+Your package delivery is scheduled for tomorrow between 2-4 PM.,SAFE,Legitimate delivery notification
+"Dear valued customer, unusual activity detected on your account. Confirm your details now.",PHISHING,Phishing attempt using account security concerns
+Meeting rescheduled to 3 PM. Please confirm your attendance.,SAFE,Normal business communication
