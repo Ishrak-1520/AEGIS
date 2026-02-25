@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Code, Play, AlertCircle, CheckCircle, ChevronDown, FileCode } from 'lucide-react';
+import { Upload, Code, Play, AlertCircle, CheckCircle, ChevronDown, FileCode, Copy, ClipboardCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const LANGUAGES = [
@@ -13,8 +13,16 @@ const SiftScanner = () => {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [analysisResult, setAnalysisResult] = useState(null);
     const [error, setError] = useState(null);
+    const [copiedIndex, setCopiedIndex] = useState(null);
 
     const fileInputRef = useRef(null);
+
+    const copyToClipboard = (text, index) => {
+        navigator.clipboard.writeText(text).then(() => {
+            setCopiedIndex(index);
+            setTimeout(() => setCopiedIndex(null), 2000);
+        });
+    };
 
     // Debounce logic for language detection
     useEffect(() => {
@@ -75,9 +83,20 @@ const SiftScanner = () => {
                 if (result.error) {
                     setError(result.error);
                 } else {
-                    setAnalysisResult(result);
-                    console.log("Analysis Result:", result);
-                    // NOTE: Result display logic will be handled in a future step or component
+                    // Map backend keys (vulnerabilities, analysis_steps) to UI keys (issues, summary)
+                    const mapped = {
+                        score: result.score ?? 0,
+                        summary: result.analysis_steps ?? 'No summary available.',
+                        issues: (result.vulnerabilities ?? []).map(v => ({
+                            type: v.name || v.type,
+                            severity: v.type === 'Hallucination' ? 'CRITICAL' : 'WARNING',
+                            line: v.line,
+                            message: v.description,
+                            suggested_fix: v.suggested_fix || null,
+                        })),
+                    };
+                    setAnalysisResult(mapped);
+                    console.log("Analysis Result (mapped):", mapped);
                 }
             } else {
                 console.warn("API Bridge not available. Mocking analysis.");
@@ -185,8 +204,8 @@ const SiftScanner = () => {
                             onClick={handleAnalyze}
                             disabled={!code.trim() || isAnalyzing}
                             className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all transform active:scale-95 ${!code.trim() || isAnalyzing
-                                    ? 'bg-white/5 text-gray-500 cursor-not-allowed'
-                                    : 'bg-primary text-background hover:bg-primary-hover shadow-lg shadow-primary/20'
+                                ? 'bg-white/5 text-gray-500 cursor-not-allowed'
+                                : 'bg-primary text-background hover:bg-primary-hover shadow-lg shadow-primary/20'
                                 }`}
                         >
                             {isAnalyzing ? (
@@ -276,8 +295,8 @@ const SiftScanner = () => {
                                 >
                                     <div className="p-4 border-b border-white/5 flex items-start gap-4">
                                         <div className={`p-2 rounded-lg mt-1 flex-shrink-0 ${issue.severity === 'CRITICAL'
-                                                ? 'bg-red-500/20 text-red-500'
-                                                : 'bg-yellow-500/20 text-yellow-500'
+                                            ? 'bg-red-500/20 text-red-500'
+                                            : 'bg-yellow-500/20 text-yellow-500'
                                             }`}>
                                             <AlertCircle className="w-5 h-5" />
                                         </div>
@@ -297,9 +316,24 @@ const SiftScanner = () => {
 
                                     {issue.suggested_fix && (
                                         <div className="bg-black/30 p-4 font-mono text-sm border-t border-white/5">
-                                            <div className="flex items-center gap-2 text-xs text-green-400 mb-2 uppercase tracking-wide font-bold">
-                                                <CheckCircle className="w-3 h-3" />
-                                                Suggested Fix
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-2 text-xs text-green-400 uppercase tracking-wide font-bold">
+                                                    <CheckCircle className="w-3 h-3" />
+                                                    Suggested Fix
+                                                </div>
+                                                <button
+                                                    onClick={() => copyToClipboard(issue.suggested_fix, index)}
+                                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 ${copiedIndex === index
+                                                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                                            : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                                                        }`}
+                                                >
+                                                    {copiedIndex === index ? (
+                                                        <><ClipboardCheck className="w-3.5 h-3.5" /> Copied!</>
+                                                    ) : (
+                                                        <><Copy className="w-3.5 h-3.5" /> Copy</>
+                                                    )}
+                                                </button>
                                             </div>
                                             <div className="bg-black/50 rounded-lg p-3 border border-white/5 overflow-x-auto">
                                                 <pre className="text-gray-300">

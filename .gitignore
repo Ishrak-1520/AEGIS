@@ -46,3 +46,6 @@ logs/
 *.zip
 *.pcap
 *.pcap_ISCX.csv
+# Large Datasets
+data/
+datasets/

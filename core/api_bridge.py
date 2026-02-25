@@ -373,4 +373,4 @@ class AegisAPI:
         """
         if not self.sift_engine:
             return {"error": "Sift Engine not initialized (Missing API Key)"}
-        return self.sift_engine.analyze_code(code_content, language)
+        return self.sift_engine.analyze_code(code_content, filename=language)
