@@ -1064,3 +1064,276 @@ Traceback (most recent call last):
                                    ^^^^
 NameError: name 'text' is not defined
 2026-01-19 23:02:42 - app - INFO - Real-Time Protection initialized
+2026-02-22 00:14:20 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "E:\personal projects\FYDP\FInal\AEGIS\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined. Did you mean: 'next'?
+2026-02-22 00:14:20 - app - INFO - Real-Time Protection initialized
+2026-02-22 00:36:42 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "E:\personal projects\FYDP\FInal\AEGIS\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined. Did you mean: 'next'?
+2026-02-22 00:36:42 - app - INFO - Real-Time Protection initialized
+2026-02-22 00:44:51 - app - ERROR - Screen text analysis error: name 'text' is not defined
+Traceback (most recent call last):
+  File "E:\personal projects\FYDP\FInal\AEGIS\core\realtime_protection.py", line 409, in RealTimeProtection
+    result = detector.analyze_text(text)
+                                   ^^^^
+NameError: name 'text' is not defined. Did you mean: 'next'?
+2026-02-22 00:44:51 - app - INFO - Real-Time Protection initialized
+2026-02-22 01:02:55 - app - INFO - Real-Time Protection initialized
+2026-02-22 01:03:46 - app - INFO - Real-Time Protection initialized
+2026-02-22 01:04:40 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 01:04:40 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 01:32:07 - app - INFO - Real-Time Protection initialized
+2026-02-22 01:32:20 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 01:32:20 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 01:32:23 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 01:32:23 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 01:51:11 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 01:51:11 - app - INFO - NIDS Engine initialized
+2026-02-22 01:51:24 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 01:51:24 - app - INFO - NIDS Engine initialized
+2026-02-22 01:51:25 - app - INFO - Real-Time Protection initialized
+2026-02-22 01:51:25 - app - INFO - Database initialized successfully
+2026-02-22 01:51:25 - app - INFO - CyberGuard Pro application started
+2026-02-22 02:01:39 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 02:01:39 - app - INFO - NIDS Engine initialized
+2026-02-22 02:01:40 - app - INFO - Real-Time Protection initialized
+2026-02-22 02:05:12 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 02:05:12 - app - INFO - NIDS Engine initialized
+2026-02-22 02:05:13 - app - INFO - Real-Time Protection initialized
+2026-02-22 02:05:13 - app - INFO - Database initialized successfully
+2026-02-22 02:05:13 - app - INFO - CyberGuard Pro application started
+2026-02-22 02:11:59 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 02:11:59 - app - INFO - NIDS Engine initialized
+2026-02-22 02:12:35 - app - INFO - Real-Time Protection initialized
+2026-02-22 02:13:47 - app - INFO - Real-Time Protection initialized
+2026-02-22 02:13:49 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 02:13:49 - app - INFO - NIDS Engine initialized
+2026-02-22 02:13:49 - app - INFO - NIDS Engine started
+2026-02-22 02:14:10 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:14:10 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:14:11 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:14:11 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:14:11 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:14:11 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:14:20 - app - INFO - NIDS learning complete. Baseline: 971 packets, 35 flows
+2026-02-22 02:17:12 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:17:12 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:17:13 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:17:13 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:17:13 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:17:13 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:17:13 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:17:13 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:17:13 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:17:13 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:17:13 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:17:13 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:38:38 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:38:38 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:38:38 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:38:38 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:38:38 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:38:38 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:38:38 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:38:38 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 02:38:39 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-22 02:38:39 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-22 03:06:49 - app - INFO - NIDS Engine stopped
+2026-02-22 03:11:00 - app - INFO - Real-Time Protection initialized
+2026-02-22 03:11:09 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-22 03:11:09 - app - INFO - NIDS Engine initialized
+2026-02-22 03:11:09 - app - INFO - NIDS Engine started
+2026-02-22 03:11:39 - app - INFO - NIDS learning complete. Baseline: 333 packets, 11 flows
+2026-02-22 04:33:20 - app - INFO - NIDS Engine stopped
+2026-02-23 05:42:32 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-23 05:42:32 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-23 05:44:33 - app - INFO - Real-Time Protection initialized
+2026-02-23 05:44:44 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-23 05:44:44 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-23 05:44:44 - app - INFO - NIDS Engine started
+2026-02-23 05:45:15 - app - INFO - NIDS learning complete. Baseline: 5189 packets, 2 flows
+2026-02-23 05:56:40 - app - INFO - NIDS Engine stopped
+2026-02-23 05:57:00 - app - INFO - Real-Time Protection initialized
+2026-02-23 05:57:04 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-23 05:57:04 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-23 05:57:04 - app - INFO - NIDS Engine started
+2026-02-23 05:57:34 - app - INFO - NIDS learning complete. Baseline: 2680 packets, 2 flows
+2026-02-23 06:03:51 - app - INFO - NIDS Engine stopped
+2026-02-23 06:04:11 - app - INFO - Real-Time Protection initialized
+2026-02-23 06:04:14 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-23 06:04:14 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-23 06:04:14 - app - INFO - NIDS Engine started
+2026-02-23 06:04:45 - app - INFO - NIDS learning complete. Baseline: 3612 packets, 3 flows
+2026-02-23 06:21:15 - app - INFO - NIDS Engine stopped
+2026-02-25 19:15:13 - app - INFO - Real-Time Protection initialized
+2026-02-25 19:15:24 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-25 19:15:24 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-25 19:15:24 - app - INFO - NIDS Engine started
+2026-02-25 19:15:55 - app - INFO - NIDS learning complete. Baseline: 10130 packets, 33 flows
+2026-02-25 19:30:14 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:30:14 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:30:14 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:30:15 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:30:15 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:30:15 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:30:15 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:30:15 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:30:15 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:30:15 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:30:17 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:30:17 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:04 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:04 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:04 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:04 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:05 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:05 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:05 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:05 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:05 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:05 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:05 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:05 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:06 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:06 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:06 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:06 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:07 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:07 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:07 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:07 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:07 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:07 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:08 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:08 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:08 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:08 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:09 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:09 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:09 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:09 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:09 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:09 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:10 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:10 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:10 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:10 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:10 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:10 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:10 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:10 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:10 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:10 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:11 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:11 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:11 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:11 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:31:11 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:31:11 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:34:55 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:34:55 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:34:55 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:34:55 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:34:56 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:34:56 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:34:56 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:34:56 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:34:56 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:34:56 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:35:00 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:35:00 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:41:49 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:41:49 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:41:49 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:41:49 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:41:50 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:41:50 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 19:41:50 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 19:41:50 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 21:36:24 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 21:36:24 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 21:38:57 - app - INFO - Real-Time Protection initialized
+2026-02-25 21:38:57 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 21:38:57 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 21:47:05 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 21:47:05 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 21:59:54 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 21:59:54 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 21:59:54 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 21:59:54 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:34:11 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:34:11 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:34:12 - app - INFO - NIDS Engine stopped
+2026-02-25 23:35:38 - app - INFO - Real-Time Protection initialized
+2026-02-25 23:35:47 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-25 23:35:47 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-25 23:35:47 - app - INFO - NIDS Engine started
+2026-02-25 23:35:57 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:35:57 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:36:00 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:36:00 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:36:01 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:36:01 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:36:12 - app - INFO - Real-Time Protection initialized
+2026-02-25 23:36:12 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:36:12 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:36:17 - app - INFO - NIDS learning complete. Baseline: 3773 packets, 36 flows
+2026-02-25 23:53:04 - app - INFO - Real-Time Protection initialized
+2026-02-25 23:53:12 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:53:12 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:53:12 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:53:12 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:53:12 - app - ERROR - Tesseract OCR executable not found: tesseract is not installed or it's not in your PATH. See README file for more information.
+2026-02-25 23:53:12 - app - ERROR - Install Tesseract OCR from: https://github.com/UB-Mannheim/tesseract/wiki
+2026-02-25 23:53:13 - app - INFO - NIDS Engine stopped
+2026-02-25 23:53:24 - app - INFO - Real-Time Protection initialized
+2026-02-25 23:53:24 - app - INFO - Real-Time Protection started
+2026-02-25 23:53:27 - app - INFO - Real-Time Protection stopped. Scans: 1, Threats: 0
+2026-02-25 23:55:58 - app - INFO - Real-Time Protection initialized
+2026-02-25 23:56:00 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-25 23:56:00 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-25 23:56:00 - app - INFO - NIDS Engine started
+2026-02-25 23:56:07 - app - INFO - Real-Time Protection started
+2026-02-25 23:56:10 - app - INFO - Real-Time Protection stopped. Scans: 1, Threats: 0
+2026-02-25 23:56:15 - app - INFO - Real-Time Protection started
+2026-02-25 23:56:31 - app - INFO - NIDS learning complete. Baseline: 1927 packets, 34 flows
+2026-02-26 00:01:16 - app - ERROR - Screen capture error: screen grab failed
+2026-02-26 00:01:19 - app - ERROR - Screen capture error: screen grab failed
+2026-02-26 00:01:22 - app - INFO - Real-Time Protection initialized
+2026-02-26 00:01:23 - app - INFO - Real-Time Protection started
+2026-02-26 00:01:27 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-26 00:01:27 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-26 00:01:27 - app - INFO - NIDS Engine started
+2026-02-26 00:01:29 - app - INFO - NIDS Engine stopped
+2026-02-26 00:01:29 - app - INFO - Real-Time Protection stopped. Scans: 2, Threats: 0
+2026-02-26 00:04:44 - app - INFO - Real-Time Protection stopped. Scans: 97, Threats: 0
+2026-02-26 00:04:50 - app - INFO - NIDS Engine stopped
+2026-02-26 00:05:06 - app - INFO - Real-Time Protection initialized
+2026-02-26 00:05:22 - app - INFO - Real-Time Protection started
+2026-02-26 00:05:23 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-26 00:05:23 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-26 00:05:23 - app - INFO - NIDS Engine started
+2026-02-26 00:05:37 - app - INFO - NIDS Engine stopped
+2026-02-26 00:05:40 - app - INFO - Real-Time Protection stopped. Scans: 6, Threats: 0
+2026-02-26 00:13:26 - app - INFO - Real-Time Protection initialized
+2026-02-26 00:14:58 - app - INFO - Real-Time Protection initialized
+2026-02-26 00:15:11 - app - INFO - Real-Time Protection started
+2026-02-26 00:15:12 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-26 00:15:12 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-26 00:15:12 - app - INFO - NIDS Engine started
+2026-02-26 00:15:18 - app - INFO - NIDS Engine stopped
+2026-02-26 00:15:25 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-26 00:15:25 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-26 00:15:26 - app - INFO - NIDS Engine started
+2026-02-26 00:15:56 - app - INFO - NIDS learning complete. Baseline: 1878 packets, 22 flows
+2026-02-26 00:16:08 - app - INFO - NIDS auto-block (IPS) disabled
+2026-02-26 00:16:12 - app - INFO - NIDS auto-block (IPS) enabled
+2026-02-26 00:34:45 - app - INFO - NIDS Engine stopped
+2026-02-26 00:34:45 - app - INFO - Real-Time Protection stopped. Scans: 268, Threats: 0

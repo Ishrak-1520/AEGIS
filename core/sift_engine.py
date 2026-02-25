@@ -28,7 +28,7 @@ class SiftEngine:
         )
         
         # Using the standard model ID for research benchmarks
-        self.model = "gpt-4o" 
+        self.model = "LongCat-Flash-Lite" 
         logger.info("SiftEngine initialized with model: %s", self.model)
 
     def detect_language(self, code_content: str) -> str:
