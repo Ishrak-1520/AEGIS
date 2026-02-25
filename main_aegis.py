@@ -15,7 +15,7 @@ import argparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from core.api_bridge import AegisAPI
-from core.network.sniffer_service import SnifferService
+from core.network.nids_engine import NIDSEngine
 
 
 def build_frontend(force=False, dev_mode=False):
@@ -60,18 +60,17 @@ def build_frontend(force=False, dev_mode=False):
 
 def main():
     # --- NIDS Initialization ---
-    # Create shared resources for NIDS
+    # Create shared resources for NIDS (but don't start yet - controlled by RTP toggle)
     network_alert_queue = queue.Queue()
-    sniffer_stop_event = threading.Event()
+    nids_stop_event = threading.Event()
     
-    # Initialize the sniffer service (runs as daemon thread)
-    sniffer = SnifferService(sniffer_stop_event, network_alert_queue)
-    sniffer.start()
+    # NIDS will be started when RTP is enabled (not auto-started)
+    # Pass the queue and stop_event to API so it can create NIDS instances
     
     # --- API Initialization ---
     api = AegisAPI(
         network_alert_queue=network_alert_queue,
-        sniffer_service=sniffer
+        nids_stop_event=nids_stop_event  # API will manage NIDS lifecycle
     )
     
     # Parse Arguments
@@ -111,10 +110,10 @@ def main():
     # --- Cleanup callback ---
     def on_closing():
         """Graceful shutdown when window closes."""
-        sniffer_stop_event.set()
-        # Give threads time to cleanup
-        if sniffer.is_alive():
-            sniffer.join(timeout=2.0)
+        nids_stop_event.set()
+        # Stop NIDS if running
+        if api._sniffer_service and hasattr(api._sniffer_service, 'stop'):
+            api._sniffer_service.stop()
     
     window.events.closing += on_closing
     
@@ -124,4 +123,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

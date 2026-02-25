@@ -38,6 +38,15 @@ try:
 except ImportError:
     RTP_AVAILABLE = False
 
+try:
+    from core.network.nids_engine import get_nids_engine
+    nids_engine = get_nids_engine()
+    NIDS_AVAILABLE = True
+except ImportError:
+    NIDS_AVAILABLE = False
+    nids_engine = None
+    get_nids_engine = None
+
 
 class ScanWorker(QThread):
     """Background worker thread for file scanning to prevent GUI freezing"""
@@ -159,6 +168,7 @@ class Dashboard(QMainWindow):
         self.content_stack.addWidget(self.create_quarantine_view()) # 4: Quarantine
         self.content_stack.addWidget(self.create_reports_view())    # 5: Reports
         self.content_stack.addWidget(self.create_settings_view())   # 6: Settings
+        self.content_stack.addWidget(self.create_nids_view())       # 7: Network IDS
         
         main_layout.addWidget(self.content_stack)
         
@@ -216,7 +226,8 @@ class Dashboard(QMainWindow):
             ("analyzer", "AI ANALYZER", 3),
             ("quarantine", "QUARANTINE", 4),
             ("logs", "REPORTS", 5),
-            ("settings", "SETTINGS", 6)
+            ("settings", "SETTINGS", 6),
+            ("globe", "NETWORK IDS", 7)
         ]
         
         for icon_name, text, index in nav_items:
@@ -3781,10 +3792,79 @@ Your Bank Security Team""")
         return widget
     
     def create_network_settings(self) -> QWidget:
-        """Create network protection settings"""
+        """Create network protection settings with NIDS controls"""
         widget = QWidget()
         layout = QVBoxLayout()
         layout.setSpacing(12)
+        
+        # NIDS Toggle
+        nids_layout = QHBoxLayout()
+        nids_label = QLabel("Network IDS (RT-XNIDS)")
+        nids_label.setStyleSheet("font-size: 14px; color: #ffffff; font-weight: bold;")
+        nids_layout.addWidget(nids_label)
+        nids_layout.addStretch()
+        
+        self.nids_toggle = QCheckBox()
+        self.nids_toggle.setChecked(False)
+        self.nids_toggle.setStyleSheet("""
+            QCheckBox::indicator {
+                width: 40px;
+                height: 20px;
+                border-radius: 10px;
+                border: 2px solid #334155;
+                background-color: #1e293b;
+            }
+            QCheckBox::indicator:checked {
+                background-color: #22c55e;
+                border-color: #22c55e;
+            }
+        """)
+        self.nids_toggle.stateChanged.connect(self._toggle_nids)
+        nids_layout.addWidget(self.nids_toggle)
+        layout.addLayout(nids_layout)
+        
+        # NIDS Status
+        nids_status_layout = QHBoxLayout()
+        nids_status_label = QLabel("NIDS Status:")
+        nids_status_label.setStyleSheet("font-size: 12px; color: #94a3b8;")
+        nids_status_layout.addWidget(nids_status_label)
+        
+        self.nids_status_value = QLabel("Inactive")
+        self.nids_status_value.setStyleSheet("font-size: 12px; color: #ef4444;")
+        nids_status_layout.addWidget(self.nids_status_value)
+        nids_status_layout.addStretch()
+        layout.addLayout(nids_status_layout)
+        
+        # NIDS Sensitivity
+        sens_layout = QHBoxLayout()
+        sens_label = QLabel("Detection Sensitivity")
+        sens_label.setStyleSheet("font-size: 14px; color: #ffffff;")
+        sens_layout.addWidget(sens_label)
+        sens_layout.addStretch()
+        
+        self.nids_sensitivity = QComboBox()
+        self.nids_sensitivity.addItems(["LOW", "MEDIUM", "HIGH"])
+        self.nids_sensitivity.setCurrentText("MEDIUM")
+        self.nids_sensitivity.setStyleSheet("""
+            QComboBox {
+                background-color: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 4px;
+                padding: 6px;
+                color: #ffffff;
+                font-size: 12px;
+                min-width: 100px;
+            }
+        """)
+        self.nids_sensitivity.currentTextChanged.connect(self._update_nids_sensitivity)
+        sens_layout.addWidget(self.nids_sensitivity)
+        layout.addLayout(sens_layout)
+        
+        # Separator
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setStyleSheet("background-color: #334155;")
+        layout.addWidget(sep)
         
         # Firewall
         fw_layout = QHBoxLayout()
@@ -3838,6 +3918,41 @@ Your Bank Security Team""")
         
         widget.setLayout(layout)
         return widget
+    
+    def _toggle_nids(self, state):
+        """Toggle NIDS on/off"""
+        if not NIDS_AVAILABLE or nids_engine is None:
+            QMessageBox.warning(
+                self,
+                "NIDS Not Available",
+                "Network IDS is not available. Check dependencies (scapy, joblib) and model files."
+            )
+            self.nids_toggle.setChecked(False)
+            return
+        
+        if state == Qt.Checked:
+            if nids_engine.start():
+                self.nids_status_value.setText("Active (Learning)")
+                self.nids_status_value.setStyleSheet("font-size: 12px; color: #22c55e;")
+                self.log_activity("Network IDS started")
+            else:
+                self.nids_toggle.setChecked(False)
+                QMessageBox.warning(
+                    self,
+                    "NIDS Start Failed",
+                    "Failed to start Network IDS. Administrator privileges may be required."
+                )
+        else:
+            nids_engine.stop()
+            self.nids_status_value.setText("Inactive")
+            self.nids_status_value.setStyleSheet("font-size: 12px; color: #ef4444;")
+            self.log_activity("Network IDS stopped")
+    
+    def _update_nids_sensitivity(self, level):
+        """Update NIDS sensitivity"""
+        if NIDS_AVAILABLE and nids_engine is not None:
+            nids_engine.set_sensitivity(level)
+            self.log_activity(f"NIDS sensitivity set to {level}")
     
     def create_account_settings(self) -> QWidget:
         """Create account settings"""
@@ -5046,3 +5161,279 @@ Your Bank Security Team""")
             print(f"Error showing threat alert: {e}")
             import traceback
             traceback.print_exc()
+
+    def create_nids_view(self) -> QWidget:
+        """Create Network IDS monitoring view"""
+        view = QWidget()
+        view.setStyleSheet(f"background-color: {COLORS['background_light']};")
+        
+        main_layout = QVBoxLayout(view)
+        main_layout.setContentsMargins(24, 24, 24, 24)
+        main_layout.setSpacing(20)
+        
+        # Header
+        header = QLabel("NETWORK INTRUSION DETECTION")
+        header.setStyleSheet(f"""
+            font-size: 24px;
+            font-weight: 900;
+            color: {COLORS['primary']};
+            letter-spacing: 2px;
+        """)
+        main_layout.addWidget(header)
+        
+        subtitle = QLabel("RT-XNIDS - Real-Time ML-Powered Network Monitoring")
+        subtitle.setStyleSheet(f"font-size: 13px; color: {COLORS['text_secondary']};")
+        main_layout.addWidget(subtitle)
+        
+        # Status Card
+        status_card = QFrame()
+        status_card.setStyleSheet(f"""
+            QFrame {{
+                background-color: {COLORS['surface']};
+                border: 1px solid {COLORS['border']};
+                border-radius: 12px;
+                padding: 16px;
+            }}
+        """)
+        status_layout = QHBoxLayout(status_card)
+        status_layout.setSpacing(40)
+        
+        # NIDS Toggle Button
+        self.nids_toggle_btn = QPushButton("START NIDS")
+        self.nids_toggle_btn.setFixedSize(180, 50)
+        self.nids_toggle_btn.setCursor(Qt.PointingHandCursor)
+        self.nids_toggle_btn.setStyleSheet(f"""
+            QPushButton {{
+                background-color: #22c55e;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 700;
+                letter-spacing: 1px;
+            }}
+            QPushButton:hover {{
+                background-color: #16a34a;
+            }}
+        """)
+        self.nids_toggle_btn.clicked.connect(self._toggle_nids_from_view)
+        status_layout.addWidget(self.nids_toggle_btn)
+        
+        # Stats Display
+        stats_widget = QWidget()
+        stats_grid = QHBoxLayout(stats_widget)
+        stats_grid.setSpacing(30)
+        
+        # Mode
+        mode_layout = QVBoxLayout()
+        mode_label = QLabel("MODE")
+        mode_label.setStyleSheet(f"font-size: 10px; color: {COLORS['text_secondary']}; letter-spacing: 1px;")
+        mode_layout.addWidget(mode_label)
+        self.nids_mode_label = QLabel("Inactive")
+        self.nids_mode_label.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {COLORS['text_primary']};")
+        mode_layout.addWidget(self.nids_mode_label)
+        stats_grid.addLayout(mode_layout)
+        
+        # Packets
+        packets_layout = QVBoxLayout()
+        packets_label = QLabel("PACKETS")
+        packets_label.setStyleSheet(f"font-size: 10px; color: {COLORS['text_secondary']}; letter-spacing: 1px;")
+        packets_layout.addWidget(packets_label)
+        self.nids_packets_label = QLabel("0")
+        self.nids_packets_label.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {COLORS['primary']};")
+        packets_layout.addWidget(self.nids_packets_label)
+        stats_grid.addLayout(packets_layout)
+        
+        # Flows
+        flows_layout = QVBoxLayout()
+        flows_label = QLabel("FLOWS")
+        flows_label.setStyleSheet(f"font-size: 10px; color: {COLORS['text_secondary']}; letter-spacing: 1px;")
+        flows_layout.addWidget(flows_label)
+        self.nids_flows_label = QLabel("0")
+        self.nids_flows_label.setStyleSheet(f"font-size: 18px; font-weight: 700; color: {COLORS['primary']};")
+        flows_layout.addWidget(self.nids_flows_label)
+        stats_grid.addLayout(flows_layout)
+        
+        # Threats
+        threats_layout = QVBoxLayout()
+        threats_label = QLabel("THREATS")
+        threats_label.setStyleSheet(f"font-size: 10px; color: {COLORS['text_secondary']}; letter-spacing: 1px;")
+        threats_layout.addWidget(threats_label)
+        self.nids_threats_label = QLabel("0")
+        self.nids_threats_label.setStyleSheet(f"font-size: 18px; font-weight: 700; color: #ef4444;")
+        threats_layout.addWidget(self.nids_threats_label)
+        stats_grid.addLayout(threats_layout)
+        
+        status_layout.addWidget(stats_widget)
+        status_layout.addStretch()
+        main_layout.addWidget(status_card)
+        
+        # Alerts Table
+        alerts_header = QLabel("LIVE THREAT FEED")
+        alerts_header.setStyleSheet(f"""
+            font-size: 16px;
+            font-weight: 700;
+            color: {COLORS['text_primary']};
+            letter-spacing: 1px;
+        """)
+        main_layout.addWidget(alerts_header)
+        
+        self.nids_alerts_table = QTableWidget()
+        self.nids_alerts_table.setColumnCount(6)
+        self.nids_alerts_table.setHorizontalHeaderLabels([
+            "Timestamp", "Source IP", "Target IP", "Attack Type", "Confidence", "Ports"
+        ])
+        self.nids_alerts_table.horizontalHeader().setStretchLastSection(True)
+        self.nids_alerts_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.nids_alerts_table.setAlternatingRowColors(True)
+        self.nids_alerts_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.nids_alerts_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.nids_alerts_table.setStyleSheet(f"""
+            QTableWidget {{
+                background-color: {COLORS['surface']};
+                border: 1px solid {COLORS['border']};
+                border-radius: 8px;
+                gridline-color: {COLORS['border']};
+                color: {COLORS['text_primary']};
+            }}
+            QTableWidget::item {{
+                padding: 8px;
+            }}
+            QTableWidget::item:selected {{
+                background-color: rgba(0, 243, 255, 0.1);
+            }}
+            QHeaderView::section {{
+                background-color: {COLORS['background_dark']};
+                color: {COLORS['text_secondary']};
+                padding: 10px;
+                border: none;
+                font-weight: 700;
+                font-size: 11px;
+                letter-spacing: 1px;
+            }}
+        """)
+        main_layout.addWidget(self.nids_alerts_table)
+        
+        # NIDS Update Timer
+        self.nids_timer = QTimer(self)
+        self.nids_timer.timeout.connect(self._update_nids_view)
+        self.nids_timer.start(2000)  # Update every 2 seconds
+        
+        return view
+    
+    def _toggle_nids_from_view(self):
+        """Toggle NIDS from the NIDS view"""
+        if not NIDS_AVAILABLE or nids_engine is None:
+            QMessageBox.warning(
+                self,
+                "NIDS Not Available",
+                "Network IDS is not available.\\n\\n"
+                "Required:\\n"
+                "• scapy (pip install scapy)\\n"
+                "• joblib (pip install joblib)\\n"
+                "• Npcap or WinPcap (Windows)\\n"
+                "• Administrator privileges\\n"
+                "• Model files in core/network/RT-XNIDS_FInal/"
+            )
+            return
+        
+        if nids_engine.is_active:
+            nids_engine.stop()
+            self.nids_toggle_btn.setText("START NIDS")
+            self.nids_toggle_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #22c55e;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 700;
+                    letter-spacing: 1px;
+                }
+                QPushButton:hover {
+                    background-color: #16a34a;
+                }
+            """)
+            self.log_activity("Network IDS stopped")
+        else:
+            if nids_engine.start():
+                self.nids_toggle_btn.setText("STOP NIDS")
+                self.nids_toggle_btn.setStyleSheet("""
+                    QPushButton {
+                        background-color: #ef4444;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                    }
+                    QPushButton:hover {
+                        background-color: #dc2626;
+                    }
+                """)
+                self.log_activity("Network IDS started")
+            else:
+                QMessageBox.warning(
+                    self,
+                    "NIDS Start Failed",
+                    "Failed to start Network IDS.\\n\\n"
+                    "Make sure you are running as Administrator "
+                    "and have Npcap/WinPcap installed."
+                )
+    
+    def _update_nids_view(self):
+        """Update NIDS view with current stats"""
+        if not NIDS_AVAILABLE or nids_engine is None:
+            return
+        
+        stats = nids_engine.get_stats()
+        
+        # Update labels
+        self.nids_mode_label.setText(stats.get("mode", "Inactive"))
+        self.nids_packets_label.setText(f"{stats.get('total_packets', 0):,}")
+        self.nids_flows_label.setText(f"{stats.get('total_flows', 0):,}")
+        self.nids_threats_label.setText(str(stats.get('threats_detected', 0)))
+        
+        # Update button state
+        if stats.get("is_active", False):
+            if self.nids_toggle_btn.text() != "STOP NIDS":
+                self.nids_toggle_btn.setText("STOP NIDS")
+                self.nids_toggle_btn.setStyleSheet("""
+                    QPushButton {
+                        background-color: #ef4444;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        font-weight: 700;
+                        letter-spacing: 1px;
+                    }
+                    QPushButton:hover {
+                        background-color: #dc2626;
+                    }
+                """)
+        
+        # Update alerts table
+        alerts = nids_engine.get_recent_alerts(50)
+        self.nids_alerts_table.setRowCount(len(alerts))
+        
+        for row, alert in enumerate(reversed(alerts)):  # Newest first
+            self.nids_alerts_table.setItem(row, 0, QTableWidgetItem(str(alert.get("Timestamp", ""))))
+            self.nids_alerts_table.setItem(row, 1, QTableWidgetItem(str(alert.get("SrcIP", ""))))
+            self.nids_alerts_table.setItem(row, 2, QTableWidgetItem(str(alert.get("DstIP", ""))))
+            self.nids_alerts_table.setItem(row, 3, QTableWidgetItem(str(alert.get("AttackReason", ""))))
+            
+            conf = alert.get("Confidence", "0")
+            conf_item = QTableWidgetItem(str(conf))
+            try:
+                conf_val = float(conf)
+                if conf_val > 0.8:
+                    conf_item.setForeground(QColor("#ef4444"))
+                else:
+                    conf_item.setForeground(QColor("#eab308"))
+            except:
+                pass
+            self.nids_alerts_table.setItem(row, 4, conf_item)
+            
+            self.nids_alerts_table.setItem(row, 5, QTableWidgetItem("-"))

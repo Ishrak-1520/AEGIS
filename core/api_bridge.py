@@ -15,16 +15,19 @@ from core.scanner import FileScanner
 from security.password_manager import password_manager
 from core.quarantine import quarantine_manager
 from core.realtime_protection import realtime_protection
+from core.threat_prevention import threat_prevention
 from ai.nlp_model import get_nlp_detector
 from database.db_manager import db_manager
 from core.sift_engine import SiftEngine
+from core.network.nids_engine import NIDSEngine
+import threading
 
 class AegisAPI:
     """
     API Bridge between Python backend and React frontend.
     Methods here are exposed to Javascript via pywebview.
     """
-    def __init__(self, network_alert_queue=None, sniffer_service=None):
+    def __init__(self, network_alert_queue=None, nids_stop_event=None, sniffer_service=None):
         self.scanner = FileScanner()
         self.scan_thread = None
         self.scan_progress = {'status': 'idle', 'progress': 0, 'file': '', 'results': []}
@@ -40,9 +43,10 @@ class AegisAPI:
         self.threat_alert_queue = []
         self.max_queue_size = 10
         
-        # NIDS Integration
+        # NIDS Integration - store params to create instances when needed
         self._network_alert_queue = network_alert_queue
-        self._sniffer_service = sniffer_service
+        self._nids_stop_event = nids_stop_event if nids_stop_event else threading.Event()
+        self._sniffer_service = sniffer_service  # Will be created when RTP is enabled
         self._network_alerts_cache = []  # Cache for polled alerts
         
         # Register RTP callback
@@ -253,9 +257,49 @@ class AegisAPI:
 
     def toggle_rtp(self, enabled):
         if enabled:
-            return realtime_protection.start_protection()
+            # Start Real-Time Protection
+            rtp_result = realtime_protection.start_protection()
+            
+            # Start NIDS (Network Intrusion Detection)
+            if rtp_result:
+                self._start_nids()
+            
+            return rtp_result
         else:
+            # Stop NIDS first
+            self._stop_nids()
+            
+            # Stop Real-Time Protection
             return realtime_protection.stop_protection()
+    
+    def _start_nids(self):
+        """Start or restart the NIDS engine."""
+        # Stop existing instance if any
+        if self._sniffer_service and hasattr(self._sniffer_service, 'is_active') and self._sniffer_service.is_active:
+            self._sniffer_service.stop()
+        
+        # Reset stop event for new instance
+        self._nids_stop_event.clear()
+        
+        # Create new NIDS instance
+        self._sniffer_service = NIDSEngine(
+            stop_event=self._nids_stop_event,
+            alert_queue=self._network_alert_queue
+        )
+        
+        # Start NIDS
+        if self._sniffer_service.is_available():
+            self._sniffer_service.start()
+            print("NIDS Engine started with protection", flush=True)
+        else:
+            print("NIDS Engine not available - missing dependencies", flush=True)
+    
+    def _stop_nids(self):
+        """Stop the NIDS engine."""
+        if self._sniffer_service and hasattr(self._sniffer_service, 'stop'):
+            self._sniffer_service.stop()
+            self._nids_stop_event.set()
+            print("NIDS Engine stopped", flush=True)
 
     def get_pending_threat_alerts(self):
         """Get and clear pending threat alerts"""
@@ -342,21 +386,96 @@ class AegisAPI:
 
     def toggle_nids(self, enabled):
         """
-        Start or stop the NIDS sniffer.
-        Note: Currently only supports checking status, as sniffer
-        is started at application launch.
+        Start or stop the NIDS sniffer independently.
         """
-        if self._sniffer_service:
-            if not enabled:
-                self._sniffer_service.stop()
-                return {"status": "stopped"}
-            else:
-                # Sniffer already running from startup
-                if self._sniffer_service.is_active():
-                    return {"status": "already_running"}
-                else:
-                    return {"status": "error", "message": "Restart application to re-enable NIDS"}
-        return {"status": "error", "message": "Sniffer not available"}
+        if enabled:
+            # Start NIDS
+            self._start_nids()
+            return {"status": "started", "success": True}
+        else:
+            # Stop NIDS
+            self._stop_nids()
+            return {"status": "stopped", "success": True}
+
+    # --- IPS / Blocked IPs Management ---
+    def get_blocked_ips(self):
+        """
+        Get list of blocked IPs from threat prevention and NIDS.
+        """
+        try:
+            # Get from threat_prevention
+            blocked = threat_prevention.get_blocked_ips()
+            
+            # Also get from NIDS if IPS is integrated
+            nids_blocked = []
+            if self._sniffer_service and hasattr(self._sniffer_service, 'get_blocked_ips'):
+                nids_blocked = self._sniffer_service.get_blocked_ips()
+            
+            # Merge and deduplicate
+            all_blocked = list(set(blocked + nids_blocked))
+            return {"success": True, "blocked_ips": all_blocked, "count": len(all_blocked)}
+        except Exception as e:
+            return {"success": False, "error": str(e), "blocked_ips": [], "count": 0}
+
+    def block_ip(self, ip):
+        """
+        Manually block an IP address using Windows Firewall.
+        """
+        try:
+            success = threat_prevention.block_ip(ip, use_firewall=True)
+            return {"success": success, "ip": ip, "message": f"IP {ip} blocked" if success else f"Failed to block {ip}"}
+        except Exception as e:
+            return {"success": False, "ip": ip, "error": str(e)}
+
+    def unblock_ip(self, ip):
+        """
+        Unblock an IP address from Windows Firewall.
+        """
+        try:
+            success = threat_prevention.unblock_ip(ip)
+            # Also unblock from NIDS if available
+            if self._sniffer_service and hasattr(self._sniffer_service, 'unblock_ip'):
+                self._sniffer_service.unblock_ip(ip)
+            return {"success": success, "ip": ip, "message": f"IP {ip} unblocked" if success else f"Failed to unblock {ip}"}
+        except Exception as e:
+            return {"success": False, "ip": ip, "error": str(e)}
+
+    def toggle_auto_block(self, enabled):
+        """
+        Enable or disable automatic IP blocking (IPS mode).
+        """
+        try:
+            if self._sniffer_service and hasattr(self._sniffer_service, 'set_auto_block'):
+                self._sniffer_service.set_auto_block(enabled)
+                return {"success": True, "auto_block": enabled}
+            return {"success": False, "error": "NIDS service not available"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_ips_status(self):
+        """
+        Get the current IPS (auto-block) status.
+        """
+        try:
+            ips_available = False
+            auto_block_enabled = False
+            
+            if self._sniffer_service:
+                if hasattr(self._sniffer_service, 'is_ips_available'):
+                    ips_available = self._sniffer_service.is_ips_available()
+                if hasattr(self._sniffer_service, 'auto_block_enabled'):
+                    auto_block_enabled = self._sniffer_service.auto_block_enabled
+            
+            blocked = threat_prevention.get_blocked_ips()
+            
+            return {
+                "success": True,
+                "ips_available": ips_available,
+                "auto_block_enabled": auto_block_enabled,
+                "blocked_count": len(blocked)
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
 
     # --- Sift Code Analysis ---
     def sift_detect_language(self, code_content: str) -> str:

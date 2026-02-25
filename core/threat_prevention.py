@@ -250,23 +250,196 @@ class ThreatPreventionSystem:
                 f'Domain blocked: {domain}'
             )
     
-    def block_ip(self, ip: str):
+    def block_ip(self, ip: str, use_firewall: bool = True):
         """
-        Add IP address to blocklist
+        Add IP address to blocklist and optionally block via Windows Firewall
         
         Args:
             ip: IP address to block
+            use_firewall: If True, also add Windows Firewall rule
         """
         if ip not in self.blocked_ips:
             self.blocked_ips.append(ip)
             self._save_blocked_lists()
             
+            # Add Windows Firewall rule for real blocking
+            if use_firewall:
+                firewall_success = self._block_ip_firewall(ip)
+            else:
+                firewall_success = False
+            
             db_manager.log_event(
                 'IP_BLOCKED',
-                'INFO',
-                f'IP blocked: {ip}'
+                'WARNING',
+                f'IP blocked: {ip}' + (' (Firewall rule added)' if firewall_success else ' (Database only)')
             )
+            
+            return firewall_success
+        return False
     
+    def _block_ip_firewall(self, ip: str) -> bool:
+        """
+        Block IP using Windows Firewall
+        
+        Args:
+            ip: IP address to block
+            
+        Returns:
+            True if firewall rule was added successfully
+        """
+        try:
+            import subprocess
+            
+            # Block inbound traffic from this IP
+            rule_name = f"AEGIS_Block_{ip.replace('.', '_')}"
+            
+            # Check if rule already exists
+            check_result = subprocess.run(
+                ['netsh', 'advfirewall', 'firewall', 'show', 'rule', f'name={rule_name}'],
+                capture_output=True, text=True
+            )
+            
+            if 'No rules match' in check_result.stdout or check_result.returncode != 0:
+                # Add inbound block rule
+                result_in = subprocess.run([
+                    'netsh', 'advfirewall', 'firewall', 'add', 'rule',
+                    f'name={rule_name}_IN',
+                    'dir=in',
+                    'action=block',
+                    f'remoteip={ip}',
+                    'enable=yes'
+                ], capture_output=True, text=True)
+                
+                # Add outbound block rule
+                result_out = subprocess.run([
+                    'netsh', 'advfirewall', 'firewall', 'add', 'rule',
+                    f'name={rule_name}_OUT',
+                    'dir=out',
+                    'action=block',
+                    f'remoteip={ip}',
+                    'enable=yes'
+                ], capture_output=True, text=True)
+                
+                success = result_in.returncode == 0 and result_out.returncode == 0
+                
+                if success:
+                    print(f"[IPS] Firewall rule added: Blocked {ip}")
+                else:
+                    print(f"[IPS] Firewall rule failed: {result_in.stderr} {result_out.stderr}")
+                    
+                return success
+            else:
+                # Rule already exists
+                return True
+                
+        except PermissionError:
+            print("[IPS] Permission denied: Run AEGIS as Administrator to block IPs via firewall")
+            return False
+        except Exception as e:
+            print(f"[IPS] Error adding firewall rule: {e}")
+            return False
+    
+    def _unblock_ip_firewall(self, ip: str) -> bool:
+        """
+        Remove IP block from Windows Firewall
+        
+        Args:
+            ip: IP address to unblock
+            
+        Returns:
+            True if firewall rules were removed successfully
+        """
+        try:
+            import subprocess
+            
+            rule_name = f"AEGIS_Block_{ip.replace('.', '_')}"
+            
+            # Remove inbound rule
+            subprocess.run([
+                'netsh', 'advfirewall', 'firewall', 'delete', 'rule',
+                f'name={rule_name}_IN'
+            ], capture_output=True, text=True)
+            
+            # Remove outbound rule
+            subprocess.run([
+                'netsh', 'advfirewall', 'firewall', 'delete', 'rule',
+                f'name={rule_name}_OUT'
+            ], capture_output=True, text=True)
+            
+            print(f"[IPS] Firewall rule removed: Unblocked {ip}")
+            return True
+            
+        except Exception as e:
+            print(f"[IPS] Error removing firewall rule: {e}")
+            return False
+
+    def handle_network_threat(self, threat_data: dict, auto_block: bool = True) -> dict:
+        """
+        Handle network intrusion threat from NIDS
+        
+        Args:
+            threat_data: Dictionary with threat details from NIDS
+                - source_ip: Attacker IP
+                - dest_ip: Target IP
+                - threat_type: Type of attack
+                - confidence: Detection confidence
+            auto_block: If True, automatically block the attacker IP
+            
+        Returns:
+            Response actions taken
+        """
+        source_ip = threat_data.get('source_ip', threat_data.get('src_ip'))
+        threat_type = threat_data.get('threat_type', threat_data.get('attack_type', 'Unknown'))
+        confidence = threat_data.get('confidence', 0)
+        
+        if not source_ip:
+            return {'action': 'NONE', 'reason': 'No source IP'}
+        
+        # Determine threat level based on confidence
+        if confidence >= 0.9:
+            threat_level = 'CRITICAL'
+        elif confidence >= 0.75:
+            threat_level = 'HIGH'
+        elif confidence >= 0.5:
+            threat_level = 'MEDIUM'
+        else:
+            threat_level = 'LOW'
+        
+        response = {
+            'source_ip': source_ip,
+            'threat_type': threat_type,
+            'threat_level': threat_level,
+            'confidence': confidence,
+            'actions_taken': [],
+            'firewall_blocked': False
+        }
+        
+        # Auto-block HIGH and CRITICAL threats
+        if auto_block and threat_level in ['HIGH', 'CRITICAL'] and self.enabled:
+            # Block the attacker IP
+            firewall_success = self.block_ip(source_ip, use_firewall=True)
+            response['firewall_blocked'] = firewall_success
+            response['actions_taken'].append('IP_BLOCKED_FIREWALL' if firewall_success else 'IP_BLOCKED_DB')
+            
+            # Log the prevention action
+            db_manager.log_event(
+                'NETWORK_ATTACK_BLOCKED',
+                'CRITICAL' if threat_level == 'CRITICAL' else 'WARNING',
+                f'Network attack blocked: {threat_type} from {source_ip}',
+                f'Confidence: {confidence:.0%}, Firewall: {"Yes" if firewall_success else "No"}'
+            )
+        
+        # Alert user
+        self._send_alert(
+            f'NETWORK_{threat_type}',
+            threat_level,
+            source_ip,
+            threat_data
+        )
+        response['actions_taken'].append('USER_ALERTED')
+        
+        return response
+
     def unblock_domain(self, domain: str):
         """Remove domain from blocklist"""
         if domain in self.blocked_domains:
@@ -287,11 +460,35 @@ class ThreatPreventionSystem:
             except Exception:
                 pass
     
-    def unblock_ip(self, ip: str):
-        """Remove IP from blocklist"""
+    def unblock_ip(self, ip: str, remove_firewall: bool = True):
+        """
+        Remove IP from blocklist and optionally remove firewall rule
+        
+        Args:
+            ip: IP address to unblock
+            remove_firewall: If True, also remove Windows Firewall rule
+        """
         if ip in self.blocked_ips:
             self.blocked_ips.remove(ip)
             self._save_blocked_lists()
+            
+            # Remove firewall rule
+            if remove_firewall:
+                self._unblock_ip_firewall(ip)
+            
+            db_manager.log_event(
+                'IP_UNBLOCKED',
+                'INFO',
+                f'IP unblocked: {ip}'
+            )
+    
+    def get_blocked_ips(self) -> list:
+        """Get list of all blocked IPs"""
+        return self.blocked_ips.copy()
+    
+    def get_blocked_domains(self) -> list:
+        """Get list of all blocked domains"""
+        return self.blocked_domains.copy()
     
     def is_domain_blocked(self, domain: str) -> bool:
         """Check if domain is blocked"""
