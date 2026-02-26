@@ -493,3 +493,104 @@ class AegisAPI:
         if not self.sift_engine:
             return {"error": "Sift Engine not initialized (Missing API Key)"}
         return self.sift_engine.analyze_code(code_content, filename=language)
+
+    # --- Settings Management ---
+    def get_all_settings(self):
+        """
+        Get all application settings.
+        Returns dict with all settings and their values.
+        """
+        defaults = {
+            'realTimeProtection': 'true',
+            'autoScan': 'true',
+            'notifications': 'true',
+            'darkMode': 'true',
+            'autoUpdate': 'false',
+            'autoBlockThreats': 'true',
+            'scanInterval': '60',
+            'threatSensitivity': 'MEDIUM',
+        }
+        
+        settings = {}
+        for key, default in defaults.items():
+            value = db_manager.get_setting(key, default)
+            # Convert string to appropriate type
+            if value.lower() in ('true', 'false'):
+                settings[key] = value.lower() == 'true'
+            elif value.isdigit():
+                settings[key] = int(value)
+            else:
+                settings[key] = value
+        
+        # Also include current runtime states
+        settings['rtpActive'] = realtime_protection.is_active
+        settings['nidsActive'] = self._sniffer_service.is_active if self._sniffer_service else False
+        
+        return {"success": True, "settings": settings}
+
+    def save_setting(self, key, value):
+        """
+        Save a single setting.
+        """
+        try:
+            # Convert value to string for storage
+            str_value = str(value).lower() if isinstance(value, bool) else str(value)
+            db_manager.set_setting(key, str_value)
+            
+            # Apply setting immediately if applicable
+            self._apply_setting(key, value)
+            
+            return {"success": True, "key": key, "value": value}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def save_all_settings(self, settings_dict):
+        """
+        Save multiple settings at once.
+        """
+        try:
+            for key, value in settings_dict.items():
+                str_value = str(value).lower() if isinstance(value, bool) else str(value)
+                db_manager.set_setting(key, str_value)
+                self._apply_setting(key, value)
+            
+            return {"success": True, "message": "All settings saved"}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def _apply_setting(self, key, value):
+        """
+        Apply a setting change immediately to the running system.
+        """
+        if key == 'realTimeProtection':
+            if value:
+                realtime_protection.start_protection()
+                self._start_nids()
+            else:
+                realtime_protection.stop_protection()
+                self._stop_nids()
+        
+        elif key == 'autoBlockThreats':
+            if self._sniffer_service and hasattr(self._sniffer_service, 'set_auto_block'):
+                self._sniffer_service.set_auto_block(value)
+        
+        elif key == 'threatSensitivity':
+            if hasattr(realtime_protection, 'set_sensitivity'):
+                realtime_protection.set_sensitivity(value)
+        
+        elif key == 'notifications':
+            # Store notification preference - used by alert system
+            pass  # Already stored in db, checked when showing notifications
+
+    def toggle_notifications(self, enabled):
+        """
+        Enable or disable desktop notifications.
+        """
+        return self.save_setting('notifications', enabled)
+
+    def get_notification_setting(self):
+        """
+        Check if notifications are enabled.
+        """
+        value = db_manager.get_setting('notifications', 'true')
+        return value.lower() == 'true'
