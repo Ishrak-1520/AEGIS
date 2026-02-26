@@ -11,7 +11,9 @@ import sys
 import warnings
 import numpy as np
 import joblib
+import time
 from datetime import datetime
+from core.system_logger import system_logger
 
 # Suppress sklearn warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -266,14 +268,26 @@ class MalwareAnalyzer:
 class VolatileMemoryHIDS:
     """
     Analyzes live memory telemetry using a pre-trained Random Forest classifier.
-    Mitigates the 'Sandbox Paradox' with an adaptive threshold.
+    Mitigates the 'Sandbox Paradox' with Dynamic Baseline Calibration.
     """
     
     def __init__(self):
         self.model = None
-        self.threshold = 0.90  # Adaptive Threshold to prevent false positives in idle systems
+        self.threshold = 0.90  
         self.is_loaded = False
         self.error = None
+        
+        # --- Sandbox Paradox Mitigation: Calibration State ---
+        self.calibration_samples = []
+        self.calibration_limit = 5  # Capture 5 samples for a quick baseline
+        self.calibration_offset = np.zeros(5)
+        self.is_calibrated = False
+        
+        # Target Training Population Mean (Estimated from CIC-MalMem-2022)
+        # Shifting local telemetry to these levels moves them into the model's "Comfort Zone"
+        self.target_metrics = np.array([450, 221, 500, 40, 0])
+        
+        self.last_inference_time = 0.0
         
         self._load_model()
     
@@ -293,6 +307,7 @@ class VolatileMemoryHIDS:
     def predict_memory_threat(self, features_vector: np.ndarray) -> tuple:
         """
         Predict if the current memory telemetry indicates a threat.
+        Applies Dynamic Baseline Calibration to resolve Sandbox Paradox.
         
         Args:
             features_vector: Numpy array of 5 features
@@ -304,21 +319,45 @@ class VolatileMemoryHIDS:
             return False, 0.0
             
         try:
-            # Reshape features for model prediction
-            X = features_vector.reshape(1, -1)
+            # 1. Calibration Phase
+            if not self.is_calibrated:
+                self.calibration_samples.append(features_vector)
+                
+                if len(self.calibration_samples) >= self.calibration_limit:
+                    # Calculate baseline and offset
+                    baseline = np.mean(self.calibration_samples, axis=0)
+                    self.calibration_offset = self.target_metrics - baseline
+                    # Ensure we don't zero out 64-bit proc checks if they are actually 0
+                    self.calibration_offset[4] = 0 
+                    self.is_calibrated = True
+                    system_logger.log_info(f"HIDS Calibration Complete. Offset: {self.calibration_offset.tolist()}", 'app')
+                
+                # While calibrating, we return low probability to avoid false positives
+                return False, 0.05
             
-            # Get probability scores
-            # model.predict_proba returns [ [prob_benign, prob_malware] ]
-            probabilities = self.model.predict_proba(X)[0]
+            # 2. Apply Calibration Offset
+            calibrated_X = features_vector + self.calibration_offset
+            
+            # Ensure no negative values after calibration
+            calibrated_X = np.maximum(calibrated_X, 0)
+            
+            # Reshape features for model prediction
+            X_input = calibrated_X.reshape(1, -1)
+            
+            # 3. Get probability scores
+            start_inference = time.perf_counter()
+            probabilities = self.model.predict_proba(X_input)[0]
+            self.last_inference_time = (time.perf_counter() - start_inference) * 1000
+            
             malware_prob = float(probabilities[1]) if len(probabilities) > 1 else float(probabilities[0])
             
-            # Apply Adaptive Threshold to mitigate Sandbox Paradox
+            # Apply Adaptive Threshold
             is_malware = malware_prob >= self.threshold
             
             return is_malware, round(malware_prob, 4)
             
         except Exception as e:
-            print(f"Volatile HIDS prediction error: {e}")
+            system_logger.log_error(f"Volatile HIDS prediction error: {e}", 'app')
             return False, 0.0
 
     def get_status(self) -> dict:

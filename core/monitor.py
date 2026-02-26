@@ -110,7 +110,7 @@ class SystemMonitor:
                 time.sleep(self.update_interval)
                 
             except Exception as e:
-                print(f"Monitoring error: {e}")
+                system_logger.log_error(f"Monitoring error: {e}", 'app', exc_info=True)
                 time.sleep(self.update_interval)
     
     def get_system_stats(self) -> Dict:
@@ -170,7 +170,7 @@ class SystemMonitor:
             return stats
             
         except Exception as e:
-            print(f"Error getting system stats: {e}")
+            system_logger.log_error(f"Error getting system stats: {e}", 'app')
             return {}
     
     def get_process_list(self) -> List[Dict]:
@@ -197,7 +197,7 @@ class SystemMonitor:
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     continue
         except Exception as e:
-            print(f"Error getting process list: {e}")
+            system_logger.log_error(f"Error getting process list: {e}", 'app')
         
         return processes
     
@@ -238,7 +238,7 @@ class SystemMonitor:
                     continue
                     
         except Exception as e:
-            print(f"Error getting network connections: {e}")
+            system_logger.log_error(f"Error getting network connections: {e}", 'app')
         
         return connections
     
@@ -358,7 +358,7 @@ class SystemMonitor:
             try:
                 callback(alert_type, severity, message, details)
             except Exception as e:
-                print(f"Alert callback error: {e}")
+                system_logger.log_error(f"Alert callback error: {e}", 'app')
     
     def get_top_processes(self, by: str = 'cpu', limit: int = 10) -> List[Dict]:
         """
@@ -396,39 +396,65 @@ class LiveMemoryTelemetry:
     """
     
     def __init__(self):
-        self._wmi_conn = None
-        if WMI_AVAILABLE:
+        self._wmi_local = threading.local()
+        
+    def _get_wmi_conn(self):
+        """Get or create a thread-local WMI connection."""
+        if not WMI_AVAILABLE:
+            return None
+            
+        if not hasattr(self._wmi_local, 'conn'):
             try:
-                # Initialize WMI with CoInitialize for thread safety if needed
-                self._wmi_conn = wmi.WMI()
+                import pythoncom
+                # Initialize COM for this thread
+                pythoncom.CoInitialize()
+                self._wmi_local.conn = wmi.WMI()
             except Exception as e:
-                print(f"WMI Initialization error: {e}")
+                from core.system_logger import system_logger
+                system_logger.log_error(f"WMI Connection Error in {threading.current_thread().name}: {e}", 'app')
+                self._wmi_local.conn = None
+        return self._wmi_local.conn
         
     def _get_service_count(self) -> int:
         """Total count of running Windows services."""
-        if not self._wmi_conn:
+        wmi_obj = self._get_wmi_conn()
+        if not wmi_obj:
             # Fallback to psutil for services if WMI is unavailable
             try:
                 return len([s for s in psutil.win_service_iter() if s.status() == 'running'])
             except Exception:
                 return 0
         try:
-            return len(self._wmi_conn.Win32_Service(State="Running"))
+            return len(wmi_obj.Win32_Service(State="Running"))
+        except Exception:
+            return 0
+
+    def _get_driver_count_native(self) -> int:
+        """Get driver count using native Windows API (EnumDeviceDrivers)."""
+        try:
+            psapi = ctypes.windll.psapi
+            drivers = (ctypes.c_void_p * 1024)()
+            cbSize = ctypes.sizeof(drivers)
+            cbNeeded = ctypes.c_uint32()
+            
+            if psapi.EnumDeviceDrivers(ctypes.byref(drivers), cbSize, ctypes.byref(cbNeeded)):
+                # Each handle is 4 or 8 bytes depending on architecture
+                return cbNeeded.value // ctypes.sizeof(ctypes.c_void_p)
+            return 0
         except Exception:
             return 0
 
     def _get_driver_count(self) -> int:
         """Total count of loaded kernel drivers."""
-        if not self._wmi_conn:
-            # Simple fallback: some drivers might be visible as services
-            try:
-                return len([s for s in psutil.win_service_iter() if s.binpath() and '.sys' in s.binpath().lower()])
-            except Exception:
-                return 0
+        wmi_obj = self._get_wmi_conn()
+        if not wmi_obj:
+            # Better native fallback
+            return self._get_driver_count_native()
+            
         try:
-            return len(self._wmi_conn.Win32_SystemDriver())
+            return len(wmi_obj.Win32_SystemDriver())
         except Exception:
-            return 0
+            return self._get_driver_count_native()
 
     def _get_mutex_count(self) -> int:
         """

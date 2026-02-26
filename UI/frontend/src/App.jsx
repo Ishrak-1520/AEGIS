@@ -21,7 +21,7 @@ function App() {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Activity },
-    { id: 'hids', label: 'Memory AI', icon: Zap },
+    { id: 'hids', label: 'Volatile Guardian', icon: Zap },
     { id: 'network', label: 'Network', icon: Wifi },
     { id: 'scanner', label: 'Scanner', icon: FileSearch },
     { id: 'nlp', label: 'Threat AI', icon: Brain },
