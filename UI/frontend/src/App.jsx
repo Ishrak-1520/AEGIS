@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Activity, Lock, FileSearch, Settings, FileWarning, Menu, Brain, FileText, Wifi, ShieldCheck } from 'lucide-react'
+import { Shield, Activity, Lock, FileSearch, Settings, FileWarning, Menu, Brain, FileText, Wifi, ShieldCheck, Zap } from 'lucide-react'
 
 import Dashboard from './components/Dashboard';
 import Scanner from './components/Scanner';
@@ -13,6 +13,7 @@ import ThreatAlertManager from './components/ThreatAlertManager';
 
 import NetworkMonitor from './components/NetworkMonitor';
 import SiftScanner from './components/Sift/SiftScanner';
+import HidsLiveDashboard from './components/HidsLiveDashboard';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -20,6 +21,7 @@ function App() {
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Activity },
+    { id: 'hids', label: 'Volatile Guardian', icon: Zap },
     { id: 'network', label: 'Network', icon: Wifi },
     { id: 'scanner', label: 'Scanner', icon: FileSearch },
     { id: 'nlp', label: 'Threat AI', icon: Brain },
@@ -131,6 +133,7 @@ function App() {
               {activeTab === 'network' && <NetworkMonitor />}
               {activeTab === 'scanner' && <Scanner />}
               {activeTab === 'nlp' && <NLPAnalyzer />}
+              {activeTab === 'hids' && <HidsLiveDashboard />}
               {activeTab === 'sift' && <SiftScanner />}
               {activeTab === 'passwords' && <PasswordManager />}
               {activeTab === 'quarantine' && <Quarantine />}

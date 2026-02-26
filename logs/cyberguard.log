@@ -1348,3 +1348,5 @@ NameError: name 'text' is not defined. Did you mean: 'next'?
 2026-02-26 12:07:52 - app - INFO - NIDS model loaded: E:\personal projects\FYDP\FInal\AEGIS\core\network\RT-XNIDS_FInal\model_live.pkl
 2026-02-26 12:07:52 - app - INFO - NIDS Engine initialized (IPS: Available)
 2026-02-26 12:07:52 - app - INFO - NIDS Engine started
+2026-02-27 05:32:55 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 05:32:55 - app - INFO - Real-Time Protection initialized

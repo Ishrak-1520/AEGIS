@@ -11,7 +11,9 @@ import sys
 import warnings
 import numpy as np
 import joblib
+import time
 from datetime import datetime
+from core.system_logger import system_logger
 
 # Suppress sklearn warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -28,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL_PATH = os.path.join(BASE_DIR, "ai", "models", "hids_model.pkl")
 SCALER_PATH = os.path.join(BASE_DIR, "ai", "models", "hids_scaler.pkl")
 API_MAPPING_PATH = os.path.join(BASE_DIR, "ai", "models", "hids_api_mapping.pkl")
+VOLATILE_MODEL_PATH = os.path.join(BASE_DIR, "ai", "models", "volatile_hids_model.pkl")
 
 # Number of features expected by the model (t_0 to t_99)
 NUM_FEATURES = 100
@@ -261,8 +264,115 @@ class MalwareAnalyzer:
         }
 
 
-# Singleton instance
+
+class VolatileMemoryHIDS:
+    """
+    Analyzes live memory telemetry using a pre-trained Random Forest classifier.
+    Mitigates the 'Sandbox Paradox' with Dynamic Baseline Calibration.
+    """
+    
+    def __init__(self):
+        self.model = None
+        self.threshold = 0.90  
+        self.is_loaded = False
+        self.error = None
+        
+        # --- Sandbox Paradox Mitigation: Calibration State ---
+        self.calibration_samples = []
+        self.calibration_limit = 5  # Capture 5 samples for a quick baseline
+        self.calibration_offset = np.zeros(5)
+        self.is_calibrated = False
+        
+        # Target Training Population Mean (Estimated from CIC-MalMem-2022)
+        # Shifting local telemetry to these levels moves them into the model's "Comfort Zone"
+        self.target_metrics = np.array([450, 221, 500, 40, 0])
+        
+        self.last_inference_time = 0.0
+        
+        self._load_model()
+    
+    def _load_model(self):
+        """Load the volatile memory ML model."""
+        try:
+            if not os.path.exists(VOLATILE_MODEL_PATH):
+                self.error = f"Volatile HIDS model not found: {VOLATILE_MODEL_PATH}"
+                return
+            
+            self.model = joblib.load(VOLATILE_MODEL_PATH)
+            self.is_loaded = True
+            
+        except Exception as e:
+            self.error = f"Failed to load Volatile HIDS model: {str(e)}"
+    
+    def predict_memory_threat(self, features_vector: np.ndarray) -> tuple:
+        """
+        Predict if the current memory telemetry indicates a threat.
+        Applies Dynamic Baseline Calibration to resolve Sandbox Paradox.
+        
+        Args:
+            features_vector: Numpy array of 5 features
+            
+        Returns:
+            Tuple of (is_malware: bool, threat_probability: float)
+        """
+        if not self.is_loaded:
+            return False, 0.0
+            
+        try:
+            # 1. Calibration Phase
+            if not self.is_calibrated:
+                self.calibration_samples.append(features_vector)
+                
+                if len(self.calibration_samples) >= self.calibration_limit:
+                    # Calculate baseline and offset
+                    baseline = np.mean(self.calibration_samples, axis=0)
+                    self.calibration_offset = self.target_metrics - baseline
+                    # Ensure we don't zero out 64-bit proc checks if they are actually 0
+                    self.calibration_offset[4] = 0 
+                    self.is_calibrated = True
+                    system_logger.log_info(f"HIDS Calibration Complete. Offset: {self.calibration_offset.tolist()}", 'app')
+                
+                # While calibrating, we return low probability to avoid false positives
+                return False, 0.05
+            
+            # 2. Apply Calibration Offset
+            calibrated_X = features_vector + self.calibration_offset
+            
+            # Ensure no negative values after calibration
+            calibrated_X = np.maximum(calibrated_X, 0)
+            
+            # Reshape features for model prediction
+            X_input = calibrated_X.reshape(1, -1)
+            
+            # 3. Get probability scores
+            start_inference = time.perf_counter()
+            probabilities = self.model.predict_proba(X_input)[0]
+            self.last_inference_time = (time.perf_counter() - start_inference) * 1000
+            
+            malware_prob = float(probabilities[1]) if len(probabilities) > 1 else float(probabilities[0])
+            
+            # Apply Adaptive Threshold
+            is_malware = malware_prob >= self.threshold
+            
+            return is_malware, round(malware_prob, 4)
+            
+        except Exception as e:
+            system_logger.log_error(f"Volatile HIDS prediction error: {e}", 'app')
+            return False, 0.0
+
+    def get_status(self) -> dict:
+        """Get volatile analyzer status."""
+        return {
+            "model_loaded": self.is_loaded,
+            "threshold": self.threshold,
+            "error": self.error,
+            "model_path": VOLATILE_MODEL_PATH
+        }
+
+
+# Singleton instances
 _analyzer_instance = None
+_volatile_hids_instance = None
 
 
 def get_malware_analyzer() -> MalwareAnalyzer:
@@ -271,6 +381,14 @@ def get_malware_analyzer() -> MalwareAnalyzer:
     if _analyzer_instance is None:
         _analyzer_instance = MalwareAnalyzer()
     return _analyzer_instance
+
+
+def get_volatile_hids() -> VolatileMemoryHIDS:
+    """Get or create the singleton VolatileMemoryHIDS instance."""
+    global _volatile_hids_instance
+    if _volatile_hids_instance is None:
+        _volatile_hids_instance = VolatileMemoryHIDS()
+    return _volatile_hids_instance
 
 
 # --- CLI for testing ---

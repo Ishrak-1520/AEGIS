@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, FileText, AlertTriangle, Activity, Zap, CheckCircle, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Shield, FileText, AlertTriangle, Activity, Zap, CheckCircle, ShieldCheck, ShieldAlert, Brain } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
@@ -43,6 +43,22 @@ const StatCard = ({ title, value, icon: Icon, color, trend }) => (
 const Dashboard = () => {
     const [rtpStatus, setRtpStatus] = useState(null);
     const [systemStats, setSystemStats] = useState({ cpu: 0, memory: 0, disk: 0 });
+    const [volatileStatus, setVolatileStatus] = useState({
+        is_active: false,
+        telemetry: {
+            "svcscan.nservices": 0,
+            "svcscan.kernel_drivers": 0,
+            "handles.nmutant": 0,
+            "dlllist.avg_dlls_per_proc": 0,
+            "pslist.nprocs64bit": 0
+        },
+        inference: {
+            is_threat: false,
+            confidence_score: 0,
+            latency_ms: 0,
+            ai_reasoning: ""
+        }
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -53,6 +69,9 @@ const Dashboard = () => {
 
                     const stats = await window.pywebview.api.get_system_stats();
                     setSystemStats(stats);
+
+                    const volatile = await window.pywebview.api.get_volatile_memory_status();
+                    if (volatile && volatile.status === "success") setVolatileStatus(volatile.data);
                 } catch (error) {
                     console.error("Failed to fetch dashboard data:", error);
                 }
@@ -97,8 +116,8 @@ const Dashboard = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`border rounded-xl p-6 ${isProtected
-                        ? 'bg-green-500/10 border-green-500/30'
-                        : 'bg-red-500/10 border-red-500/30'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-red-500/10 border-red-500/30'
                     }`}
             >
                 <div className="flex items-center justify-between">
@@ -136,8 +155,8 @@ const Dashboard = () => {
                         <button
                             onClick={handleToggleProtection}
                             className={`px-6 py-3 rounded-lg font-bold transition-all ${isProtected
-                                    ? 'bg-red-500/20 text-red-400 border-2 border-red-500/50 hover:bg-red-500/30'
-                                    : 'bg-green-500/20 text-green-400 border-2 border-green-500/50 hover:bg-green-500/30'
+                                ? 'bg-red-500/20 text-red-400 border-2 border-red-500/50 hover:bg-red-500/30'
+                                : 'bg-green-500/20 text-green-400 border-2 border-green-500/50 hover:bg-green-500/30'
                                 }`}
                         >
                             {isProtected ? 'Disable Protection' : 'Enable Protection'}
@@ -219,64 +238,125 @@ const Dashboard = () => {
                 </div>
 
                 <div className="space-y-6">
-                    <div className="bg-surface border border-white/5 rounded-xl p-6">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <Zap className="text-yellow-400" size={20} />
-                            Quick Actions
+                    <div className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 text-primary group-hover:scale-110 transition-transform duration-500">
+                            <Zap size={48} />
+                        </div>
+                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
+                            <Zap className="text-primary" size={20} />
+                            Tactical Actions
                         </h3>
-                        <div className="space-y-3">
-                            <button className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 rounded-lg p-3 flex items-center justify-between transition-all group">
-                                <span className="font-medium">Quick Scan</span>
-                                <Zap size={18} className="group-hover:scale-110 transition-transform" />
+                        <div className="space-y-3 relative z-10">
+                            <button className="w-full bg-primary/5 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 rounded-lg p-3 flex items-center justify-between transition-all group/btn shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+                                <span className="font-bold tracking-tight text-sm">INITIATE QUICK SCAN</span>
+                                <Zap size={16} className="group-hover/btn:animate-pulse" />
                             </button>
-                            <button className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all group">
-                                <span className="font-medium">Update Database</span>
-                                <CheckCircle size={18} className="text-green-400 group-hover:scale-110 transition-transform" />
+                            <button className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all group/btn">
+                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white">RECALIBRATE SENSORS</span>
+                                <CheckCircle size={16} className="text-green-500/50 group-hover/btn:text-green-500" />
                             </button>
                         </div>
                     </div>
 
-                    <div className="bg-surface border border-white/5 rounded-xl p-6">
-                        <h3 className="text-lg font-bold text-white mb-4">System Status</h3>
-                        <div className="space-y-4">
-                            <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-400">CPU Usage</span>
-                                    <span className="text-white font-medium">{Math.round(systemStats.cpu)}%</span>
-                                </div>
-                                <div className="h-2 bg-background rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(systemStats.cpu, 100)}%` }}
-                                    />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-400">Memory</span>
-                                    <span className="text-white font-medium">{Math.round(systemStats.memory)}%</span>
-                                </div>
-                                <div className="h-2 bg-background rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-purple-500 rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(systemStats.memory, 100)}%` }}
-                                    />
+                    {/* Volatile Guardian (HIDS) Widget */}
+                    <motion.div
+                        animate={volatileStatus.is_active && volatileStatus.inference.is_threat ? {
+                            backgroundColor: ['rgba(30, 41, 59, 1)', 'rgba(239, 68, 68, 0.2)', 'rgba(30, 41, 59, 1)'],
+                            borderColor: ['rgba(255, 255, 255, 0.1)', 'rgba(239, 68, 68, 0.5)', 'rgba(255, 255, 255, 0.1)'],
+                            boxShadow: ['0 0 0px rgba(79, 139, 249, 0)', '0 0 20px rgba(239, 68, 68, 0.2)', '0 0 0px rgba(79, 139, 249, 0)']
+                        } : volatileStatus.is_active ? {
+                            boxShadow: ['0 0 5px rgba(79, 139, 249, 0.1)', '0 0 15px rgba(79, 139, 249, 0.2)', '0 0 5px rgba(79, 139, 249, 0.1)']
+                        } : {}}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                        className={`bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden ${!volatileStatus.is_active ? 'opacity-70' : ''}`}
+                    >
+                        {/* Scanline Effect */}
+                        {volatileStatus.is_active && (
+                            <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%] animate-[pulse_2s_infinite]" />
+                        )}
+
+                        {!volatileStatus.is_active && (
+                            <div className="absolute inset-0 bg-background/40 backdrop-blur-[1px] flex items-center justify-center z-10 rounded-xl overflow-hidden">
+                                <div className="bg-surface/90 border border-white/10 px-4 py-2 rounded-lg text-[10px] font-bold text-gray-400 flex items-center gap-2 tracking-widest uppercase">
+                                    <ShieldAlert size={14} />
+                                    Engine Offline
                                 </div>
                             </div>
-                            <div>
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-gray-400">Disk</span>
-                                    <span className="text-white font-medium">{Math.round(systemStats.disk)}%</span>
-                                </div>
-                                <div className="h-2 bg-background rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-green-500 rounded-full transition-all duration-500"
-                                        style={{ width: `${Math.min(systemStats.disk, 100)}%` }}
+                        )}
+
+                        <div className="flex items-center justify-between mb-4 relative z-10">
+                            <div className="flex items-center gap-2">
+                                <div className="relative">
+                                    <img
+                                        src="/assets/bat4-final.png"
+                                        className={`w-6 h-auto ${volatileStatus.is_active && volatileStatus.inference.is_threat ? 'invert-[20%] sepia-[100%] saturate-[500%] hue-rotate-[320deg]' : 'invert-[30%] sepia-[100%] saturate-[1000%] hue-rotate-[190deg] brightness-[1.2]'}`}
+                                        alt="icon"
+                                        style={{ filter: `drop-shadow(0 0 4px ${volatileStatus.is_active && volatileStatus.inference.is_threat ? '#FF5252' : '#4F8BF9'})` }}
                                     />
+                                </div>
+                                <h3 className="text-lg font-bold text-white tracking-tight">
+                                    Volatile Guardian
+                                </h3>
+                            </div>
+                            {volatileStatus.is_active && volatileStatus.inference.is_threat && (
+                                <span className="text-[10px] font-black bg-red-500 text-white px-2 py-0.5 rounded shadow-[0_0_10px_rgba(239,68,68,0.5)]">INTRUSION</span>
+                            )}
+                        </div>
+
+                        <div className="flex flex-col items-center justify-center py-2 relative z-10">
+                            <div className="relative w-32 h-32 flex items-center justify-center">
+                                <svg className="w-full h-full transform -rotate-90">
+                                    <defs>
+                                        <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stopColor="#4F8BF9" />
+                                            <stop offset="100%" stopColor="#00F3FF" />
+                                        </linearGradient>
+                                        <linearGradient id="threatGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stopColor="#FF5252" />
+                                            <stop offset="100%" stopColor="#FF8A80" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle
+                                        cx="64" cy="64" r="58"
+                                        stroke="currentColor" strokeWidth="6"
+                                        fill="transparent"
+                                        className="text-white/5"
+                                    />
+                                    <motion.circle
+                                        cx="64" cy="64" r="58"
+                                        stroke={volatileStatus.is_active && volatileStatus.inference.is_threat ? "url(#threatGradient)" : "url(#neonGradient)"}
+                                        strokeWidth="8"
+                                        fill="transparent"
+                                        strokeDasharray={364.4}
+                                        initial={{ strokeDashoffset: 364.4 }}
+                                        animate={{ strokeDashoffset: 364.4 * (1 - (volatileStatus.is_active ? volatileStatus.inference.confidence_score : 0)) }}
+                                        transition={{ duration: 1.5, ease: "easeOut" }}
+                                        className="drop-shadow-[0_0_8px_rgba(79,139,249,0.5)]"
+                                    />
+                                </svg>
+                                <div className="absolute flex flex-col items-center">
+                                    <span className={`text-2xl font-black ${volatileStatus.is_active && volatileStatus.inference.is_threat ? 'text-red-400' : 'text-white'}`}>
+                                        {(volatileStatus.is_active ? (volatileStatus.inference.confidence_score * 100).toFixed(1) : "0.0")}%
+                                    </span>
+                                    <span className="text-[9px] text-gray-500 uppercase font-black tracking-widest">Threat Prob</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                        <div className="mt-4 space-y-2 relative z-10">
+                            {[
+                                { label: "Active Threads", key: "svcscan.nservices" },
+                                { label: "Kernel Stack", key: "svcscan.kernel_drivers" },
+                                { label: "Atomic Mutex", key: "handles.nmutant" },
+                                { label: "Injection Surface", key: "dlllist.avg_dlls_per_proc" }
+                            ].map((item, idx) => (
+                                <div key={idx} className="flex justify-between text-[11px] group/item">
+                                    <span className="text-gray-500 group-hover/item:text-gray-300 transition-colors uppercase text-[8px] font-bold tracking-[0.1em]">{item.label}:</span>
+                                    <span className="text-white font-mono font-bold bg-white/5 px-1.5 rounded text-[10px]">{volatileStatus.telemetry[item.key]}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </div>

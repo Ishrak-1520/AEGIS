@@ -21,13 +21,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from database.db_manager import db_manager
 from security.encryption import encryption_manager
+from core.system_logger import system_logger
 
 try:
     import yara
     YARA_AVAILABLE = True
 except ImportError:
     YARA_AVAILABLE = False
-    print("YARA not available. Install yara-python for advanced scanning.")
+    yara = None  # type: ignore
 
 
 class FileScanner:
@@ -92,10 +93,10 @@ class FileScanner:
             
             if filepaths:
                 self.yara_rules = yara.compile(filepaths=filepaths)
-                print(f"Compiled {len(filepaths)} YARA rule files.")
+                system_logger.log_info(f"Compiled {len(filepaths)} YARA rule files.", 'app')
             
         except Exception as e:
-            print(f"Error compiling YARA rules: {e}")
+            system_logger.log_warning(f"Error compiling YARA rules: {e}", 'app')
     
     def _load_signatures(self) -> Dict[str, Dict]:
         """
@@ -121,7 +122,7 @@ class FileScanner:
                 self._save_signatures(default_sigs)
                 return default_sigs
         except Exception as e:
-            print(f"Error loading signatures: {e}")
+            system_logger.log_warning(f"Error loading signatures: {e}", 'app')
             return {}
     
     def _save_signatures(self, signatures: Dict):
@@ -131,7 +132,7 @@ class FileScanner:
             with open(self.signatures_file, 'w') as f:
                 json.dump(signatures, f, indent=2)
         except Exception as e:
-            print(f"Error saving signatures: {e}")
+            system_logger.log_warning(f"Error saving signatures: {e}", 'app')
     
     def add_signature(self, sig_id: str, file_hash: str, name: str,
                      level: str, description: Optional[str] = None):
@@ -355,7 +356,7 @@ class FileScanner:
                             progress_callback(progress, file_path, result)
                             
                     except Exception as e:
-                        print(f"Error scanning file {file_path}: {e}")
+                        system_logger.log_warning(f"Error scanning file {file_path}: {e}", 'app')
                         summary['errors'] += 1
             
             summary['scan_time'] = time.time() - start_time
@@ -371,7 +372,7 @@ class FileScanner:
             )
             
         except Exception as e:
-            print(f"Directory scan error: {e}")
+            system_logger.log_warning(f"Directory scan error: {e}", 'app')
             summary['errors'] += 1
         finally:
             self.scanning = False
@@ -478,7 +479,7 @@ class FileScanner:
             # Silently skip permission errors and invalid arguments (common in system files)
             return ''
         except Exception as e:
-            print(f"Hash calculation error: {e}")
+            system_logger.log_warning(f"Hash calculation error: {e}", 'app')
             return ''
     
     def get_scan_history(self, limit: int = 10) -> List[Dict]:
