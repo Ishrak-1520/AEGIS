@@ -1,10 +1,52 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Upload, Code, Play, AlertCircle, CheckCircle, ChevronDown, FileCode, Copy, ClipboardCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Upload, Code, Play, AlertCircle, CheckCircle, ChevronDown, FileCode, Copy, ClipboardCheck, Search, ShieldCheck, Info, Package, FileSearch } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const LANGUAGES = [
     "Python", "JavaScript", "TypeScript", "HTML", "CSS", "Java", "C++", "C#", "Go", "Rust", "PHP", "Ruby", "Swift", "Kotlin", "SQL", "Shell", "Unknown"
 ];
+
+// Maps step keywords to appropriate icons
+const getStepIcon = (text) => {
+    const lower = text.toLowerCase();
+    if (lower.includes('import') || lower.includes('dependenc') || lower.includes('package') || lower.includes('registry'))
+        return Package;
+    if (lower.includes('vulnerabilit') || lower.includes('injection') || lower.includes('security') || lower.includes('safe'))
+        return ShieldCheck;
+    if (lower.includes('scan') || lower.includes('check') || lower.includes('analyz') || lower.includes('inspect'))
+        return Search;
+    if (lower.includes('file') || lower.includes('code') || lower.includes('function') || lower.includes('logic'))
+        return FileSearch;
+    return Info;
+};
+
+// Parses the AI's analysis_steps string into structured items
+const parseSummarySteps = (summary) => {
+    if (!summary || typeof summary !== 'string') return [];
+
+    // Try to split on "Step N:", "N)", or "N." patterns
+    const stepRegex = /(?:step\s*\d+[:.\-\)]|\d+[).]\s)/gi;
+    const parts = summary.split(stepRegex).filter(s => s.trim());
+
+    if (parts.length > 1) {
+        return parts.map((text, i) => ({
+            number: i + 1,
+            text: text.trim().replace(/^\s*[-–]\s*/, ''),
+        }));
+    }
+
+    // Fallback: split on sentence boundaries
+    const sentences = summary.split(/(?<=[.!])\s+/).filter(s => s.trim().length > 10);
+    if (sentences.length > 1) {
+        return sentences.map((text, i) => ({
+            number: i + 1,
+            text: text.trim(),
+        }));
+    }
+
+    // If nothing worked, return a single item
+    return [{ number: 1, text: summary.trim() }];
+};
 
 const SiftScanner = () => {
     const [code, setCode] = useState('');
@@ -243,10 +285,10 @@ const SiftScanner = () => {
                     transition={{ duration: 0.5, type: "spring" }}
                     className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 >
-                    {/* Score & Summary Card */}
+                    {/* Score Card */}
                     <div className="md:col-span-1 space-y-6">
                         <div className="bg-surface border border-white/10 rounded-xl p-6 flex flex-col items-center justify-center text-center h-full relative overflow-hidden">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
                             <h3 className="text-lg font-semibold text-white mb-6">Security Score</h3>
 
@@ -257,12 +299,13 @@ const SiftScanner = () => {
                                 </span>
                             </div>
 
-                            <div className="w-full text-left">
-                                <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Audit Summary</h4>
-                                <p className="text-sm text-gray-300 leading-relaxed bg-white/5 p-4 rounded-lg border border-white/5">
-                                    {analysisResult.summary}
-                                </p>
-                            </div>
+                            {/* Score label */}
+                            <p className={`text-sm font-medium mt-2 ${analysisResult.score >= 80 ? 'text-green-400' :
+                                    analysisResult.score >= 50 ? 'text-yellow-400' : 'text-red-400'
+                                }`}>
+                                {analysisResult.score >= 80 ? 'Secure' :
+                                    analysisResult.score >= 50 ? 'Needs Attention' : 'Critical Risk'}
+                            </p>
                         </div>
                     </div>
 
@@ -324,8 +367,8 @@ const SiftScanner = () => {
                                                 <button
                                                     onClick={() => copyToClipboard(issue.suggested_fix, index)}
                                                     className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-all duration-200 ${copiedIndex === index
-                                                            ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                                                            : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
+                                                        ? 'bg-green-500/20 text-green-400 border border-green-500/30'
+                                                        : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
                                                         }`}
                                                 >
                                                     {copiedIndex === index ? (
@@ -345,6 +388,61 @@ const SiftScanner = () => {
                                 </motion.div>
                             ))
                         )}
+                    </div>
+                </motion.div>
+            )}
+
+            {/* Audit Summary Section — Full Width Below */}
+            {analysisResult && analysisResult.summary && (
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className="bg-surface border border-white/10 rounded-xl overflow-hidden"
+                >
+                    {/* Header */}
+                    <div className="px-6 py-4 border-b border-white/5 flex items-center gap-3">
+                        <div className="p-2 bg-primary/10 rounded-lg">
+                            <FileSearch className="w-5 h-5 text-primary" />
+                        </div>
+                        <div>
+                            <h3 className="text-base font-bold text-white">Audit Summary</h3>
+                            <p className="text-xs text-gray-500">Step-by-step analysis breakdown</p>
+                        </div>
+                        <span className="ml-auto bg-white/5 text-xs px-2.5 py-1 rounded-full text-gray-400 border border-white/5">
+                            {parseSummarySteps(analysisResult.summary).length} steps
+                        </span>
+                    </div>
+
+                    {/* Steps */}
+                    <div className="p-4 space-y-2">
+                        {parseSummarySteps(analysisResult.summary).map((step, index) => {
+                            const IconComponent = getStepIcon(step.text);
+                            return (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, x: -15 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.3 + index * 0.08 }}
+                                    className="group flex items-start gap-3 p-3 rounded-lg bg-white/[0.02] hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-all duration-200 cursor-default"
+                                >
+                                    {/* Step number badge */}
+                                    <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/15 border border-primary/20 flex items-center justify-center text-xs font-bold text-primary group-hover:bg-primary/25 transition-colors">
+                                        {step.number}
+                                    </div>
+
+                                    {/* Icon */}
+                                    <div className="flex-shrink-0 mt-0.5">
+                                        <IconComponent className="w-4 h-4 text-gray-500 group-hover:text-gray-300 transition-colors" />
+                                    </div>
+
+                                    {/* Step text */}
+                                    <p className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-200 transition-colors">
+                                        {step.text}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </motion.div>
             )}
