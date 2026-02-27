@@ -86,11 +86,11 @@ const HidsLiveDashboard = () => {
     }, [status.inference.ai_reasoning, isPaused]);
 
     const metrics = [
-        { label: "Hidden Background Services", value: status.telemetry["svcscan.nservices"] },
-        { label: "Kernel Drivers (Root Access)", value: status.telemetry["svcscan.kernel_drivers"] },
-        { label: "System Locks (Mutexes)", value: status.telemetry["handles.nmutant"] },
-        { label: "Code Libraries per Process", value: status.telemetry["dlllist.avg_dlls_per_proc"] },
-        { label: "Active 64-bit Processes", value: status.telemetry["pslist.nprocs64bit"] }
+        { label: "Background Programs", value: status.telemetry["svcscan.nservices"] },
+        { label: "Hardware Drivers", value: status.telemetry["svcscan.kernel_drivers"] },
+        { label: "Resource Locks", value: status.telemetry["handles.nmutant"] },
+        { label: "Loaded Components", value: status.telemetry["dlllist.avg_dlls_per_proc"] },
+        { label: "Active Processes", value: status.telemetry["pslist.nprocs64bit"] }
     ];
 
     const isThreat = status.inference.is_threat;
@@ -101,9 +101,9 @@ const HidsLiveDashboard = () => {
 
         // Define keywords and their associated colors
         const keywords = {
-            red: ['THREAT', 'MALWARE', 'INJECTION', 'HIGH-RISK', 'SEVERITY-HIGH', '🚨'],
-            orange: ['KERNEL-WATCH', 'ELEVATED', 'UNVERIFIED', 'SUSPICIOUS', 'MUTEX-LOCK', 'DLL-SURFACE', 'SVC-GRID', '🔍', '🔒', '💉', '☁️'],
-            green: ['SECURE', 'SAFE', 'VERIFIED', 'SYNCHRONIZED', 'SEVERITY-LOW', '✅', 'HEALTH', '⚓', '🛡️', '⚡']
+            red: ['THREAT', 'MALWARE', 'DETECTED', 'HIGH-RISK', 'THREAT DETECTED', '🚨', '⚠️'],
+            orange: ['CHECKING', 'ELEVATED', 'UNVERIFIED', 'SUSPICIOUS', 'HIGH ACTIVITY', 'RESOURCE LOCKS', 'CODE LIBRARIES', '🔍', '🔒', '💉', '☁️'],
+            green: ['ALL CLEAR', 'SAFE', 'VERIFIED', 'NORMAL', 'SYSTEM SAFE', '✅', 'HEALTH', 'DRIVERS VERIFIED', '🛡️', '⚡']
         };
 
         // Regex to match any of the keywords
@@ -151,8 +151,8 @@ const HidsLiveDashboard = () => {
                         <ShieldAlert size={80} className="text-[#FF5252] mb-8 mx-auto filter drop-shadow-[0_0_15px_rgba(255,82,82,0.5)]" />
                         <h2 className="text-3xl font-black text-white mb-6 tracking-tighter uppercase italic">Guardian Offline</h2>
                         <p className="text-gray-400 mb-10 leading-relaxed font-sans normal-case text-sm">
-                            The Volatile Memory HIDS is currently in standby mode.
-                            Enable Real-Time Protection to initialize the Bat-Console neural interface.
+                            Memory protection is currently turned off.
+                            Enable Real-Time Protection from the Dashboard to start monitoring.
                         </p>
                     </motion.div>
                 </div>
@@ -172,17 +172,17 @@ const HidsLiveDashboard = () => {
                         </h1>
                         <div className="flex items-center gap-3 mt-3">
                             <div className="h-0.5 w-12 bg-[#4F8BF9]" />
-                            <span className="text-[12px] font-bold text-[#E6EDF3] tracking-[0.2em]">Volatile Guardian Protocol</span>
+                            <span className="text-[12px] font-bold text-[#E6EDF3] tracking-[0.2em]">Memory Protection</span>
                             <div className="h-0.5 w-12 bg-[#4F8BF9]" />
                         </div>
                     </div>
                 </div>
 
                 <div className="mt-8 md:mt-0 flex flex-col items-end gap-1">
-                    <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Sector: Memory-01</span>
+                    <span className="text-[10px] text-gray-500 font-bold tracking-widest uppercase">Module: Memory Guard</span>
                     <span className="text-[10px] text-[#4F8BF9] font-bold tracking-widest flex items-center gap-2 animate-pulse uppercase">
                         <Activity size={12} />
-                        Live Feed: Synchronized
+                        Live Monitoring: Active
                     </span>
                     <div className="flex gap-1 mt-1">
                         {[...Array(8)].map((_, i) => (
@@ -206,19 +206,19 @@ const HidsLiveDashboard = () => {
                                         </div>
                                         <div>
                                             <h2 className={`text-4xl font-black italic tracking-tighter ${isThreat ? "text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" : "text-white"}`}>
-                                                {isThreat ? "Incursion Detected" : "Integrity: Stable"}
+                                                {isThreat ? "Threat Detected" : "System Safe"}
                                             </h2>
-                                            <p className="text-[11px] text-gray-500 font-bold tracking-[0.3em] uppercase mt-1">System Security Assessment</p>
+                                            <p className="text-[11px] text-gray-500 font-bold tracking-[0.3em] uppercase mt-1">Memory Security Status</p>
                                         </div>
                                     </div>
                                     <p className={`text-xs tracking-wider font-mono uppercase leading-relaxed ${isThreat ? "text-red-200" : "text-[#4F8BF9]/80"}`}>
                                         {isThreat
-                                            ? "Critical anomaly signature identified in volatile memory heap. Protocol 'GOTHAM REVENGE' engaged."
-                                            : "Global memory checksums matching baseline. No unauthorized injection vectors identified."}
+                                            ? "A suspicious pattern was found in your system's memory. AEGIS is actively responding to this threat."
+                                            : "Your memory activity is normal. No signs of hidden threats or unauthorized access detected."}
                                     </p>
                                 </div>
                                 <div className="flex flex-col items-center justify-center p-6 border-l border-white/5 min-w-[160px]">
-                                    <div className="text-[12px] text-gray-500 font-bold tracking-widest mb-2 uppercase">Risk Probability</div>
+                                    <div className="text-[12px] text-gray-500 font-bold tracking-widest mb-2 uppercase">Threat Level</div>
                                     <div className={`text-5xl font-black ${isThreat ? 'text-red-500' : 'text-[#4F8BF9]'} drop-shadow-[0_0_8px_currentColor]`}>
                                         {confidence}%
                                     </div>
@@ -240,7 +240,7 @@ const HidsLiveDashboard = () => {
                                     </div>
                                     <span className={`ml-3 text-[10px] font-bold tracking-widest flex items-center gap-2 uppercase ${isThreat ? 'text-red-300' : 'text-gray-400'}`}>
                                         {isThreat ? <ShieldAlert size={12} className="text-red-500" /> : <Shield size={12} className="text-[#4F8BF9]" />}
-                                        Tactical Intelligence Response Console
+                                        AI Analysis Log
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-3">
@@ -255,7 +255,7 @@ const HidsLiveDashboard = () => {
                                         {isPaused ? <Play size={10} fill="currentColor" /> : <Pause size={10} fill="currentColor" />}
                                     </button>
                                     <div className="text-[9px] text-[#4F8BF9]/60 font-mono animate-pulse uppercase tracking-wider">
-                                        Live_Sync
+                                        Live
                                     </div>
                                 </div>
                             </div>
@@ -290,12 +290,12 @@ const HidsLiveDashboard = () => {
                         <section className="bg-surface/60 border border-white/5 rounded-xl p-8 backdrop-blur-xl relative overflow-hidden">
                             <h3 className="text-md font-black text-white mb-8 flex items-center gap-3 uppercase italic tracking-tighter">
                                 <Activity size={20} className="text-[#4F8BF9]" />
-                                Engine Performance HUD
+                                Performance Monitor
                             </h3>
                             <div className="space-y-6">
                                 <div>
                                     <div className="flex justify-between text-[12px] text-gray-500 font-black mb-2 uppercase tracking-widest">
-                                        <span>Inference Latency</span>
+                                        <span>Analysis Speed</span>
                                         <span className={`font-black ${status.inference.latency_ms > 50 ? 'text-red-500 animate-pulse' :
                                             status.inference.latency_ms > 10 ? 'text-orange-400' : 'text-[#00C853]'
                                             }`}>
@@ -314,7 +314,7 @@ const HidsLiveDashboard = () => {
                                 </div>
                                 <div>
                                     <div className="flex justify-between text-[12px] text-gray-500 font-black mb-2 uppercase tracking-widest">
-                                        <span>Data Throughput</span>
+                                        <span>Data Processing</span>
                                         <span className="text-[#4F8BF9]">Active</span>
                                     </div>
                                     <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
@@ -334,7 +334,7 @@ const HidsLiveDashboard = () => {
                 <aside className="space-y-4">
                     <h3 className="text-[11px] font-black text-[#4F8BF9] mb-4 tracking-[0.4em] flex items-center gap-2 uppercase">
                         <Zap size={14} />
-                        Grid Telemetry
+                        System Metrics
                     </h3>
                     <div className="flex flex-col gap-3">
                         {metrics.map((metric, index) => (
@@ -359,11 +359,11 @@ const HidsLiveDashboard = () => {
                     </div>
 
                     <div className="mt-8 p-6 bg-[#4F8BF9]/5 border border-[#4F8BF9]/20 rounded-xl">
-                        <div className="text-[10px] text-[#4F8BF9] font-black mb-4 tracking-[0.2em] uppercase">Security Protocol</div>
+                        <div className="text-[10px] text-[#4F8BF9] font-black mb-4 tracking-[0.2em] uppercase">Protection Status</div>
                         <div className="space-y-3 font-mono text-[11px] normal-case text-gray-500 italic">
-                            <p>• Memory-mapped sectors verified.</p>
-                            <p>• Zero-day injection vectors shielded.</p>
-                            <p>• Kernel stack isolation confirmed.</p>
+                            <p>• Memory sections verified.</p>
+                            <p>• Protected against new and unknown threats.</p>
+                            <p>• Core system components isolated safely.</p>
                         </div>
                     </div>
                 </aside>

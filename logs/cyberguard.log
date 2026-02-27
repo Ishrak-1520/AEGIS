@@ -1543,3 +1543,52 @@ NameError: name 'text' is not defined. Did you mean: 'next'?
 2026-02-27 15:28:58 - app - INFO - NIDS learning complete. Baseline: 328 packets, 21 flows
 2026-02-27 15:30:15 - app - INFO - NIDS Engine stopped
 2026-02-27 15:30:16 - app - INFO - Real-Time Protection stopped. Scans: 32, Threats: 5
+2026-02-27 15:41:36 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 15:41:37 - app - INFO - Real-Time Protection initialized
+2026-02-27 15:41:37 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 15:55:22 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 15:55:24 - app - INFO - Real-Time Protection initialized
+2026-02-27 15:55:24 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 15:55:37 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-02-27 15:55:37 - app - INFO - Real-Time Protection started
+2026-02-27 15:55:37 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-27 15:55:37 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-27 15:55:37 - app - INFO - NIDS Engine started
+2026-02-27 15:55:59 - app - INFO - HIDS Calibration Complete. Offset: [325.0, -16.0, -1474.0, -44.0, 0.0]
+2026-02-27 15:56:07 - app - INFO - NIDS learning complete. Baseline: 1892 packets, 20 flows
+2026-02-27 15:59:06 - app - INFO - NIDS Engine stopped
+2026-02-27 15:59:06 - app - INFO - Real-Time Protection stopped. Scans: 115, Threats: 3
+2026-02-27 16:01:01 - app - INFO - HIDS Calibration Complete. Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+2026-02-27 16:01:01 - app - INFO - HIDS Calibration Complete. Offset: [328.0, -16.0, -1467.0, -84.0, 0.0]
+2026-02-27 16:01:01 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:01:02 - app - INFO - Real-Time Protection initialized
+2026-02-27 16:01:51 - app - INFO - HIDS Calibration Complete. Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+2026-02-27 16:01:51 - app - INFO - HIDS Calibration Complete. Offset: [328.0, -16.0, -1474.0, -48.0, 0.0]
+2026-02-27 16:01:51 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:01:51 - app - INFO - Real-Time Protection initialized
+2026-02-27 16:02:35 - app - INFO - HIDS Calibration Complete. Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+2026-02-27 16:02:35 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -16.0, -1467.0, -94.0, 0.0]
+2026-02-27 16:02:35 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:02:36 - app - INFO - Real-Time Protection initialized
+2026-02-27 16:04:01 - app - INFO - HIDS Calibration Complete. Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+2026-02-27 16:04:01 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -16.0, -1460.0, -8.0, 0.0]
+2026-02-27 16:04:01 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:04:02 - app - INFO - Real-Time Protection initialized
+2026-02-27 16:09:29 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:09:30 - app - INFO - Real-Time Protection initialized
+2026-02-27 16:09:30 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:09:38 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-02-27 16:09:38 - app - INFO - Real-Time Protection started
+2026-02-27 16:09:38 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-27 16:09:38 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-27 16:09:38 - app - INFO - NIDS Engine started
+2026-02-27 16:10:00 - app - INFO - HIDS Calibration Complete. Offset: [326.0, -16.0, -1462.8, -53.599999999999994, 0.0]
+2026-02-27 16:10:26 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:10:27 - app - INFO - Real-Time Protection initialized
+2026-02-27 16:10:27 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 16:10:34 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-02-27 16:10:34 - app - INFO - Real-Time Protection started
+2026-02-27 16:10:34 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-27 16:10:34 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-27 16:10:34 - app - INFO - NIDS Engine started
+2026-02-27 16:10:56 - app - INFO - HIDS Calibration Complete. Offset: [326.0, -16.0, -1462.8, -43.0, 0.0]

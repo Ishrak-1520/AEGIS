@@ -303,15 +303,15 @@ class RealTimeProtection:
             'type': 'VOLATILE_MEMORY_THREAT',
             'level': 'CRITICAL',
             'confidence': probability * 100,
-            'description': "In-Memory Threat Detected: High-probability fileless malware or exploit activity.",
+            'description': "Threat Detected in Memory: Suspicious hidden activity was found running in your system's memory.",
             'timestamp': datetime.now().isoformat(),
-            'source': 'Dynamic Volatile Memory HIDS',
+            'source': 'Memory Protection Guard',
             'telemetry': vector.tolist(),
             'malware_prob': probability,
             'recommended_actions': [
-                "⚠️ Host network isolation triggered",
-                "🚫 Suspicious process termination initiated",
-                "🔍 Immediate full system scan recommended"
+                "⚠️ Network connections restricted for safety",
+                "🚫 Suspicious programs are being stopped",
+                "🔍 A full system scan is recommended"
             ]
         }
         
@@ -319,9 +319,9 @@ class RealTimeProtection:
         db_manager.log_threat(
             threat_type='VOLATILE_MEMORY_THREAT',
             threat_level='CRITICAL',
-            source='Volatile Memory HIDS',
+            source='Memory Protection Guard',
             details=str(threat_data),
-            action_taken='Automated Remediation Triggered',
+            action_taken='Automated Protective Action Triggered',
             confidence_score=probability * 100
         )
         
@@ -329,7 +329,7 @@ class RealTimeProtection:
         system_logger.log_threat(
             'VOLATILE_MEMORY_THREAT',
             'CRITICAL',
-            f"Fileless malware detected with {probability*100:.1f}% probability. Triggering remediation."
+            f"Hidden threat detected with {probability*100:.1f}% confidence. Taking protective action."
         )
         
         # Notify registered callbacks (Popups)

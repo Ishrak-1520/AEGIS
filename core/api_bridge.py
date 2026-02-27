@@ -348,7 +348,7 @@ class AegisAPI:
         }
 
     def _generate_live_narrative(self, is_threat, proba, raw_vector):
-        """Dynamic narrative generator for live polling with tactical indicators."""
+        """Dynamic narrative generator for live polling with plain-English indicators."""
         v0 = int(raw_vector[0]) if len(raw_vector) > 0 else 0 # Services
         v1 = int(raw_vector[1]) if len(raw_vector) > 1 else 0 # Drivers
         v2 = int(raw_vector[2]) if len(raw_vector) > 2 else 0 # Mutexes
@@ -358,32 +358,32 @@ class AegisAPI:
         
         # 1. Base State
         if is_threat:
-            base = f"THREAT [SEVERITY-HIGH]: Volatile memory analysis identified patterns matching known malware injection vectors (Confidence: {proba*100:.1f}%)."
+            base = f"THREAT DETECTED: Suspicious activity found in your computer's memory. This matches patterns commonly seen in hidden malware. Confidence: {proba*100:.1f}%."
             observations.append(base)
         else:
-            base = f"SECURE [SEVERITY-LOW]: Global telemetry synchronized. System state aligns with Baseline Confidence (Health: {(1-proba)*100:.1f}%)."
+            base = f"ALL CLEAR: Your system's memory activity looks normal and healthy. System health: {(1-proba)*100:.1f}%."
             observations.append(base)
 
         # 2. Dynamic Evidence
-        if v1 > 250: # Arbitrary high driver count
-            observations.append(f"KERNEL-WATCH: Elevated driver count ({v1}) detected. Potential rootkit persistence surface monitoring engaged.")
+        if v1 > 250:
+            observations.append(f"CHECKING DRIVERS: Your system has an unusually high number of hardware drivers loaded ({v1}). Monitoring for hidden threats that may disguise themselves as drivers.")
         elif v1 > 0:
-            observations.append(f"RING-0: {v1} kernel modules verified against AEGIS trust-list.")
+            observations.append(f"DRIVERS VERIFIED: {v1} hardware drivers checked and appear safe.")
 
         if v0 > 500:
-            observations.append(f"SVC-GRID: High background service density ({v0}). Scanning for obfuscated service threads.")
+            observations.append(f"HIGH ACTIVITY: An unusually high number of background programs are running ({v0}). Checking for anything suspicious hiding among them.")
         
         if v2 > 800:
-            observations.append(f"MUTEX-LOCK: Heavy resource locking detected ({v2}). Possible mutex-based sandbox evasion attempt in progress.")
+            observations.append(f"RESOURCE LOCKS: A large number of system resource locks detected ({v2}). Some malware uses these to avoid detection.")
         
         if v3 > 50:
-            observations.append(f"DLL-SURFACE: Process injection risk elevated. Mean DLL density ({v3}/proc) exceeds standard runtime parameters.")
+            observations.append(f"CODE LIBRARIES: Programs are loading more code components than usual ({v3} per program). This can indicate something is injecting code into running programs.")
 
-        # 3. Tactical Operational Notes
+        # 3. Operational Status Notes
         notes = [
-            "NAVY-6: Memory-mapped sectors isolated.",
-            "AEGIS-1: Real-time ML weights synchronized.",
-            "QUANTUM: Differential entropy within stable limits."
+            "Memory sections verified and isolated for safety.",
+            "AI detection model updated and synchronized.",
+            "System activity patterns are within normal range."
         ]
         
         # Pick one operational note based on time/proba for variety
