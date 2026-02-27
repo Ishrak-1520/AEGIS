@@ -90,7 +90,7 @@ class RealTimeProtection:
     Continuously scans screen content for cyber threats
     """
     
-    def __init__(self, scan_interval: float = 3.0):
+    def __init__(self, scan_interval: float = 1.5):
         """
         Initialize real-time protection
         
@@ -113,8 +113,10 @@ class RealTimeProtection:
         self.threat_sensitivity = 'MEDIUM'  # LOW, MEDIUM, HIGH
         self.whitelist_urls = set()
         self.whitelist_processes = {
-            'cyberguard.exe', 'cyberguard pro.exe', 'python.exe', 'pycharm64.exe', 
-            'code.exe', 'notepad.exe', 'explorer.exe', 'taskmgr.exe'
+            'cyberguard.exe', 'cyberguard pro.exe', 'python.exe',
+            'python3.exe', 'python3.11.exe', 'python3.12.exe', 'python3.13.exe',
+            'pythonw.exe', 'pycharm64.exe',
+            'code.exe', 'explorer.exe', 'taskmgr.exe'
         }
         
         # Performance monitoring
@@ -126,9 +128,13 @@ class RealTimeProtection:
         self.last_screen_text = ""
         self.last_screenshot = None
         
-        # Threat history (to avoid duplicate alerts)
+        # Threat history (to avoid duplicate alerts, capped short to allow re-detection)
         self.recent_threats = []
-        self.max_threat_history = 10
+        self.max_threat_history = 5
+        
+        # Last OCR time (to force re-scan even if screen unchanged after a threshold)
+        self._last_ocr_time = 0.0
+        self._force_rescan_interval = 15.0  # Seconds before forcing re-scan even on static screen
         
         self._tesseract_ok = self._check_tesseract()
         
@@ -400,11 +406,15 @@ class RealTimeProtection:
                 last_thumb = self.last_screenshot.resize((100, 100))
                 
                 diff = ImageChops.difference(curr_thumb, last_thumb)
-                if not diff.getbbox():
-                    # Screen hasn't changed, skip expensive OCR
+                time_since_ocr = time.time() - self._last_ocr_time
+                screen_changed = diff.getbbox() is not None
+                
+                if not screen_changed and time_since_ocr < self._force_rescan_interval:
+                    # Screen same AND not enough time passed — skip expensive OCR
                     return
             
             self.last_screenshot = screenshot.copy()
+            self._last_ocr_time = time.time()
 
             # 2. Context Awareness: Get active window info
             window_info = self._get_active_window_info()
@@ -479,8 +489,11 @@ class RealTimeProtection:
                     except Exception:
                         pass  # Use original size if resize fails
             
-            # Extract text using Tesseract OCR
-            text = pytesseract.image_to_string(image, lang='eng')
+            # Extract text using Tesseract OCR with fast config
+            # PSM 11 = Sparse text (good for mixed screen content)
+            # OEM 1 = LSTM neural net engine only (faster than default combined)
+            custom_config = '--psm 11 --oem 1'
+            text = pytesseract.image_to_string(image, lang='eng', config=custom_config)
             return text.strip()
             
         except Exception as e:
@@ -577,8 +590,8 @@ class RealTimeProtection:
             system_logger.log_info(f"Suppressed {threat_level} alert in Game Mode (Process: {process_name})", 'threat')
             return False
         
-        # Check if similar threat was recently detected (avoid duplicates)
-        threat_signature = f"{threat_level}:{','.join(result.get('patterns_detected', []))}:{process_name}"
+        # Check if a threat at same level from same process was very recently detected (avoid spam)
+        threat_signature = f"{threat_level}:{process_name}"
         if threat_signature in self.recent_threats:
             return False
         
@@ -615,8 +628,11 @@ class RealTimeProtection:
             'recommended_actions': self._get_recommended_actions(threat_level, patterns)
         }
         
-        # Add to recent threats (to avoid duplicates)
-        threat_signature = f"{threat_level}:{','.join(patterns)}:{process_name}"
+        # Add XAI explanation
+        threat_data["xai"] = self._generate_nlp_xai_explanation(result, process_name)
+        
+        # Add to recent threats (to avoid duplicate spam)
+        threat_signature = f"{threat_level}:{process_name}"
         self.recent_threats.append(threat_signature)
         if len(self.recent_threats) > self.max_threat_history:
             self.recent_threats.pop(0)
@@ -644,6 +660,78 @@ class RealTimeProtection:
                 callback(threat_data)
             except Exception as e:
                 system_logger.log_error(f"Threat callback error: {e}", 'app')
+    
+    def _generate_nlp_xai_explanation(self, result: dict, process_name: str) -> dict:
+        """
+        Generate an Explainable AI (XAI) explanation dict for an NLP screen threat
+        to surface in the frontend notification pane.
+        """
+        threat_level = result.get('threat_level', 'UNKNOWN')
+        confidence   = result.get('confidence', 0)
+        patterns     = result.get('patterns_detected', [])
+        description  = result.get('description', '')
+        
+        # Map level to risk
+        risk_map = {'CRITICAL': 'CRITICAL', 'HIGH': 'HIGH', 'MEDIUM': 'MEDIUM', 'LOW': 'LOW'}
+        risk_level = risk_map.get(threat_level, 'MEDIUM')
+        
+        # Build a simple plain-language explanation from the classified patterns
+        pattern_explanations = {
+            'Phishing Indicators':    "The text contains language commonly used in phishing emails or pages — attempting to trick you into revealing personal information.",
+            'Urgency Language':       "Strong urgency cues (e.g. 'ACT NOW', 'IMMEDIATELY') are being used to pressure you into hasty action — a classic social engineering tactic.",
+            'Suspicious URLs':        "Suspicious or obfuscated URLs were detected. These may redirect you to a fake site designed to steal your credentials.",
+            'Credential Request':     "The content is requesting your username, password, or PIN — a red flag if it appeared unexpectedly.",
+            'Financial Request':      "A request for financial information (credit card, bank account) was detected on screen.",
+            'Malware Indicators':     "Language associated with fake system warnings or malware scare-tactics was detected.",
+            'Malware/Exploit Keywords': "Language associated with malware, exploits, or hacking tools was detected on screen.",
+            'PII Detected: Email':    "Email addresses are visible on screen and may be targets of phishing or data harvesting.",
+            'PII Detected: IPv4':     "IP addresses were spotted, which may indicate network configuration pages or attack instructions.",
+            'Web Browsing Threat':    "The website is displaying deceptive content — such as fake permission prompts, clickjacking overlays, or misleading download buttons — designed to trick you into clicking something harmful.",
+            'Social Engineering':     "The content uses social manipulation tactics to pressure you into taking an action — like claiming a prize or responding to a fake urgent message.",
+            'Scam Indicators':        "The text matches common online scam patterns — such as fake investment opportunities, lottery wins, or get-rich-quick schemes.",
+            'Cleared by AI Context Analysis': "The initial keyword scan flagged this, but the AI confirmed the context is safe.",
+        }
+        
+        # Find the first matching pattern explanation
+        simple = next(
+            (pattern_explanations[p] for p in patterns if p in pattern_explanations),
+            f"The AI detected suspicious content with {confidence:.0f}% confidence based on the text visible on your screen."
+        )
+        
+        # Technical: list patterns + process
+        tech = (
+            f"Process: {process_name} | Confidence: {confidence:.1f}% | "
+            f"Patterns: {', '.join(patterns[:3]) if patterns else 'General anomaly'}"
+        )
+        
+        # Confidence interpretation
+        if confidence >= 90:
+            conf_text = "Very High — AI is nearly certain this is malicious content."
+        elif confidence >= 75:
+            conf_text = "High — very likely a genuine threat."
+        elif confidence >= 55:
+            conf_text = "Moderate — probable threat, exercise caution."
+        else:
+            conf_text = "Low — possible threat, worth monitoring."
+        
+        # Choose recommended action based on risk
+        actions = {
+            'CRITICAL': "Close this window immediately and do not enter any information. Run a quick scan.",
+            'HIGH':     "Do not click any links or enter credentials. Verify the source of this content.",
+            'MEDIUM':   "Be cautious — verify the legitimacy of what is being shown before proceeding.",
+            'LOW':      "This content is mildly suspicious. Stay alert and avoid sharing personal information.",
+        }
+        
+        return {
+            "title": f"{risk_level} Threat Detected by Screen Monitor",
+            "simple_explanation": simple,
+            "technical_details": tech,
+            "risk_level": risk_level,
+            "recommended_action": actions.get(risk_level, "Review the on-screen content carefully."),
+            "confidence_interpretation": conf_text,
+            "attack_categories": patterns[:5] if patterns else ["Suspicious Content"],
+            "description": description,
+        }
     
     def _get_recommended_actions(self, threat_level: str, patterns: List[str]) -> List[str]:
         """

@@ -169,7 +169,7 @@ class NIDSEngine(threading.Thread):
     """
     
     # Detection tuning
-    MIN_CONFIDENCE = 0.75
+    MIN_CONFIDENCE = 0.65  # Lowered from 0.75 — catches more real threats with fewer misses
     ALERT_COOLDOWN = 5  # Seconds between alerts per IP
     MIN_PACKETS_FOR_DETECTION = 3
     FLOW_TIMEOUT = 60  # Seconds before flow expires
@@ -195,11 +195,10 @@ class NIDSEngine(threading.Thread):
         "142.250.", "172.217.", "216.239.", "74.125.", "173.194.",
         # Microsoft/Azure
         "13.107.", "52.168.", "20.189.", "40.126.", "20.190.",
-        # Cloudflare
-        "104.16.", "104.17.", "104.18.", "104.19.", "104.20.",
-        "1.1.1.1", "1.0.0.1",
         # DNS
         "8.8.8.8", "8.8.4.4", "208.67.222.222",
+        # Note: Cloudflare (104.16-20.x) deliberately excluded —
+        # they also host malicious ad networks and CDN-proxied threats.
     ]
     
     def __init__(self, stop_event: threading.Event = None, alert_queue: queue.Queue = None):
@@ -687,63 +686,124 @@ class NIDSEngine(threading.Thread):
                 system_logger.log_error(f"NIDS analysis error: {e}", 'app')
     
     def _analyze_flow(self, flow: NetworkFlow) -> Optional[Dict]:
-        """Run ML inference on a flow."""
+        """Run ML inference on a flow, with an independent heuristic override for web threats."""
         features = flow.get_features()
         
-        # Skip whitelisted
-        if self._is_whitelisted(features["src_ip"]) or self._is_whitelisted(features["dst_ip"]):
+        # Skip pure local traffic (both IPs on the same LAN)
+        if self._is_local_traffic(features["src_ip"], features["dst_ip"]):
+            return {"is_threat": False, "reason": "Local traffic", "features": features}
+        
+        # Determine the REMOTE IP (the one that is NOT our local machine).
+        # Only whitelist-check the remote side; our own local IP (192.168.x.x)
+        # should NOT cause the entire flow to be skipped.
+        local_prefixes = ["192.168.", "10.", "172.16."]
+        src_is_local = any(features["src_ip"].startswith(p) for p in local_prefixes)
+        dst_is_local = any(features["dst_ip"].startswith(p) for p in local_prefixes)
+        
+        if src_is_local and not dst_is_local:
+            remote_ip = features["dst_ip"]
+        elif dst_is_local and not src_is_local:
+            remote_ip = features["src_ip"]
+        else:
+            # Both external or both local (local-local already handled above)
+            remote_ip = features["dst_ip"]
+        
+        if self._is_whitelisted(remote_ip):
             return {"is_threat": False, "reason": "Whitelisted", "features": features}
         
-        # Build feature vector
-        X = np.array([[
-            features["duration"],
-            features["fwd_packets"],
-            features["bwd_packets"],
-            features["pkt_len_mean"],
-            features["pkt_len_std"],
-            features["iat_mean"]
-        ]])
-        
-        # Pad if needed
-        if self.expected_features > 6:
-            X_padded = np.zeros((1, self.expected_features))
-            X_padded[0, :6] = X[0]
-            X = X_padded
+        # ── Phase 1: ML Model ──────────────────────────────────────────────────
+        ml_is_threat = False
+        ml_confidence = 0.0
+        ml_reason = "Normal"
+        ml_label = "BENIGN"
         
         try:
+            X = np.array([[
+                features["duration"],
+                features["fwd_packets"],
+                features["bwd_packets"],
+                features["pkt_len_mean"],
+                features["pkt_len_std"],
+                features["iat_mean"]
+            ]])
+            
+            if self.expected_features > 6:
+                X_padded = np.zeros((1, self.expected_features))
+                X_padded[0, :6] = X[0]
+                X = X_padded
+            
             X_scaled = self.scaler.transform(X)
             probs = self.model.predict_proba(X_scaled)[0]
             pred_idx = np.argmax(probs)
-            confidence = probs[pred_idx]
-            label = self.model.classes_[pred_idx]
+            ml_confidence = float(probs[pred_idx])
+            ml_label = self.model.classes_[pred_idx]
             
-            is_attack = str(label).upper() not in ["BENIGN", "NORMAL", "0"]
-            reason = self._get_attack_reason(features) if is_attack else "Normal"
+            is_attack = str(ml_label).upper() not in ["BENIGN", "NORMAL", "0"]
             
-            # Heuristic adjustments
-            if features["duration"] < 0.1 and features["total_packets"] < 10:
-                is_attack = False
-                reason = "Short flow"
-            
-            if self._is_local_traffic(features["src_ip"], features["dst_ip"]):
-                confidence *= 0.5
-                if confidence < self.MIN_CONFIDENCE:
-                    is_attack = False
-                    reason = "Local traffic"
-            
-            is_threat = is_attack and confidence >= self.MIN_CONFIDENCE
-            
-            return {
-                "is_threat": is_threat,
-                "confidence": confidence,
-                "label": label,
-                "reason": reason,
-                "features": features,
-            }
-            
+            if is_attack and ml_confidence >= self.MIN_CONFIDENCE:
+                # Very short flows are noise —ignore
+                if not (features["duration"] < 0.1 and features["total_packets"] < 10):
+                    ml_reason = self._get_attack_reason(features)
+                    ml_is_threat = True
+                    
         except Exception as e:
-            system_logger.log_error(f"NIDS inference error: {e}", 'app')
-            return None
+            system_logger.log_error(f"NIDS ML inference error: {e}", 'app')
+        
+        # ── Phase 2: Independent Heuristic Pass ─────────────────────────────────
+        # The ML model was trained on DoS/PortScan datasets, not web ad-traffic.
+        # We run heuristics unconditionally so web threats are caught even when
+        # the ML classifies the flow as BENIGN.
+        heuristic_reason = self._get_attack_reason(features)
+        
+        WEB_THREAT_TYPES = {
+            "Clickjacking", "AdInjection", "SuspiciousRedirect",
+            "AdTracker", "SpamBot", "SuspiciousDownload"
+        }
+        
+        heuristic_tags = {t.strip() for t in heuristic_reason.split(",")}
+        heuristic_matched = heuristic_tags & WEB_THREAT_TYPES  # intersection
+        
+        heuristic_is_threat = len(heuristic_matched) > 0
+        
+        # Assign a confidence proxy for heuristic detections
+        heuristic_confidence_map = {
+            "Clickjacking": 0.82,
+            "AdInjection": 0.78,
+            "SuspiciousRedirect": 0.72,
+            "AdTracker": 0.68,
+            "SpamBot": 0.75,
+            "SuspiciousDownload": 0.70,
+        }
+        heuristic_confidence = max(
+            (heuristic_confidence_map.get(t, 0.68) for t in heuristic_matched),
+            default=0.0
+        )
+        
+        # ── Merge results ────────────────────────────────────────────────────────
+        if ml_is_threat and heuristic_is_threat:
+            reason = heuristic_reason  # heuristic reason is more specific
+            confidence = max(ml_confidence, heuristic_confidence)
+            is_threat = True
+        elif ml_is_threat:
+            reason = ml_reason
+            confidence = ml_confidence
+            is_threat = True
+        elif heuristic_is_threat:
+            reason = heuristic_reason
+            confidence = heuristic_confidence
+            is_threat = True
+        else:
+            reason = ml_reason
+            confidence = ml_confidence
+            is_threat = False
+        
+        return {
+            "is_threat": is_threat,
+            "confidence": confidence,
+            "label": ml_label,
+            "reason": reason,
+            "features": features,
+        }
     
     def _get_attack_reason(self, features: Dict) -> str:
         """Determine why traffic looks suspicious."""
@@ -761,7 +821,6 @@ class NIDSEngine(threading.Thread):
         if features["pkt_len_mean"] > 1000:
             reasons.append("DDoS")
         
-        # Additional threat detection for common cyber threats
         dst_port = features.get("dst_port", 0)
         
         # Spam/Adware detection
@@ -772,12 +831,43 @@ class NIDSEngine(threading.Thread):
         if features["pkt_len_mean"] > 1400 and features["fwd_packets"] > features["bwd_packets"] * 3:
             reasons.append("SuspiciousDownload")
         
+        # Clickjacking: rapid HTTP requests with small payloads (iframe overlays)
+        if dst_port in [80, 443] and features["total_packets"] > 4 and features["duration"] < 2.0:
+            if features["pkt_len_mean"] < 500 and features["iat_mean"] < 0.1:
+                reasons.append("Clickjacking")
+        
+        # Ad injection: short-lived HTTP connections with back-and-forth traffic
+        if dst_port in [80, 443] and features["fwd_packets"] > 2 and features["duration"] < 3.0:
+            if features["bwd_packets"] > 0 and features["iat_mean"] < 0.1:
+                reasons.append("AdInjection")
+        
+        # Suspicious redirect chains: medium-sized packets, short duration
+        if features["pkt_len_mean"] > 200 and features["pkt_len_mean"] < 800:
+            if features["duration"] < 1.0 and features["total_packets"] > 3:
+                reasons.append("SuspiciousRedirect")
+        
         # Pop-up/Ad-related (frequent short connections)
         if features["duration"] < 0.5 and features["total_packets"] < 5 and dst_port in [80, 443]:
             if features["iat_mean"] < 0.01:
                 reasons.append("AdTracker")
         
         return ", ".join(reasons) if reasons else "Anomaly"
+    
+    def _classify_network_threat_level(self, attack_reason: str, confidence: float) -> str:
+        """Determine an overall risk level for the attack reason."""
+        critical_types = ["DDoS", "Clickjacking"]
+        high_types = ["PortScan", "Bot", "AdInjection"]
+        medium_types = ["NoResponse", "SpamBot", "SuspiciousDownload", "SuspiciousRedirect", "Anomaly"]
+        
+        reason_parts = [r.strip() for r in attack_reason.split(",")]
+        
+        for r in reason_parts:
+            if any(c in r for c in critical_types): return "CRITICAL"
+        for r in reason_parts:
+            if any(c in r for c in high_types): return "HIGH"
+        for r in reason_parts:
+            if any(c in r for c in medium_types): return "MEDIUM"
+        return "LOW"
     
     def _generate_xai_explanation(self, features: Dict, attack_reason: str, confidence: float) -> Dict:
         """Generate human-readable XAI explanation for the threat."""
@@ -823,6 +913,27 @@ class NIDSEngine(threading.Thread):
                 "technical": f"Unusual download pattern: high incoming data ({features['pkt_len_mean']:.0f} bytes avg).",
                 "risk": "MEDIUM",
                 "action": "An unexpected download was detected. This could be malware, adware, or unwanted software being installed."
+            },
+            "AdInjection": {
+                "title": "Ad Injection Attack",
+                "simple": "Malicious code is trying to inject unauthorized advertisements into web pages you're viewing — these ads may contain phishing links or malware.",
+                "technical": f"Rapid sequential HTTP connections ({features['total_packets']} packets, {features['iat_mean']*1000:.1f}ms avg IAT) consistent with ad injection framework activity.",
+                "risk": "HIGH",
+                "action": "A script on the page is hijacking ad slots to display malicious content. Avoid clicking any popup or banner ads on this page and consider using an ad-blocker."
+            },
+            "Clickjacking": {
+                "title": "Clickjacking Attempt",
+                "simple": "A website is placing an invisible layer over legitimate content to trick you into clicking something you didn't intend to — possibly authorizing transactions or sharing data.",
+                "technical": f"High-frequency micro-requests ({features['total_packets']} pkts, {features['pkt_len_mean']:.0f}B avg, {features['duration']*1000:.1f}ms duration) — classic iframe overlay pattern.",
+                "risk": "CRITICAL",
+                "action": "Do not click anything on this page. A transparent overlay may be redirecting your clicks to a hidden malicious element. Close this tab immediately."
+            },
+            "SuspiciousRedirect": {
+                "title": "Suspicious Redirect Chain",
+                "simple": "This web page is quietly forwarding your browser through multiple hidden destinations — a common tactic used by phishing sites and malvertising networks.",
+                "technical": f"Short-lived connections ({features['duration']*1000:.1f}ms) with medium payload ({features['pkt_len_mean']:.0f}B avg) matching redirect chain fingerprint.",
+                "risk": "MEDIUM",
+                "action": "The page is silently tracking or redirecting you. Do not submit any personal information. Leave the site and clear your browser cookies."
             },
             "AdTracker": {
                 "title": "Ad Tracker / Pop-up Activity",

@@ -19,7 +19,7 @@ class SiftEngine:
     real-time registry verification (Hybrid AI-Static Analysis).
     """
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, model: str = "LongCat-Flash-Thinking"):
         """
         Initialize the SiftEngine with the API and model.
         """
@@ -28,8 +28,7 @@ class SiftEngine:
             api_key=api_key
         )
         
-        # Using the standard model ID for research benchmarks
-        self.model = "LongCat-Flash-Thinking"
+        self.model = model
         logger.info("SiftEngine initialized with model: %s", self.model)
 
     def detect_language(self, code_content: str) -> str:
@@ -276,6 +275,70 @@ class SiftEngine:
         except Exception as e:
             logger.error(f"Error during code analysis: {e}")
             return {"error": str(e)}
+
+    def analyze_screen_text(self, text: str) -> dict:
+        """
+        Analyze OCR text from the user's screen to determine if it represents a genuine cyber threat.
+        Used by the Real-Time Protection module to verify keyword matches and reduce false positives.
+        """
+        try:
+            system_prompt = (
+                "You are Sift, an advanced cyber-threat analyzer. "
+                "You are analyzing text extracted via OCR from a user's screen. "
+                "The text was flagged by a rudimentary keyword scanner for containing terms like "
+                "'urgent', 'update', 'password', or other potentially suspicious words. "
+                "Your job is to read the surrounding context and determine if it's a GENUINE cyber threat "
+                "(e.g., phishing, tech support scam, malware alert, credential harvesting) OR a FALSE POSITIVE "
+                "(e.g., legitimate software updater, benign text file, standard web article). "
+                "Return ONLY a valid JSON object with the following schema: "
+                '{"threat_level": "SAFE"|"LOW"|"MEDIUM"|"HIGH"|"CRITICAL", '
+                '"confidence": <integer 0-100>, '
+                '"patterns_detected": ["List of identified threat patterns or benign reasons"], '
+                '"description": "Concise explanation of why this is or is not a threat."}'
+            )
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": f"SCREEN TEXT TO ANALYZE:\n{text}"}
+                ],
+                response_format={"type": "json_object"}
+            )
+
+            content = response.choices[0].message.content
+            if not content or not content.strip():
+                raise ValueError("Empty response from model")
+
+            clean_content = content.strip()
+            if clean_content.startswith("```json"): clean_content = clean_content[7:]
+            if clean_content.startswith("```"): clean_content = clean_content[3:]
+            if clean_content.endswith("```"): clean_content = clean_content[:-3]
+            
+            sanitized_content = re.sub(r'\\(?![/"bfnrtu])', r'\\\\', clean_content.strip())
+            result = json.loads(sanitized_content, strict=False)
+            
+            # Ensure required fields exist
+            if "threat_level" not in result:
+                result["threat_level"] = "UNKNOWN"
+            if "confidence" not in result:
+                result["confidence"] = 0
+            if "patterns_detected" not in result:
+                result["patterns_detected"] = []
+            if "description" not in result:
+                result["description"] = ""
+                
+            return result
+
+        except Exception as e:
+            logger.error(f"Error during screen text analysis: {e}")
+            return {
+                "error": str(e),
+                "threat_level": "UNKNOWN",
+                "confidence": 0,
+                "patterns_detected": [],
+                "description": f"Analysis failed: {e}"
+            }
 
     # ------------------------------------------------------------------
     # Fix-Recognition Methods

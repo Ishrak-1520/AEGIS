@@ -23,6 +23,7 @@ from core.sift_engine import SiftEngine
 from core.network.nids_engine import NIDSEngine
 import threading
 from core.system_logger import system_logger
+from core.native_notifications import show_threat_notification
 
 class AegisAPI:
     """
@@ -394,6 +395,12 @@ class AegisAPI:
 
     def _on_threat_detected(self, threat_data):
         """Callback when RTP detects threat"""
+        # Fire OS-level native notification
+        try:
+            show_threat_notification(threat_data, None)
+        except Exception as e:
+            system_logger.log_error(f"Error showing native notification: {e}", "app")
+
         # Add to queue for React UI
         self.threat_alert_queue.append(threat_data)
         
