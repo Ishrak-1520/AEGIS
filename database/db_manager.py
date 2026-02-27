@@ -252,6 +252,47 @@ class DatabaseManager:
         
         row = cursor.fetchone()
         return dict(row) if row else {}
+        
+    def get_threat_activity_history(self, days: int = 7) -> List[Dict[str, Any]]:
+        """Get threat activity count grouped by day for dashboard chart"""
+        conn = self._get_connection()
+        cursor = conn.cursor()
+        
+        # SQLite queries to get counts padded for the last N days
+        # We group by the date and count events
+        cursor.execute("""
+            WITH RECURSIVE dates AS (
+                SELECT date('now', '-' || (? - 1) || ' days') as day
+                UNION ALL
+                SELECT date(day, '+1 day')
+                FROM dates
+                WHERE day < date('now')
+            )
+            SELECT 
+                d.day,
+                COUNT(l.id) as threats
+            FROM dates d
+            LEFT JOIN threat_logs l ON date(l.timestamp) = d.day
+            GROUP BY d.day
+            ORDER BY d.day ASC
+        """, (days,))
+        
+        results = []
+        for row in cursor.fetchall():
+            # Format date like 'Mon' for chart brevity
+            date_obj = datetime.strptime(row['day'], "%Y-%m-%d")
+            day_name = date_obj.strftime("%a") # e.g. Mon, Tue
+            
+            # Format like the hardcoded frontend data: { name: 'Mon', threats: 12 }
+            # If it's a 30-day view, we might include the date number: e.g. 'Oct 12'
+            formatted_name = day_name if days <= 7 else date_obj.strftime("%b %d")
+            
+            results.append({
+                "name": formatted_name,
+                "threats": row['threats']
+            })
+            
+        return results
     
     # ==================== Quarantine Management ====================
     

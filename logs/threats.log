@@ -235,3 +235,7 @@
 2026-02-27 16:09:51 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: shellexperiencehost.exe, Patterns: Malware/Exploit Keywords, Confidence: 95.0%
 2026-02-27 16:10:05 - threat - WARNING - [CRITICAL] VOLATILE_MEMORY_THREAT: Hidden threat detected with 13.0% confidence. Taking protective action.
 2026-02-27 16:11:01 - threat - WARNING - [CRITICAL] VOLATILE_MEMORY_THREAT: Hidden threat detected with 44.0% confidence. Taking protective action.
+2026-02-27 17:26:03 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: antigravity.exe, Patterns: Malware/Exploit Keywords, Phishing Indicators, Confidence: 84.0%
+2026-02-27 17:26:10 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: chrome.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, Web Browsing Threat, PII Detected: IPv4 (1), Confidence: 95.0%
+2026-02-27 17:26:11 - threat - WARNING - [HIGH] SCREEN_THREAT: Process: shellexperiencehost.exe, Patterns: Suspicious URLs, Web Browsing Threat, PII Detected: IPv4 (1), Confidence: 86.0%
+2026-02-27 17:26:12 - threat - WARNING - [CRITICAL] SCREEN_THREAT: Process: shellexperiencehost.exe, Patterns: Malware/Exploit Keywords, Suspicious URLs, Web Browsing Threat, PII Detected: IPv4 (1), Confidence: 95.0%

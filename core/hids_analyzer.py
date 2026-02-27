@@ -360,6 +360,14 @@ class VolatileMemoryHIDS:
             system_logger.log_error(f"Volatile HIDS prediction error: {e}", 'app')
             return False, 0.0
 
+    def calibrate(self):
+        """Reset calibration state to force recalibration on next predictions"""
+        self.is_calibrated = False
+        self.calibration_samples = []
+        import numpy as np
+        self.calibration_offset = np.zeros(5)
+        system_logger.log_info("Volatile HIDS recalibration triggered.", 'app')
+
     def get_status(self) -> dict:
         """Get volatile analyzer status."""
         return {

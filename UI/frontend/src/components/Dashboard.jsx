@@ -60,6 +60,57 @@ const Dashboard = () => {
         }
     });
 
+    // New state for Threat Activity chart and Tactical Actions
+    const [timeframe, setTimeframe] = useState(7);
+    const [chartData, setChartData] = useState([]);
+    const [isRecalibrating, setIsRecalibrating] = useState(false);
+
+    useEffect(() => {
+        const fetchChartData = async () => {
+            if (window.pywebview?.api) {
+                try {
+                    const history = await window.pywebview.api.get_threat_activity_history(timeframe);
+                    if (history && Array.isArray(history)) {
+                        setChartData(history);
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch threat history:", error);
+                }
+            }
+        };
+        fetchChartData();
+    }, [timeframe]);
+
+    const handleQuickScan = async () => {
+        if (window.pywebview?.api) {
+            try {
+                const res = await window.pywebview.api.start_scan('quick');
+                if (res.status === 'error') {
+                    alert(res.message);
+                } else {
+                    // Normally we'd navigate to the scanner page or show a toast
+                    alert("Quick Scan Started!");
+                }
+            } catch (err) {
+                console.error("Trigger fail:", err);
+            }
+        }
+    };
+
+    const handleRecalibrate = async () => {
+        if (window.pywebview?.api && !isRecalibrating) {
+            setIsRecalibrating(true);
+            try {
+                await window.pywebview.api.recalibrate_hids();
+                // Just hold the spinner for UX
+                setTimeout(() => setIsRecalibrating(false), 2000);
+            } catch (err) {
+                console.error("Recalibrate fail:", err);
+                setIsRecalibrating(false);
+            }
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             if (window.pywebview?.api) {
@@ -203,14 +254,18 @@ const Dashboard = () => {
                             <Activity className="text-primary" size={20} />
                             Threat Activity
                         </h3>
-                        <select className="bg-background border border-white/10 rounded-lg px-3 py-1 text-sm text-gray-400 outline-none focus:border-primary/50">
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
+                        <select
+                            className="bg-background border border-white/10 rounded-lg px-3 py-1 text-sm text-gray-400 outline-none focus:border-primary/50"
+                            value={timeframe}
+                            onChange={(e) => setTimeframe(Number(e.target.value))}
+                        >
+                            <option value={7}>Last 7 Days</option>
+                            <option value={30}>Last 30 Days</option>
                         </select>
                     </div>
                     <div className="h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data}>
+                            <AreaChart data={chartData}>
                                 <defs>
                                     <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#00F3FF" stopOpacity={0.3} />
@@ -219,7 +274,7 @@ const Dashboard = () => {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
                                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0F1926', border: '1px solid #334155', borderRadius: '8px' }}
                                     itemStyle={{ color: '#00F3FF' }}
@@ -231,6 +286,7 @@ const Dashboard = () => {
                                     strokeWidth={2}
                                     fillOpacity={1}
                                     fill="url(#colorThreats)"
+                                    animationDuration={1500}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -247,13 +303,22 @@ const Dashboard = () => {
                             Tactical Actions
                         </h3>
                         <div className="space-y-3 relative z-10">
-                            <button className="w-full bg-primary/5 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 rounded-lg p-3 flex items-center justify-between transition-all group/btn shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+                            <button
+                                onClick={handleQuickScan}
+                                className="w-full bg-primary/5 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 rounded-lg p-3 flex items-center justify-between transition-all group/btn shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+                            >
                                 <span className="font-bold tracking-tight text-sm">INITIATE QUICK SCAN</span>
                                 <Zap size={16} className="group-hover/btn:animate-pulse" />
                             </button>
-                            <button className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all group/btn">
-                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white">RECALIBRATE DETECTION</span>
-                                <CheckCircle size={16} className="text-green-500/50 group-hover/btn:text-green-500" />
+                            <button
+                                onClick={handleRecalibrate}
+                                disabled={isRecalibrating}
+                                className={`w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all group/btn ${isRecalibrating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white">
+                                    {isRecalibrating ? 'RECALIBRATING...' : 'RECALIBRATE DETECTION'}
+                                </span>
+                                <CheckCircle size={16} className={`text-green-500/50 group-hover/btn:text-green-500 ${isRecalibrating ? 'animate-spin' : ''}`} />
                             </button>
                         </div>
                     </div>

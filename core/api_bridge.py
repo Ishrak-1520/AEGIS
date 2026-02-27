@@ -24,6 +24,7 @@ from core.network.nids_engine import NIDSEngine
 import threading
 from core.system_logger import system_logger
 from core.native_notifications import show_threat_notification
+from security.auth import auth_manager
 
 class AegisAPI:
     """
@@ -216,23 +217,62 @@ class AegisAPI:
         self.scan_progress['status'] = 'stopped'
         return {'status': 'stopped'}
 
-    # --- Password Manager ---
+    # --- Auth & Password Manager ---
+    def check_auth_status(self):
+        """Check if user has an active session and if a master password exists"""
+        has_users = auth_manager.has_users()
+        is_auth = auth_manager.is_authenticated()
+        return {"has_master_password": has_users, "is_authenticated": is_auth}
+        
+    def register_master_password(self, password):
+        """Register the initial master password"""
+        if auth_manager.has_users():
+            return {"status": "error", "message": "Master password already exists"}
+        
+        # Create a default user 'admin'
+        success = auth_manager.register_user("admin", password)
+        if success:
+            # Auto login
+            auth_manager.login("admin", password)
+            return {"status": "success"}
+        return {"status": "error", "message": "Password must be at least 12 chars with mixed case, digits, and symbols"}
+        
+    def login_master_password(self, password):
+        """Login to unlock password vault"""
+        success = auth_manager.login("admin", password)
+        if success:
+            return {"status": "success"}
+        return {"status": "error", "message": "Incorrect master password"}
+        
     def get_passwords(self):
-        """Get all passwords (decrypted for display)"""
-        # Note: In a real app, we might want to only send encrypted and decrypt on demand
-        # For this UI integration, we'll send the list.
-        # Ideally, we should prompt for master password first.
-        # Assuming session is active or we just list them.
+        """Get all passwords (encrypted/hidden versions for display)"""
+        if not auth_manager.is_authenticated():
+            return {"error": "unauthenticated"}
+            
         passwords = password_manager.get_all_passwords()
-        # Decrypt for display (be careful in production!)
-        # For now, let's just return the list, frontend can request decryption
         return passwords
 
+    def get_decrypted_password(self, password_id):
+        """Decrypt a single password on demand"""
+        if not auth_manager.is_authenticated():
+            return {"error": "unauthenticated"}
+            
+        decrypted = password_manager.get_password(password_id)
+        if decrypted:
+            return {"status": "success", "password": decrypted}
+        return {"status": "error", "message": "Failed to decrypt password"}
+
     def add_password(self, website, username, password, category=None):
-        return password_manager.add_password(website, username, password, category)
+        if not auth_manager.is_authenticated():
+            return {"status": "error", "message": "Vault is locked"}
+        success = password_manager.add_password(website, username, password, category)
+        return {"status": "success" if success else "error"}
 
     def delete_password(self, password_id):
-        return password_manager.delete_password(password_id)
+        if not auth_manager.is_authenticated():
+            return {"status": "error", "message": "Vault is locked"}
+        success = password_manager.delete_password(password_id)
+        return {"status": "success" if success else "error"}
 
     # --- Quarantine ---
     def get_quarantined_items(self):
@@ -243,6 +283,25 @@ class AegisAPI:
 
     def delete_quarantine_item(self, item_id):
         return quarantine_manager.delete_quarantined(item_id)
+        
+    def simulate_quarantine(self):
+        """Simulate quarantining a fake threat for UI testing"""
+        # Create a dummy file
+        dummy_path = os.path.join(os.getcwd(), "dummy_threat.txt")
+        try:
+            with open(dummy_path, "w") as f:
+                f.write("X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*")
+            
+            # Quarantine it
+            success = quarantine_manager.quarantine_file(dummy_path, "EICAR-Test-Signature")
+            
+            # Clean up original if quarantine failed (quarantine_manager should remove it if successful)
+            if not success and os.path.exists(dummy_path):
+                os.remove(dummy_path)
+                
+            return {"status": "success" if success else "error"}
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
 
     # --- Real-Time Protection ---
     def get_rtp_status(self):
@@ -686,3 +745,27 @@ class AegisAPI:
         """
         value = db_manager.get_setting('notifications', 'true')
         return value.lower() == 'true'
+
+    def get_threat_activity_history(self, days=7):
+        """Get historical threat activity count for dashboard chart"""
+        try:
+            return db_manager.get_threat_activity_history(days=int(days))
+        except Exception as e:
+            system_logger.log_error(f"Error getting threat history: {e}", 'app')
+            return []
+            
+    def recalibrate_hids(self):
+        """Manually trigger HIDS recalibration"""
+        try:
+            # Rehydrate the model and start calibration without blocking UI
+            def _do_recalibrate():
+                # Get the running VolatileMemoryHIDS instance
+                from core.realtime_protection import realtime_protection
+                if hasattr(realtime_protection, 'volatile_hids') and realtime_protection.volatile_hids:
+                    realtime_protection.volatile_hids.calibrate()
+                
+            threading.Thread(target=_do_recalibrate, daemon=True).start()
+            return {"status": "success", "message": "Recalibration initiated"}
+        except Exception as e:
+            system_logger.log_error(f"Error starting recalibration: {e}", 'app')
+            return {"status": "error", "message": f"Failed: {str(e)}"}
