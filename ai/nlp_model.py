@@ -369,7 +369,7 @@ class NLPThreatDetector:
             sift_api_key = os.getenv('SIFT_API_KEY')
             if sift_api_key:
                 try:
-                    sift_engine = SiftEngine(api_key=sift_api_key, model="LongCat-Flash-Chat")
+                    sift_engine = SiftEngine(api_key=sift_api_key, model="LongCat-2.0-Preview")
                     # Limit text sent to LLM to prevent enormous token usage on huge screens
                     llm_text = text[:4000] if len(text) > 4000 else text
                     llm_result = sift_engine.analyze_screen_text(llm_text)

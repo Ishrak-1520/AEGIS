@@ -28,7 +28,7 @@ class SiftEngine:
         )
         
         # Using the standard model ID for research benchmarks
-        self.model = "LongCat-Flash-Thinking-2601" 
+        self.model = "LongCat-2.0-Preview" 
         logger.info("SiftEngine initialized with model: %s", self.model)
 
     def detect_language(self, code_content: str) -> str:
