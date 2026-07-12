@@ -21,8 +21,7 @@ from datetime import datetime
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from database.db_manager import db_manager
-
-
+from core.sift_engine import SiftEngine
 
 
 class NLPThreatDetector:
@@ -126,6 +125,51 @@ class NLPThreatDetector:
             'ক্র্যাক', 'শোষণ'
         ]
         
+        # Web browsing threat keywords (clickjacking, ad popups, fake prompts)
+        self.web_threat_keywords = [
+            # Fake notification/permission prompts
+            'click allow to continue', 'click allow to verify',
+            'press allow to watch', 'click allow to access',
+            'enable notifications', 'allow notifications',
+            'confirm you are not a robot', 'prove you are human',
+            'click to continue watching',
+            
+            # Clickjacking / deceptive overlays
+            'click here to claim', 'click here to download',
+            'download now', 'install now', 'update now',
+            'your download is ready', 'start download',
+            'click anywhere to close',
+            
+            # Fake virus / tech support scams on websites
+            'your computer is infected', 'virus detected on your',
+            'your device has been compromised',
+            'call this number', 'call microsoft support',
+            'your pc is at risk', 'system warning detected',
+            'windows defender alert',
+            
+            # Fake captcha / age gates used for clickjacking
+            'confirm that you are over 18',
+            'click to verify your age', 'are you over 18',
+            'human verification required',
+            
+            # Deceptive ad language
+            'congratulations you\'ve been selected',
+            'you are the lucky visitor',
+            'spin the wheel', 'claim your reward',
+            'you have 1 new message', 'unread messages',
+            'someone is trying to contact you',
+            
+            # Browser hijacking
+            'add extension', 'install extension',
+            'your browser is out of date', 'update your browser',
+            'flash player is required', 'plugin required',
+            
+            # Streaming site specific
+            'disable adblock to watch', 'turn off ad blocker',
+            'watch free movies', 'free streaming',
+            'hd quality movies free',
+        ]
+        
         # Urgency/threat phrases - Bangla (বাংলা)
         self.urgency_keywords_bangla = [
             'এখনই', 'জরুরি', 'অবিলম্বে', 'আজই শেষ',
@@ -205,6 +249,9 @@ class NLPThreatDetector:
         critical_matches.extend(self._find_keywords_with_indices(text, self.critical_keywords_bangla, 'Critical'))
         all_matches.extend(critical_matches)
         
+        web_threat_matches = self._find_keywords_with_indices(text, self.web_threat_keywords, 'Web Threat')
+        all_matches.extend(web_threat_matches)
+        
         url_matches = self._find_suspicious_urls_with_indices(text)
         all_matches.extend(url_matches)
         
@@ -249,6 +296,13 @@ class NLPThreatDetector:
             threat_score += len(url_matches) * 20
             keywords_found.extend([f"Suspicious URL: {url[:50]}" for url in url_keywords])
             patterns_detected.append('Suspicious URLs')
+        
+        # Web browsing threats (clickjacking, fake prompts, ad popups)
+        web_threat_kws = [m['text'] for m in web_threat_matches]
+        if web_threat_matches:
+            threat_score += len(web_threat_matches) * 20
+            keywords_found.extend(web_threat_kws)
+            patterns_detected.append('Web Browsing Threat')
         
         # Additional pattern checks (Urgency, Credential, Financial)
         # Note: These are broader context checks, might not map to specific highlights easily without regex
@@ -306,6 +360,53 @@ class NLPThreatDetector:
         # Classify threat level (FR-NLP-04)
         threat_class, threat_level, confidence = self._classify_threat(threat_score)
         
+        description = self._generate_description(threat_class, patterns_detected)
+
+        # --- AI CONTEXT VERIFICATION (MEDIUM threats only) ---
+        # HIGH and CRITICAL are high-confidence keyword matches and alert IMMEDIATELY for speed.
+        # Only MEDIUM-level matches are ambiguous enough to require LLM context validation.
+        if threat_level == "MEDIUM":
+            sift_api_key = os.getenv('SIFT_API_KEY')
+            if sift_api_key:
+                try:
+                    sift_engine = SiftEngine(api_key=sift_api_key, model="LongCat-Flash-Chat")
+                    # Limit text sent to LLM to prevent enormous token usage on huge screens
+                    llm_text = text[:4000] if len(text) > 4000 else text
+                    llm_result = sift_engine.analyze_screen_text(llm_text)
+                    
+                    if llm_result.get("threat_level") == "SAFE":
+                        # The LLM determined this was benign context, override the local result.
+                        threat_class = "SAFE"
+                        threat_level = "SAFE"
+                        confidence = 100.0 - llm_result.get("confidence", 80) # Invert confidence for SAFE
+                        patterns_detected = ["Cleared by AI Context Analysis"] + patterns_detected
+                        description = llm_result.get("description", "No threats detected. Content appears safe.")
+                    else:
+                        # LLM confirms or adjusts the threat level
+                        new_level = llm_result.get("threat_level", threat_level)
+                        if new_level != "UNKNOWN":
+                            threat_level = new_level
+                            
+                        # Update threat_class based on new generic level
+                        if threat_level == "CRITICAL":
+                            threat_class = "CRITICAL_THREAT"
+                        elif threat_level == "HIGH":
+                            threat_class = "HIGH_THREAT"
+                        elif threat_level == "MEDIUM":
+                            threat_class = "MEDIUM_THREAT"
+                        elif threat_level == "LOW":
+                            threat_class = "LOW_THREAT"
+                            
+                        confidence = float(llm_result.get("confidence", confidence))
+                        
+                        if llm_result.get("patterns_detected"):
+                            patterns_detected = llm_result.get("patterns_detected", []) + patterns_detected
+                            
+                        if llm_result.get("description"):
+                            description = llm_result.get("description")
+                except Exception as e:
+                    print(f"SiftEngine verification failed: {e}")
+
         # Build result
         result = {
             'threat_class': threat_class,
@@ -314,7 +415,7 @@ class NLPThreatDetector:
             'keywords_found': list(set(keywords_found)),
             'patterns_detected': patterns_detected,
             'threat_score': threat_score,
-            'description': self._generate_description(threat_class, patterns_detected),
+            'description': description,
             'timestamp': datetime.now().isoformat(),
             'matches': all_matches # New field for frontend highlighting
         }
