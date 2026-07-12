@@ -44,24 +44,45 @@ const Quarantine = () => {
         }
     };
 
+    const handleSimulateQuarantine = async () => {
+        if (window.pywebview?.api) {
+            try {
+                const result = await window.pywebview.api.simulate_quarantine();
+                if (result?.status === 'success') {
+                    fetchQuarantine();
+                } else {
+                    alert("Failed to simulate: " + (result?.message || "Unknown error"));
+                }
+            } catch (error) {
+                console.error("Failed to simulate quarantine:", error);
+            }
+        }
+    };
+
     return (
         <div className="space-y-6">
             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 flex items-start gap-4">
                 <ShieldAlert className="text-red-500 shrink-0" size={32} />
-                <div>
+                <div className="flex-1">
                     <h3 className="text-lg font-bold text-white mb-1">Quarantined Items</h3>
                     <p className="text-gray-400 text-sm">
                         These items have been isolated to prevent harm to your system. You can choose to restore them if you believe they are safe, or delete them permanently.
                     </p>
                 </div>
+                <button
+                    onClick={handleSimulateQuarantine}
+                    className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-colors border border-red-500/30 text-sm font-medium whitespace-nowrap"
+                >
+                    Test: Simulate Threat
+                </button>
             </div>
 
             <div className="bg-surface border border-white/5 rounded-xl overflow-hidden min-h-[400px]">
                 <div className="p-4 border-b border-white/5 flex items-center justify-between">
                     <h3 className="font-bold text-white">Isolated Threats</h3>
-                    {/* <button className="text-sm text-red-500 hover:text-red-400 font-medium transition-colors">
-                        Delete All
-                    </button> */}
+                    <div className="text-sm text-gray-500">
+                        {quarantinedItems.length} items
+                    </div>
                 </div>
                 <div className="divide-y divide-white/5">
                     {quarantinedItems.map((item) => (
@@ -74,9 +95,11 @@ const Quarantine = () => {
                                     <h4 className="font-bold text-white">{item.original_path ? item.original_path.split(/[/\\]/).pop() : 'Unknown File'}</h4>
                                     <p className="text-xs text-gray-500">{item.original_path}</p>
                                     <div className="flex items-center gap-2 mt-1">
-                                        <span className="text-xs text-gray-400">{item.quarantined_at}</span>
+                                        <span className="text-xs text-gray-400">
+                                            {item.quarantined_at ? new Date(item.quarantined_at).toLocaleString() : 'Unknown Date'}
+                                        </span>
                                         <span className="text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
-                                            {item.threat_name || 'Unknown Threat'}
+                                            {item.threat_type || 'Unknown Threat'}
                                         </span>
                                     </div>
                                 </div>
