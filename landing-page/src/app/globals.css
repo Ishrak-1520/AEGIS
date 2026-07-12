@@ -38,3 +38,46 @@ body {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Continuous background ambient loops */
+@keyframes ambient-drift-1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(80px, -60px, 0) scale(1.15);
+  }
+  66% {
+    transform: translate3d(-60px, 50px, 0) scale(0.95);
+  }
+}
+
+@keyframes ambient-drift-2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-100px, 70px, 0) scale(1.2);
+  }
+}
+
+@keyframes ambient-drift-3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(60px, 90px, 0) scale(0.9);
+  }
+}
+
+.animate-ambient-1 {
+  animation: ambient-drift-1 18s ease-in-out infinite;
+}
+
+.animate-ambient-2 {
+  animation: ambient-drift-2 22s ease-in-out infinite;
+}
+
+.animate-ambient-3 {
+  animation: ambient-drift-3 26s ease-in-out infinite;
+}

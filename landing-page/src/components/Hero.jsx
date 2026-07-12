@@ -7,26 +7,44 @@ export default function Hero() {
   const [activeEngine, setActiveEngine] = useState("hids");
 
   return (
-    <section className="pt-36 pb-20 md:pt-44 md:pb-28 border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10">
+    <section className="relative pt-36 pb-20 md:pt-44 md:pb-28 border-b border-white/10 overflow-hidden">
+      {/* Continuous Loop Ambient Background Animation */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Soft drifting ambient orb 1 */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] rounded-full bg-cyan-500/10 blur-[130px] animate-ambient-1" />
+        {/* Soft drifting ambient orb 2 */}
+        <div className="absolute top-1/3 right-1/4 w-[600px] h-[450px] rounded-full bg-indigo-500/10 blur-[140px] animate-ambient-2" />
+        {/* Soft drifting ambient orb 3 */}
+        <div className="absolute bottom-10 left-1/3 w-[450px] h-[450px] rounded-full bg-white/5 blur-[120px] animate-ambient-3" />
+        {/* Subtle grid mesh overlay */}
+        <div
+          className="absolute inset-0 opacity-15"
+          style={{
+            backgroundImage: `radial-gradient(rgba(255, 255, 255, 0.25) 1px, transparent 1px)`,
+            backgroundSize: "36px 36px",
+          }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
         {/* Top editorial index header */}
         <div className="flex items-center justify-between pb-6 border-b border-white/10 text-xs font-mono uppercase tracking-widest text-neutral-400">
-          <div>Open-Source Windows Security Suite</div>
+          <div>Open-Source Windows Protection</div>
           <div>1 — 4</div>
         </div>
 
         {/* Editorial Headline & Actions Section */}
         <div className="pt-14 pb-8 max-w-5xl">
           <span className="inline-block text-xs sm:text-sm font-mono uppercase tracking-widest px-3 py-1.5 rounded-full border border-white/15 bg-white/5 text-neutral-300 mb-6">
-            Lightweight Desktop Protection for Windows
+            Lightweight Desktop Suite
           </span>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-normal tracking-tight leading-[1.05] text-white">
-            Protect your PC, network, and <em className="font-editorial italic text-neutral-300">codebase</em>.
+          <h1 className="text-5xl sm:text-7xl md:text-8xl font-normal tracking-tight leading-[1.02] text-white">
+            Smart security made <em className="font-editorial italic text-neutral-300">simple</em>.
           </h1>
 
           <p className="mt-8 text-lg sm:text-xl text-neutral-400 font-normal leading-relaxed max-w-2xl">
-            AEGIS protects your Windows endpoint from hidden malware and network attacks, spots scams in English and Bangla, and audits your source code for vulnerabilities.
+            Hardened endpoint defense, network filtering, and code auditing in a clean Windows app.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center gap-4">
@@ -49,7 +67,7 @@ export default function Hero() {
         </div>
 
         {/* Interactive Desktop Console Preview */}
-        <div id="showcase" className="mt-16 border border-white/10 rounded-2xl bg-[#121214] overflow-hidden shadow-2xl">
+        <div id="showcase" className="mt-16 border border-white/10 rounded-2xl bg-[#121214]/90 backdrop-blur-xl overflow-hidden shadow-2xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-6 py-4 border-b border-white/10 bg-[#161619]">
             <div className="flex items-center gap-3">
               <div className="flex gap-1.5">
