@@ -1,0 +1,71 @@
+
+============================================================
+  AEGIS HIDS TEST SUITE - Volatile Guardian
+============================================================
+
+[94m[INFO][0m TEST GROUP 1: PE File Analyzer (MalwareAnalyzer)
+--------------------------------------------------
+  [PASS] Model loads successfully - OK
+  [PASS] pefile library available - Installed
+[Parallel(n_jobs=16)]: Using backend ThreadingBackend with 16 concurrent workers.
+[Parallel(n_jobs=16)]: Done  18 tasks      | elapsed:    0.0s
+[Parallel(n_jobs=16)]: Done 100 out of 100 | elapsed:    0.0s finished
+[Parallel(n_jobs=16)]: Using backend ThreadingBackend with 16 concurrent workers.
+[Parallel(n_jobs=16)]: Done  18 tasks      | elapsed:    0.0s
+[Parallel(n_jobs=16)]: Done 100 out of 100 | elapsed:    0.0s finished
+  [PASS] Scan safe file (notepad.exe) - Threat score: 0.5820, Is malware: True
+  [FAIL] Safe file not flagged as malware (notepad.exe) - FALSE POSITIVE - flagged with score 0.5820
+  [PASS] Handle missing file gracefully - Error caught correctly
+  [PASS] Handle non-PE file gracefully - Error caught correctly
+
+[INFO] TEST GROUP 2: Volatile Memory HIDS (Live Memory Analysis)
+--------------------------------------------------
+  [PASS] Volatile HIDS model loads - OK
+  [INFO] Feeding 5 calibration samples...
+2026-02-27 16:04:01 - app - INFO - HIDS Calibration Complete. Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+  [PASS] Calibration completes - Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+  [PASS] Normal telemetry = SAFE - Threat probability: 36.0% (threshold: 90%)
+  [PASS] Suspicious telemetry detection - Threat probability: 0.0%, Flagged: False
+
+[INFO] TEST GROUP 3: Live Telemetry Collection (Windows Metrics)
+--------------------------------------------------
+  [INFO] Collecting live system telemetry...
+  [PASS] Telemetry collection works - Got 5 features in 0.1s
+
+  [INFO] Your system's current telemetry:
+       Background Programs (services): 123
+       Hardware Drivers: 237
+       Resource Locks (mutexes): 1960
+       Loaded Components (avg DLLs): 48
+       Active Processes (64-bit): 151
+2026-02-27 16:04:01 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -16.0, -1460.0, -8.0, 0.0]
+  [PASS] Live data through ML model - Your system: 36.0% threat probability, SAFE
+
+[INFO] TEST GROUP 4: AI Narrative Generator (Plain English)
+--------------------------------------------------
+2026-02-27 16:04:01 - app - INFO - Compiled 1 YARA rule files.
+Tesseract configured at: C:\Program Files\Tesseract-OCR\tesseract.exe
+2026-02-27 16:04:02 - app - INFO - Real-Time Protection initialized
+  [PASS] Safe narrative is plain English - No jargon found
+
+  [INFO] Sample SAFE narrative:
+       ALL CLEAR: Your system's memory activity looks normal and healthy. System health: 95.0%.
+       DRIVERS VERIFIED: 220 hardware drivers checked and appear safe.
+       Memory sections verified and isolated for safety.
+  [PASS] Threat narrative is plain English - No jargon found
+
+  [INFO] Sample THREAT narrative:
+       THREAT DETECTED: Suspicious activity found in your computer's memory. This matches patterns commonly seen in hidden malware. Confidence: 95.0%.
+       CHECKING DRIVERS: Your system has an unusually high number of hardware drivers loaded (300). Monitoring for hidden threats that may disguise themselves as drivers.
+       HIGH ACTIVITY: An unusually high number of background programs are running (600). Checking for anything suspicious hiding among them.
+       RESOURCE LOCKS: A large number of system resource locks detected (1000). Some malware uses these to avoid detection.
+       CODE LIBRARIES: Programs are loading more code components than usual (60.0 per program). This can indicate something is injecting code into running programs.
+       Memory sections verified and isolated for safety.
+
+============================================================
+  [WARN] 13/14 passed, 1 failed
+
+  Failed tests:
+    [FAIL] Safe file not flagged as malware (notepad.exe)
+============================================================
+

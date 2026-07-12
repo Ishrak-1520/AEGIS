@@ -252,7 +252,7 @@ const Dashboard = () => {
                                 <Zap size={16} className="group-hover/btn:animate-pulse" />
                             </button>
                             <button className="w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all group/btn">
-                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white">RECALIBRATE SENSORS</span>
+                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white">RECALIBRATE DETECTION</span>
                                 <CheckCircle size={16} className="text-green-500/50 group-hover/btn:text-green-500" />
                             </button>
                         </div>
@@ -345,10 +345,10 @@ const Dashboard = () => {
 
                         <div className="mt-4 space-y-2 relative z-10">
                             {[
-                                { label: "Active Threads", key: "svcscan.nservices" },
-                                { label: "Kernel Stack", key: "svcscan.kernel_drivers" },
-                                { label: "Atomic Mutex", key: "handles.nmutant" },
-                                { label: "Injection Surface", key: "dlllist.avg_dlls_per_proc" }
+                                { label: "Background Programs", key: "svcscan.nservices" },
+                                { label: "Hardware Drivers", key: "svcscan.kernel_drivers" },
+                                { label: "Resource Locks", key: "handles.nmutant" },
+                                { label: "Loaded Components", key: "dlllist.avg_dlls_per_proc" }
                             ].map((item, idx) => (
                                 <div key={idx} className="flex justify-between text-[11px] group/item">
                                     <span className="text-gray-500 group-hover/item:text-gray-300 transition-colors uppercase text-[8px] font-bold tracking-[0.1em]">{item.label}:</span>

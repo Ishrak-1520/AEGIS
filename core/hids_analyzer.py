@@ -273,7 +273,7 @@ class VolatileMemoryHIDS:
     
     def __init__(self):
         self.model = None
-        self.threshold = 0.90  
+        self.threshold = 0.90
         self.is_loaded = False
         self.error = None
         

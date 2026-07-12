@@ -619,7 +619,8 @@ class ThreatPreventionSystem:
         system_whitelist = {
             'explorer.exe', 'services.exe', 'lsass.exe', 'wininit.exe', 
             'csrss.exe', 'smss.exe', 'winlogon.exe', 'taskhostw.exe',
-            'python.exe' # Keep AEGIS alive
+            'python.exe', 'python3.11.exe', 'python3.12.exe', 'pythonw.exe',
+            'msedgewebview2.exe', 'runtimebroker.exe' # Keep AEGIS alive
         }
         
         try:
