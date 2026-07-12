@@ -1,4 +1,4 @@
-# AEGIS — Advanced Endpoint Guard & Intelligence System
+# AEGIS - Advanced Endpoint Guard & Intelligence System
 
 <div align="center">
 
@@ -9,7 +9,7 @@
 ![React](https://img.shields.io/badge/react-19.2.0-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![License](https://img.shields.io/badge/license-Educational%20%7C%20Research-purple?style=for-the-badge)
 
-**A next-generation desktop cybersecurity suite combining traditional signature detection, machine learning intrusion analysis, and real-time LLM code auditing with a sleek React 19 interface.**
+**A desktop cybersecurity suite combining signature detection, machine learning intrusion analysis, and real-time LLM code auditing with a React 19 interface.**
 
 </div>
 
@@ -17,13 +17,13 @@
 
 ## Executive Summary
 
-**AEGIS (Advanced Endpoint Guard & Intelligence System)** is a comprehensive, multi-layered desktop security platform built to defend modern Windows endpoints against zero-day exploits, fileless malware, network intrusions, social engineering, and software supply-chain poisoning.
+**AEGIS (Advanced Endpoint Guard & Intelligence System)** is a multi-layered desktop security platform built to defend Windows endpoints against malware, network intrusions, social engineering, and software supply-chain risks.
 
-Unlike traditional antivirus suites that rely solely on static signatures, AEGIS implements a **hybrid defense architecture**:
+Unlike traditional antivirus suites that rely only on static signatures, AEGIS uses a **hybrid defense architecture**:
 1. **Host-Based Intrusion Detection (HIDS / Volatile Guardian):** Uses Machine Learning models trained on Windows Portable Executable (PE) Import Address Table (IAT) sequences to catch packed and obfuscated executables.
-2. **Real-Time Network Intrusion Detection (RT-XNIDS):** Captures live packet streams via Scapy, computes dynamic traffic baselines, and actively blocks malicious IPs through an automated Intrusion Prevention System (IPS).
-3. **LLM-Powered Code Auditing (SIFT):** Integrates the `Google Gemma 4` Large Language Model (via OpenRouter) with static AST analysis and real-time PyPI registry checks to identify code vulnerabilities and slopsquatting/hallucinated dependencies.
-4. **Explainable AI (XAI) Threat Detection:** Bilingual (English & Bangla) Natural Language Processing (NLP) engine that identifies phishing and social engineering attacks while highlighting contributing keywords with interpretability scores.
+2. **Real-Time Network Intrusion Detection (RT-XNIDS):** Captures live packet streams via Scapy, tracks traffic baselines, and blocks malicious IPs through an automated Intrusion Prevention System (IPS).
+3. **LLM-Powered Code Auditing (SIFT):** Uses the Google Gemma 4 model via OpenRouter along with static AST analysis and PyPI registry checks to identify code vulnerabilities and malicious dependencies.
+4. **Explainable AI (XAI) Threat Detection:** Bilingual (English and Bangla) Natural Language Processing engine that detects phishing and mobile financial scams while highlighting the contributing keywords.
 
 ---
 
@@ -55,13 +55,14 @@ Unlike traditional antivirus suites that rely solely on static signatures, AEGIS
 * **Active IPS Mitigation:** Directly interfaces with Windows Firewall and OS network routing to block malicious external IP addresses and domains automatically upon threat detection.
 
 ### 3. SIFT AI Code Auditor
-* **LLM Vulnerability Reasoning:** Leverages the `Google Gemma 4` LLM (via OpenRouter) to perform deep semantic code audits, flagging SQL injections, buffer overflows, insecure deserialization, and hardcoded secrets.
-* **Real-Time Registry Verification:** Prevents software supply-chain attacks by checking PyPI dependencies in real-time, catching **"Slopsquatting"** (typosquatting or LLM-hallucinated package imports).
-* **Hybrid Analysis:** Combines Pygments lexical detection, AST parsing, and AI reasoning for minimal false positives.
+* **LLM Vulnerability Reasoning:** Uses the Google Gemma 4 model via OpenRouter to perform semantic code audits. It identifies SQL injection, buffer overflows, insecure deserialization, and hardcoded credentials.
+* **Real-Time Registry Verification:** Checks PyPI dependencies during scans to catch typosquatting and hallucinated package imports.
+* **Hybrid Analysis:** Combines Pygments lexical analysis, AST parsing, and AI verification to keep false positives low.
 
 ### 4. Threat AI & Explainable AI (XAI)
-* **Bilingual Phishing Detection:** Analyzes text from emails, chat logs, and SMS in both **English** and **Bangla (বাংলা)** (`phishing_keywords`, `phishing_keywords_bangla`).
-* **Explainable Interpretability:** Uses attention-like scoring algorithms to highlight suspicious tokens and explain *why* a specific text block was classified as a threat (Safe, Low, Medium, High, Critical).
+* **Contextual Phishing Detection:** Analyzes text from emails, browser pages, and messages in English and Bangla. It evaluates multiple threat indicators together so benign personal information (like email addresses inside a normal inbox) does not trigger false alarms.
+* **Bangla Financial Scam Coverage:** Detects regional mobile financial service scams targeting bKash, Nagad, and Rocket, including fake account suspension notices and PIN or OTP requests.
+* **Keyword Interpretability:** Highlights specific suspicious words and patterns to show exactly why content was marked as safe, suspicious, or critical.
 
 ### 5. Multi-Engine Malware Scanner
 * **YARA Rule Engine:** Scans files and directories against curated YARA signature definitions (`core/rules/malware_rules.yar`).
@@ -69,7 +70,9 @@ Unlike traditional antivirus suites that rely solely on static signatures, AEGIS
 * **Heuristic Analysis:** Analyzes file entropy and anomaly markers to detect packed archives and zero-day payloads.
 
 ### 6. Real-Time Protection (RTP) & Screen Monitoring
-* **Active Screen OCR:** Utilizes **Tesseract OCR** and `Pillow` to continuously capture and analyze visual screen contents for active phishing websites, credential harvesting forms, and fraudulent prompts.
+* **Active Screen OCR:** Continuously captures screen text using Tesseract OCR to spot live phishing sites, credential harvesting forms, and fraudulent popups.
+* **Smart Alert Deduplication:** Tracks threat patterns and process names with automatic cooldown timers. This prevents duplicate alert notifications while ensuring that new or changing threats from the same application are always detected.
+* **AI Context Verification:** Automatically verifies medium and high severity screen detections through the LLM engine to confirm threats before notifying the user.
 * **Process Context Awareness:** Monitors running process trees (`psutil`, `ctypes`) to detect code injection, DLL hijacking, and suspicious memory allocation.
 
 ### 7. Secure Password Vault & Quarantine
@@ -354,7 +357,7 @@ python evaluate_metrics.py
 
 ## License & Disclaimer
 
-**Educational & Research Project — All Rights Reserved.**
+**Educational & Research Project - All Rights Reserved.**
 
 > [!CAUTION]
 > This software is designed for educational, academic research, and defensive cybersecurity purposes only. The authors and maintainers assume no liability for any misuse, data loss, or system disruption resulting from the use of this software. Always test active firewall rules and quarantine actions in a staging environment before deploying to production endpoints.
