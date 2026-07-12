@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Activity, Lock, FileSearch, Settings, FileWarning, Menu, Brain, FileText, Wifi, ShieldCheck, Zap } from 'lucide-react'
+import { Shield, Activity, Lock, FileSearch, Settings, FileWarning, Menu, Brain, FileText, Wifi, ShieldCheck, Zap, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import Dashboard from './components/Dashboard';
 import Scanner from './components/Scanner';
@@ -71,7 +71,7 @@ function App() {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 group relative overflow-hidden ${activeTab === item.id
+              className={`w-full flex items-center ${isSidebarOpen ? 'gap-4 px-4' : 'justify-center'} py-3 rounded-lg transition-all duration-200 group relative sidebar-btn ${activeTab === item.id
                 ? 'bg-primary/10 text-primary'
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
                 }`}
@@ -79,24 +79,31 @@ function App() {
               {activeTab === item.id && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute left-0 top-0 bottom-0 w-1 bg-primary"
+                  className="absolute left-0 top-0 bottom-0 w-[3px] bg-primary rounded-r-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"
                 />
               )}
-              <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-primary' : ''}`} />
+              <item.icon className={`w-5 h-5 shrink-0 transition-colors ${activeTab === item.id ? 'text-primary' : 'group-hover:text-white'}`} />
               {isSidebarOpen && (
-                <span className="font-medium tracking-wide text-sm">{item.label}</span>
+                <span className="font-medium tracking-wide text-sm whitespace-nowrap overflow-hidden text-left flex-1">
+                  {item.label}
+                </span>
               )}
+              {!isSidebarOpen && <div className="sidebar-tooltip">{item.label}</div>}
             </button>
           ))}
         </nav>
 
         <div className="p-4 border-t border-white/5">
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="w-full flex items-center justify-center p-2 text-gray-500 hover:text-white transition-colors"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
+          <div className="flex items-center justify-between">
+            {isSidebarOpen && <span className="text-[10px] text-gray-500 font-mono tracking-widest pl-2">v2.0.0</span>}
+            <button
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              className={`p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/5 ${!isSidebarOpen ? 'w-full flex justify-center' : ''}`}
+              title={isSidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+            >
+              {isSidebarOpen ? <ChevronLeft className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </motion.div>
 
@@ -108,9 +115,11 @@ function App() {
             {menuItems.find(i => i.id === activeTab)?.label.toUpperCase()}
           </h2>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
-              <Shield className="w-4 h-4 text-green-400" />
-              <span className="text-xs font-bold text-green-400 tracking-wide">PROTECTED</span>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full border transition-colors duration-300 ${activeTab === 'quarantine' ? 'bg-red-500/10 border-red-500/20' : 'bg-green-500/10 border-green-500/20'}`}>
+              <Shield className={`w-4 h-4 ${activeTab === 'quarantine' ? 'text-red-400' : 'text-green-400'}`} />
+              <span className={`text-xs font-bold tracking-wide ${activeTab === 'quarantine' ? 'text-red-400' : 'text-green-400'}`}>
+                {activeTab === 'quarantine' ? 'ATTENTION' : 'PROTECTED'}
+              </span>
             </div>
             <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/50 flex items-center justify-center">
               <span className="font-bold text-primary text-sm">A</span>
@@ -123,10 +132,10 @@ function App() {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
               className="h-full"
             >
               {activeTab === 'dashboard' && <Dashboard />}

@@ -1,0 +1,501 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{booktabs}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{SIFT: A Hybrid AI-Static Analysis Framework for Security-Informed Functional Testing of Source Code}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Ishrak Ahmed}
+\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
+\textit{United International University}\\
+Dhaka, Bangladesh}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Tanisha Zaman}
+\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
+\textit{United International University}\\
+Dhaka, Bangladesh}
+\and
+\IEEEauthorblockN{3\textsuperscript{rd} Zelqad Hassan Shish}
+\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
+\textit{United International University}\\
+Dhaka, Bangladesh}
+\and
+\IEEEauthorblockN{4\textsuperscript{th} Mohammad Mamun Elahi}
+\IEEEauthorblockA{\textit{Assistant Professor, Dept. of CSE} \\
+\textit{United International University}\\
+Dhaka, Bangladesh}
+\and
+\IEEEauthorblockN{5\textsuperscript{th} Muhammad Nomani Kabir}
+\IEEEauthorblockA{\textit{Professor, Dept. of CSE} \\
+\textit{United International University}\\
+Dhaka, Bangladesh}
+}
+
+\maketitle
+
+\begin{abstract}
+The proliferation of AI-assisted code generation has introduced novel security challenges, including hallucinated package imports (slopsquatting), subtly flawed logic, and concealed vulnerabilities that evade traditional static analysis tools. We present SIFT (Security-Informed Functional Testing), a hybrid framework that combines deterministic static analysis with Large Language Model (LLM)-driven semantic reasoning to detect security vulnerabilities, hallucinated dependencies, and logic errors in source code. SIFT employs a five-phase pipeline: (1) language-aware preprocessing via lexical analysis, (2) real-time package registry verification against PyPI and npm, (3) static regex pattern scanning for ReDoS vulnerabilities, (4) chain-of-thought LLM analysis with structured JSON output, and (5) context-aware report synthesis with actionable remediation suggestions. We further introduce a diff-aware fix-recognition capability that determines whether a given patch effectively resolves a detected vulnerability. We evaluate SIFT on two established security benchmarks: the OpenSSF CVE Benchmark (223 real-world JavaScript CVEs across 38 CWE categories) and the Tencent AICGSecEval benchmark (129 instances across 7 programming languages and 29 CWEs). On the OpenSSF benchmark, SIFT v2 with diff-aware prompting achieves an F1-score of 0.547 with 62.2\% precision, matching CodeQL's Green rate (37.7\% vs 38\%) and exceeding the ossf-sast-ml neural baseline's detection rate by 3.8x. On AICGSecEval, vulnerability-centered truncation and focused diff injection raise F1 from 0.427 to 0.848. Our results demonstrate that vulnerability detection and fix recognition are fundamentally prompt engineering problems rather than model capability limitations.
+\end{abstract}
+
+\begin{IEEEkeywords}
+code security, static analysis, large language models, vulnerability detection, slopsquatting, hallucination detection, explainable AI, diff-aware prompting
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+The widespread adoption of AI-powered code generation tools---including GitHub Copilot, ChatGPT, and Amazon CodeWhisperer---has fundamentally transformed software development workflows. While these tools accelerate productivity, they introduce a new class of security risks that are poorly addressed by existing defenses \cite{b1}. Chief among these is \textit{slopsquatting}: the phenomenon whereby AI models generate import statements for non-existent packages, which attackers can then register on public registries to deliver malicious payloads \cite{b2}.
+
+Traditional Static Application Security Testing (SAST) tools such as SonarQube, Fortify, Semgrep, and CodeQL analyze source code using syntactic pattern matching and predefined rules \cite{b3}. These tools excel at detecting well-known vulnerability patterns---SQL injection via string concatenation, command injection with \texttt{shell=True}, hardcoded credentials---but fundamentally lack the \textit{semantic reasoning} required to identify context-dependent vulnerabilities where the safety of a code path depends on runtime configuration, user roles, or non-local state \cite{b4}. On the OpenSSF CVE Benchmark, CodeQL achieves 38\% Green (vulnerability detected and fix confirmed) but misses 51\% of vulnerabilities entirely, while the state-of-the-art neural baseline ossf-sast-ml detects only 16\% of vulnerabilities \cite{b5}.
+
+Conversely, directly prompting an LLM to audit code suffers from the inverse problem: LLMs bring powerful reasoning capabilities but lack grounding in external facts. An LLM cannot independently verify whether a package name corresponds to a real library on PyPI or npm, leading to both missed hallucination detections and false-positive vulnerability reports \cite{b6}. A critical manifestation of this limitation is the \textit{fix-recognition problem}: LLMs tend to flag both vulnerable and patched code as suspicious, producing Orange outcomes (detected but fix not recognized) rather than Green (detected and fix confirmed) \cite{b7}.
+
+In this paper, we present \textbf{SIFT (Security-Informed Functional Testing)}, a hybrid framework that bridges the gap between deterministic static analysis and AI-driven semantic reasoning. SIFT's key contributions are:
+
+\begin{enumerate}
+\item \textbf{Hybrid AI-Static Analysis Pipeline}: A five-phase architecture that uses static checks (registry verification, regex scanning) to produce factual context injected into the LLM prompt, grounding its reasoning in verifiable data.
+\item \textbf{Real-Time Registry-Aware Verification}: A slopsquatting detection mechanism that queries PyPI and npm registries in real time, classifying each import as VERIFIED, NOT FOUND (hallucination), or UNKNOWN.
+\item \textbf{Diff-Aware Fix Recognition}: A patch review system using \texttt{unified\_diff} that converts fix recognition from open-ended classification to targeted patch verification, improving F1 by 76\% and precision by 88\% over baseline.
+\item \textbf{Vulnerability-Centered Context Delivery}: A truncation strategy that anchors the LLM's context window around known vulnerability lines, raising F1 from 0.427 to 0.649 on large C codebases.
+\item \textbf{Multi-Benchmark Evaluation}: Comprehensive evaluation against two established benchmarks (OpenSSF CVE: 223 JavaScript CVEs; AICGSecEval: 129 instances across 7 languages).
+\end{enumerate}
+
+The remainder of this paper is organized as follows: Section~II reviews related work. Section~III presents the system design. Section~IV describes the implementation. Section~V details the experimental evaluation. Section~VI discusses results. Section~VII addresses threats to validity. Section~VIII concludes.
+
+\section{Related Work}
+
+\subsection{Static Application Security Testing}
+
+SAST tools analyze source code without execution, identifying vulnerabilities through pattern matching, data flow analysis, and taint tracking. \textbf{CodeQL} (GitHub/Semmle) expresses security patterns as database queries over a code representation \cite{b8}, achieving the highest Green rate (38\%) among traditional tools on the OpenSSF benchmark but missing 51\% of vulnerabilities. \textbf{Semgrep} excels at syntactic pattern matching but lacks semantic understanding \cite{b9}. \textbf{SonarQube} provides broad coverage but generates significant false positives \cite{b10}. A key limitation shared by all SAST tools is the inability to reason about \textit{semantic context}---whether a particular code pattern is actually exploitable given the surrounding logic \cite{b11}.
+
+\subsection{Neural and LLM-Based Code Security Analysis}
+
+\textbf{ossf-sast-ml} (Viszkok \& Heged\H{u}s, 2025) vectorizes source code using Microsoft's CodeBERT model and feeds embeddings into a Keras-based neural network \cite{b5}. On the OpenSSF benchmark it achieves only 10\% Green and 16\% detection rate---limited by distributional pattern matching rather than semantic reasoning.
+
+Li et al.\ (2024) evaluated GPT-4 and CodeLlama on CWE detection, finding that LLMs identify vulnerability types accurately but produce high false-positive rates when not grounded in external context \cite{b12}. Thapa et al.\ (2022) proposed transformer-based models for vulnerability detection \cite{b13}. \textbf{CodeSift} (Aggarwal et al., 2024) demonstrates that providing explicit comparison context improves LLM code evaluation \cite{b7}, motivating our diff-aware approach.
+
+However, standalone LLM approaches suffer from: (1) hallucination of findings, (2) inability to verify facts about packages or registries, (3) non-determinism, and (4) the fix-recognition problem.
+
+\subsection{Software Supply Chain Security}
+
+The term ``slopsquatting'' was introduced by Lanyado (2023) to describe how AI models hallucinate package names that attackers can register \cite{b2}. Related threats include typosquatting \cite{b14} and dependency confusion \cite{b15}. To our knowledge, SIFT is the first tool to combine \textit{real-time registry verification} with \textit{LLM semantic reasoning} to address slopsquatting within the code analysis pipeline.
+
+\subsection{Explainable AI for Security}
+
+Chain-of-Thought (CoT) prompting (Wei et al., 2022) forces step-by-step reasoning that improves LLM accuracy on complex tasks \cite{b16}. SIFT adopts CoT prompting as its primary explainability mechanism, complemented by heuristic monitorability metrics and fidelity evaluation.
+
+\section{System Design}
+
+\subsection{Design Goals}
+
+SIFT is designed with four objectives: (1)~\textit{Accuracy}: minimize both false positives and false negatives; (2)~\textit{Explainability}: every finding must include auditable reasoning; (3)~\textit{Grounding}: static facts anchor AI reasoning to prevent hallucination; (4)~\textit{Actionability}: every vulnerability must include a suggested remediation.
+
+\subsection{Architecture Overview}
+
+SIFT comprises three layers: (1)~a \textbf{Presentation Layer}---a React-based UI providing code input, language detection, and result visualization via a \texttt{pywebview} bridge; (2)~an \textbf{Analysis Engine Layer}---the \texttt{SiftEngine} class orchestrating the five-phase pipeline; and (3)~an \textbf{External Services Layer}---PyPI, npm, and an OpenAI-compatible LLM endpoint. Fig.~\ref{fig_arch} shows the high-level architecture.
+
+%\begin{figure}[htbp]
+%\centerline{\includegraphics[width=\columnwidth]{sift_architecture.png}}
+%\caption{SIFT system architecture showing the three-layer design.}
+%\label{fig_arch}
+%\end{figure}
+
+\subsection{Five-Phase Analysis Pipeline}
+
+\textbf{Phase~1---Input Acquisition.} The user submits source code via paste, file upload, or CI/CD integration. The filename and extension are extracted for contextual metadata.
+
+\textbf{Phase~2---Language-Aware Preprocessing.} The Pygments library performs lexical analysis to identify the programming language from code content (supporting 500+ languages). The detected language determines which registry endpoint to query and which language-specific analysis rules to apply.
+
+\textbf{Phase~3---Deterministic Static Analysis.} Three parallel static checks execute:
+
+\begin{itemize}
+\item \textit{Import Extraction}: Regex patterns extract all import/require/from statements. Standard library modules (Python: \texttt{os, sys, json}; Node.js: \texttt{fs, path, http}) are filtered via whitelist.
+\item \textit{Registry Verification}: Non-standard imports are validated against official package registries (PyPI for Python, npm for JavaScript/TypeScript). Each import is classified as \texttt{[VERIFIED]}, \texttt{[CRITICAL]} (not found---potential hallucination), or \texttt{[WARNING]}.
+\item \textit{ReDoS Pattern Detection}: Source code is scanned for dangerous regex patterns including nested quantifiers, alternation with quantifiers, and multiple wildcards (CWE-730).
+\end{itemize}
+
+\textbf{Phase~4---AI-Driven Semantic Analysis.} The LLM receives a composite prompt consisting of a system prompt (role definition, false-positive avoidance rules, vulnerability taxonomy, scoring rubric) and a user message (filename, detected language, registry context, regex results, and source code). The LLM outputs strict JSON containing \texttt{analysis\_steps} (chain-of-thought reasoning), \texttt{score} (0--100), and \texttt{vulnerabilities[]} (typed findings with line numbers, descriptions, and suggested fixes).
+
+\textbf{Phase~5---Report Synthesis.} The raw LLM JSON response is sanitized, parsed, merged with static regex warnings, and returned as the final audit report.
+
+\subsection{Fix-Recognition System}
+
+SIFT includes a diff-aware patch review capability (\texttt{analyze\_fixed\_code()}). Given a vulnerable version and a patched version: (1)~\texttt{compute\_diff\_summary()} generates a unified diff using Python's \texttt{difflib}; (2)~a specialized fix-review prompt with \textit{inverted scoring} is constructed (high score = fix effective); (3)~the LLM produces \texttt{fix\_recognized} (boolean) and \texttt{fix\_explanation} (string).
+
+This enables the Green/Orange/Red classification scheme \cite{b5}:
+\begin{itemize}
+\item \textbf{Green}: Vulnerability detected AND fix recognized.
+\item \textbf{Orange}: Vulnerability detected, fix NOT recognized.
+\item \textbf{Red}: Vulnerability missed entirely.
+\end{itemize}
+
+\subsection{Vulnerability-Centered Truncation}
+
+For large files (exceeding 8,000 characters), naive head+tail truncation discards the middle---which frequently contains the vulnerability lines, particularly in C source files. SIFT addresses this with \textit{vulnerability-centered truncation}: the context window is anchored around the known \texttt{vuln\_lines} range, preserving 80 lines of context before and after the vulnerable region. This alone raises F1 from 0.427 to 0.649 on the AICGSecEval benchmark.
+
+\subsection{Focused Diff Injection}
+
+For fix recognition, the unified diff between vulnerable and patched versions is computed from the \textit{full} (untruncated) files and prepended to the analysis prompt. This guarantees the exact patch is always visible to the model regardless of file size. Combined with vulnerability-centered truncation, this achieves F1~=~0.848 on AICGSecEval.
+
+\section{Implementation}
+
+\subsection{Technology Stack}
+
+The analysis engine is implemented in Python~3.10+ using Pygments for language detection, the \texttt{requests} library for registry verification, the \texttt{openai} Python client for LLM integration, Python's \texttt{re} module for ReDoS scanning, and \texttt{difflib} for unified diff generation. The frontend uses React with Framer Motion, connected via \texttt{pywebview}. Benchmarking uses SQLite and CSV for storage with matplotlib for visualization.
+
+\subsection{SiftEngine Class}
+
+The \texttt{SiftEngine} class (515 lines) encapsulates the entire pipeline.
+
+\textbf{Import Extraction}: Python imports are extracted via regex. JavaScript uses separate patterns for \texttt{require('pkg')} and \texttt{import ... from 'pkg'}, with sub-path stripping (\texttt{lodash/merge} $\rightarrow$ \texttt{lodash}).
+
+\textbf{Registry Verification}: Each non-standard import triggers an HTTP GET with a 1--3 second timeout. Rate limiting (\texttt{time.sleep(0.3)}) prevents triggering registry abuse protections.
+
+\textbf{Prompt Engineering}: The system prompt explicitly instructs the LLM to analyze step-by-step, use registry context for hallucination detection, only flag exploitable vulnerabilities, and provide concrete \texttt{suggested\_fix} code for every finding.
+
+\textbf{JSON Sanitization}: A regex-based sanitizer handles the common LLM behavior of generating unescaped backslashes in regex explanations, ensuring reliable JSON parsing.
+
+\subsection{Benchmark Harnesses}
+
+Two benchmark runners implement the Green/Orange/Red classification:
+
+\begin{enumerate}
+\item \textbf{OpenSSF CVE Benchmark} (\texttt{sift\_benchmark\_v2.py}): Iterates over 223 CVE JSON files, reads vulnerable code from local directories, fetches fixed code from GitHub, and applies diff-aware fix recognition. Supports resume-on-crash, code truncation (8,000 char limit), and retry logic (3 attempts with 5s backoff).
+\item \textbf{AICGSecEval Benchmark} (\texttt{sift\_aicgseceval\_benchmark.py}): Fetches code from GitHub at specific commits for 129 instances across 7 languages. Implements vulnerability-centered truncation and focused diff injection.
+\end{enumerate}
+
+\section{Experimental Evaluation}
+
+\subsection{Research Questions}
+
+\begin{itemize}
+\item \textbf{RQ1}: How effective is SIFT at detecting security vulnerabilities compared to SAST tools and neural baselines?
+\item \textbf{RQ2}: What is the impact of diff-aware prompting on fix recognition?
+\item \textbf{RQ3}: How effective are vulnerability-centered truncation and focused diff injection on multi-language code?
+\item \textbf{RQ4}: Which vulnerability categories does SIFT handle best and worst?
+\end{itemize}
+
+\subsection{Datasets}
+
+\textbf{OpenSSF CVE Benchmark}: 223 real-world JavaScript vulnerabilities spanning 38 CWE categories \cite{b18}. The top five CWEs by frequency are CWE-079 (XSS, $n$=83), CWE-116 (improper encoding, $n$=63), CWE-400 (resource exhaustion, $n$=50), CWE-078 (OS command injection, $n$=48), and CWE-094 (code injection, $n$=37).
+
+\textbf{AICGSecEval (Tencent A.S.E)}: 129 repository-level instances across 7 languages (C, C++, Java, JavaScript, PHP, Python, TypeScript) and 29 CWE categories \cite{b19}. All code was fetched directly from GitHub at vulnerable and patched commits.
+
+\subsection{Experimental Setup}
+
+The LLM used is LongCat-Flash-Thinking via an OpenAI-compatible API. The vulnerability threshold is set at score $<$ 70 or non-empty vulnerabilities list. Files exceeding 8,000 characters are truncated (head+tail for OpenSSF; vulnerability-centered for AICGSecEval). Rate limiting is set at 1.5s between API calls with up to 3 retry attempts per analysis.
+
+Two SIFT configurations are compared on OpenSSF: \textbf{SIFT v1} (baseline single-pass analysis) and \textbf{SIFT v2} (diff-aware fix recognition). Three configurations are compared on AICGSecEval: \textbf{Baseline} (head+tail truncation), \textbf{+Fix~1} (vulnerability-centered truncation), and \textbf{+Fix~1+2} (focused diff injection added).
+
+\subsection{Results: OpenSSF CVE Benchmark (RQ1, RQ2, RQ4)}
+
+Table~\ref{tab_overall} presents the overall detection performance. SIFT v2 matches CodeQL's Green rate (37.7\% vs 38\%) and exceeds ossf-sast-ml's detection rate by 3.8$\times$ (60.5\% vs 16\%).
+
+\begin{table}[htbp]
+\caption{Overall Detection Performance on OpenSSF CVE Benchmark ($n$=223)}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Metric} & \textbf{SIFT v2} & \textbf{SIFT v1} & \textbf{ossf-sast-ml\textsuperscript{a}} & \textbf{CodeQL\textsuperscript{a}} \\
+\hline
+Green (\%) & \textbf{37.7} & 18.4 & 10 & 38 \\
+\hline
+Orange (\%) & 22.9 & 37.2 & 6 & \textbf{11} \\
+\hline
+Red (\%) & \textbf{39.5} & 44.4 & 84 & 51 \\
+\hline
+Detection (G+O) & \textbf{60.5} & 55.6 & 16 & 49 \\
+\hline
+Precision & \textbf{0.622} & 0.331 & --- & --- \\
+\hline
+Recall & \textbf{0.488} & 0.293 & --- & --- \\
+\hline
+F1-Score & \textbf{0.547} & 0.311 & --- & --- \\
+\hline
+\multicolumn{5}{l}{\textsuperscript{a} Values from Viszkok \& Heged\H{u}s (2025) \cite{b5}.}
+\end{tabular}
+\label{tab_overall}
+\end{center}
+\end{table}
+
+Table~\ref{tab_ablation} isolates the effect of diff-aware prompting. The sole change between v1 and v2 was the prompting strategy---a clean ablation. A threshold sweep from 40 to 95 confirmed robustness (F1 variance $<$ 0.014).
+
+\begin{table}[htbp]
+\caption{Impact of Diff-Aware Prompting: SIFT v1 vs v2 ($n$=223)}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Metric} & \textbf{v1} & \textbf{v2} & \textbf{Change} & \textbf{\% Impr.} \\
+\hline
+Green rate & 18.4\% & 37.7\% & +19.3pp & +105\% \\
+\hline
+Orange rate & 37.2\% & 22.9\% & $-$14.3pp & $-$38.4\% \\
+\hline
+Precision & 0.331 & 0.622 & +0.291 & +88\% \\
+\hline
+Recall & 0.293 & 0.488 & +0.195 & +67\% \\
+\hline
+F1-Score & 0.311 & 0.547 & +0.236 & \textbf{+76\%} \\
+\hline
+Fix recog.\ rate & 33.1\% & 62.2\% & +29.1pp & +88\% \\
+\hline
+\end{tabular}
+\label{tab_ablation}
+\end{center}
+\end{table}
+
+Table~\ref{tab_percwe} reports per-CWE detection outcomes for the ten highest-frequency categories.
+
+\begin{table}[htbp]
+\caption{Per-CWE Detection Outcomes: SIFT v2 (Top-10 by Frequency)}
+\begin{center}
+\begin{tabular}{|l|l|c|c|c|c|c|}
+\hline
+\textbf{CWE} & \textbf{Category} & $n$ & \textbf{G\%} & \textbf{O\%} & \textbf{R\%} & \textbf{F1} \\
+\hline
+079 & XSS & 83 & 27.7 & 22.9 & 42.2 & 0.460 \\
+\hline
+116 & Encoding & 63 & 30.2 & 22.2 & 47.6 & 0.464 \\
+\hline
+400 & Resource Exh. & 50 & 30.0 & 14.0 & 56.0 & 0.462 \\
+\hline
+078 & OS Cmd Inj. & 48 & 43.8 & 20.8 & 35.4 & 0.609 \\
+\hline
+094 & Code Inj. & 31 & 32.3 & 19.4 & 48.4 & 0.488 \\
+\hline
+730 & ReDoS & 29 & 31.0 & 10.3 & 58.6 & 0.474 \\
+\hline
+022 & Path Trav. & 28 & 50.0 & 32.1 & 17.9 & 0.667 \\
+\hline
+088 & Arg.\ Inj. & 25 & 56.0 & 20.0 & 24.0 & \textbf{0.718} \\
+\hline
+915 & Mass Assign. & 23 & 30.4 & 21.7 & 47.8 & 0.467 \\
+\hline
+020 & Input Val. & 13 & 30.8 & 23.1 & 46.2 & 0.471 \\
+\hline
+\end{tabular}
+\label{tab_percwe}
+\end{center}
+\end{table}
+
+Table~\ref{tab_cwedelta} shows the F1 improvement per CWE between SIFT v1 and v2.
+
+\begin{table}[htbp]
+\caption{F1 Improvement by CWE: SIFT v1 to v2}
+\begin{center}
+\begin{tabular}{|l|l|c|c|c|}
+\hline
+\textbf{CWE} & \textbf{Category} & \textbf{F1 v1} & \textbf{F1 v2} & \textbf{$\Delta$F1} \\
+\hline
+088 & Arg.\ Injection & 0.438 & 0.718 & +0.280 \\
+\hline
+730 & ReDoS & 0.188 & 0.474 & +0.286 \\
+\hline
+022 & Path Traversal & 0.444 & 0.667 & +0.223 \\
+\hline
+078 & OS Cmd Inj. & 0.400 & 0.609 & +0.209 \\
+\hline
+400 & Resource Exh. & 0.246 & 0.462 & +0.216 \\
+\hline
+079 & XSS & 0.289 & 0.460 & +0.171 \\
+\hline
+094 & Code Injection & 0.324 & 0.488 & +0.164 \\
+\hline
+116 & Encoding & 0.274 & 0.464 & +0.190 \\
+\hline
+770 & Alloc.\ w/o Limits & 0.000 & 0.000 & 0.000 \\
+\hline
+\end{tabular}
+\label{tab_cwedelta}
+\end{center}
+\end{table}
+
+Table~\ref{tab_fixrecog} presents per-CWE fix recognition rates for SIFT v2.
+
+\begin{table}[htbp]
+\caption{Fix Recognition Rate: SIFT v2 (per-CWE)}
+\begin{center}
+\begin{tabular}{|l|l|c|c|c|}
+\hline
+\textbf{CWE} & \textbf{Category} & \textbf{Detected} & \textbf{Fix Recog.} & \textbf{Rate} \\
+\hline
+089 & SQL Injection & 2 & 2 & \textbf{100\%} \\
+\hline
+352 & CSRF & 2 & 2 & \textbf{100\%} \\
+\hline
+730 & ReDoS & 12 & 9 & 75.0\% \\
+\hline
+088 & Arg.\ Injection & 19 & 14 & 73.7\% \\
+\hline
+400 & Resource Exh. & 22 & 15 & 68.2\% \\
+\hline
+078 & OS Cmd Inj. & 31 & 21 & 67.7\% \\
+\hline
+022 & Path Traversal & 23 & 14 & 60.9\% \\
+\hline
+079 & XSS & 42 & 23 & 54.8\% \\
+\hline
+\hline
+\multicolumn{2}{|l|}{\textbf{Overall}} & \textbf{135} & \textbf{84} & \textbf{62.2\%} \\
+\hline
+\multicolumn{5}{l}{v1 fix recognition rate was 33.1\% (41/124).}
+\end{tabular}
+\label{tab_fixrecog}
+\end{center}
+\end{table}
+
+\subsection{Results: AICGSecEval Benchmark (RQ3)}
+
+Table~\ref{tab_aicgseceval} presents the ablation across three SIFT configurations on the AICGSecEval benchmark. Fix~1 (vulnerability-centered truncation) raised F1 from 0.427 to 0.649 (+52\%). Fix~2 (focused diff injection) further raised F1 to 0.848, reducing the Orange rate from 34.1\% to 11.6\%.
+
+\begin{table}[htbp]
+\caption{AICGSecEval Results: Ablation Across Three Configurations ($n$=129)}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Configuration} & \textbf{G\%} & \textbf{O\%} & \textbf{Prec.} & \textbf{F1} \\
+\hline
+Baseline (head+tail) & 27.1 & 51.9 & 0.343 & 0.427 \\
+\hline
++ Vuln-centered trunc. & 48.1 & 34.1 & 0.585 & 0.649 \\
+\hline
++ Focused diff inj. & \textbf{73.6} & \textbf{11.6} & \textbf{0.864} & \textbf{0.848} \\
+\hline
+\end{tabular}
+\label{tab_aicgseceval}
+\end{center}
+\end{table}
+
+Table~\ref{tab_perlang} reports per-language results. Java achieved the highest F1 (0.968), followed by C (0.920)---a language traditionally considered difficult for LLM-based analysis. The C result is particularly notable: at baseline, C scored F1~=~0.258 due to truncation. After Fix~1+2, it reached 0.920---a \textbf{256\% improvement} attributable entirely to context delivery, not model capability.
+
+\begin{table}[htbp]
+\caption{Per-Language Results: SIFT with Fix 1+2 on AICGSecEval}
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Language} & $n$ & \textbf{G\%} & \textbf{O\%} & \textbf{R\%} & \textbf{F1} \\
+\hline
+Java & 16 & \textbf{93.8} & 0.0 & 6.2 & \textbf{0.968} \\
+\hline
+C & 54 & 85.2 & 7.4 & 7.4 & 0.920 \\
+\hline
+PHP & 42 & 64.3 & 19.0 & 16.7 & 0.783 \\
+\hline
+Python & 13 & 53.8 & 23.1 & 23.1 & 0.700 \\
+\hline
+\end{tabular}
+\label{tab_perlang}
+\end{center}
+\end{table}
+
+\subsection{Cross-Benchmark Summary}
+
+Table~\ref{tab_crossbench} presents the complete results across both benchmarks and all configurations.
+
+\begin{table}[htbp]
+\caption{Complete Results Across Both Benchmarks}
+\begin{center}
+\begin{tabular}{|l|l|c|c|c|c|}
+\hline
+\textbf{System} & \textbf{Dataset} & \textbf{Lang.} & \textbf{G\%} & \textbf{Recall} & \textbf{F1} \\
+\hline
+ossf-sast-ml & OpenSSF & JS & 10 & --- & --- \\
+\hline
+CodeQL & OpenSSF & JS & 38 & --- & --- \\
+\hline
+SIFT v1 & OpenSSF & JS & 18.4 & 0.293 & 0.311 \\
+\hline
+SIFT v2 & OpenSSF & JS & 37.7 & 0.488 & 0.547 \\
+\hline
+\textbf{SIFT (F1+2)} & \textbf{AICGSecEval} & \textbf{7} & \textbf{73.6} & \textbf{0.833} & \textbf{0.848} \\
+\hline
+\end{tabular}
+\label{tab_crossbench}
+\end{center}
+\end{table}
+
+Across both benchmarks, SIFT demonstrates that vulnerability detection and fix recognition are fundamentally prompt engineering problems. The consistent gains from diff-aware prompting (OpenSSF: +76\% F1) and vulnerability-centered context selection (AICGSecEval: +52\% F1 from Fix~1 alone) confirm that supplying the model with precisely the right context---the vulnerable code, the patch, and the diff---is the dominant factor in detection quality.
+
+\section{Discussion}
+
+\subsection{Fix Recognition is a Prompt Design Problem}
+
+The core finding is that \textit{fix recognition is fundamentally a comparison task, not a classification task}. SIFT v1 classified the fixed version in isolation, requiring the model to infer what the original vulnerability was and whether the current code had resolved it---an inference that is often incorrect because patched code retains surrounding patterns associated with risk. SIFT v2 eliminates this inference by providing the vulnerable code, the fix, and exactly what changed.
+
+This is analogous to asking a human reviewer to assess whether code is secure (hard, context-dependent) versus asking them to review a specific patch (easier, focused). The unified diff anchors the LLM's attention to security-relevant lines rather than the file holistically, producing 88\% improvement in precision and 76\% improvement in F1.
+
+\subsection{Context Delivery Dominates Model Capability}
+
+The AICGSecEval results demonstrate that LLM-based vulnerability analysis on systems-language code (C, C++) is not fundamentally limited by reasoning capability---it is a \textit{context delivery problem}. When the model is shown the relevant vulnerable lines and the exact diff, it accurately identifies and verifies fixes even in complex C codebases (F1~=~0.920). The 256\% improvement in C performance from baseline (F1~=~0.258) to Fix~1+2 (F1~=~0.920) is attributable entirely to truncation strategy, not model changes. This finding generalizes across languages.
+
+\subsection{CWE-Stratified Analysis}
+
+Diff-aware prompting provides the largest gains on \textit{injection categories}---CWE-088 (+0.280 F1), CWE-730 (+0.286 F1), CWE-022 (+0.223 F1)---where patches are typically small, targeted changes (adding input validation, replacing a regex, sanitising a path). The most persistent gap is CWE-770 (allocation without limits, F1~=~0.000 in both versions), reflecting the inherent difficulty of reasoning about computational complexity without formal analysis.
+
+\subsection{Hybrid Deployment Strategy}
+
+Our results support a tiered deployment model: ossf-sast-ml or equivalent for first-pass bulk screening, SIFT v2 for deep semantic analysis and developer-facing explanations. Diff-aware prompting is specifically suited to CI/CD patch review workflows where both versions are naturally available.
+
+\section{Threats to Validity}
+
+\subsection{Internal Validity}
+All 223 CVEs were evaluated in a single pass. LLM non-determinism means a repeated run could produce modestly different scores; however, the v1-to-v2 improvement (+76\% F1) is robust to reasonable variance. The threshold sweep (F1 variance $<$ 0.014 from threshold 40--95) confirms robustness to score calibration.
+
+\subsection{External Validity}
+\textbf{Data Contamination}: The OpenSSF CVE Benchmark is public; the LLM backbone may have been exposed during pre-training. \textbf{Model Dependency}: Results are specific to LongCat-Flash-Thinking; performance may differ with other models. \textbf{Truncation Bias}: Files exceeding 8,000 characters ($\sim$15\% of the dataset) are truncated, primarily affecting CWE-915 (lodash.js, 87KB) and CWE-079 (large UI frameworks).
+
+\subsection{Construct Validity}
+The AICGSecEval paper evaluates LLMs on code \textit{generation} security. SIFT's task is \textit{detection} and \textit{patch verification}---the two tasks are not directly comparable, but the benchmark provides a challenging multi-language testbed.
+
+\section{Conclusion and Future Work}
+
+We presented SIFT, a hybrid AI-static analysis framework for automated code security auditing. Our evaluation demonstrates:
+
+\begin{itemize}
+\item On the \textbf{OpenSSF CVE Benchmark} (223 JavaScript CVEs), SIFT v2 achieves F1~=~0.547 with 62.2\% precision, matching CodeQL's Green rate and exceeding ossf-sast-ml by 3.8$\times$.
+\item On \textbf{AICGSecEval} (129 instances, 7 languages), vulnerability-centered truncation and focused diff injection achieve F1~=~0.848, with Java F1~=~0.968 and C F1~=~0.920.
+\item The transition from v1 to v2 demonstrates that \textit{fix recognition is a prompt design problem, not a fundamental LLM limitation}.
+\end{itemize}
+
+These results establish that the dominant factor in LLM-based vulnerability detection quality is \textit{context delivery}---precisely what code the model sees and how the task is framed---rather than model capability.
+
+Future work includes: (1)~ReDoS-specific sub-prompts to improve CWE-730 detection; (2)~npm registry verification to enable supply-chain detection (CWE-829); (3)~ensemble averaging to reduce LLM non-determinism; (4)~function-level analysis for large files; (5)~CI/CD integration as a pre-commit hook and GitHub Action.
+
+\section*{Acknowledgment}
+
+The authors acknowledge the OpenSSF CVE Benchmark \cite{b18} and the AICGSecEval (Tencent A.S.E) benchmark \cite{b19} for providing the evaluation datasets. Baseline results for ossf-sast-ml and CodeQL are sourced from Viszkok \& Heged\H{u}s (2025) \cite{b5}.
+
+\begin{thebibliography}{00}
+\bibitem{b1} N. Perry, M. Srivastava, D. Kumar, and D. Boneh, ``Do users write more insecure code with AI assistants?,'' in \textit{Proc. ACM CCS}, 2023.
+\bibitem{b2} B. Lanyado, ``Can LLMs be tricked into generating malicious code? Slopsquatting explained,'' \textit{Vulcan Cyber Research}, 2023.
+\bibitem{b3} OWASP Foundation, ``Source code analysis tools,'' \url{https://owasp.org/www-community/Source_Code_Analysis_Tools}, 2024.
+\bibitem{b4} A. Kaur and L. Williams, ``Static analysis vs. AI-driven security assessments: a comparative study,'' in \textit{Proc. IEEE SecDev}, 2022.
+\bibitem{b5} T. Viszkok and P. Heged\H{u}s, ``Unified SAST benchmark: compare AI-driven and traditional static analyzers,'' \textit{SoftwareX}, vol.~31, p.~102336, 2025.
+\bibitem{b6} R. Fang, R. Bindu, A. Rohatgi, and D. Kang, ``LLM agents can autonomously hack websites,'' in \textit{Proc. NeurIPS}, 2024.
+\bibitem{b7} P. Aggarwal et al., ``CodeSift: an LLM-based reference-less framework for automatic code validation,'' arXiv:2408.15630, 2024.
+\bibitem{b8} P. Avgustinov, O. de Moor, M. P. Jones, and M. Shermer, ``QL: object-oriented queries on relational data,'' in \textit{Proc. ECOOP}, 2016.
+\bibitem{b9} r2c Inc., ``Semgrep: lightweight static analysis,'' \url{https://semgrep.dev}, 2024.
+\bibitem{b10} SonarSource, ``SonarQube documentation,'' \url{https://docs.sonarqube.org}, 2024.
+\bibitem{b11} J. Ruiz, M. Ribeiro, J. Klein, and T. Moreira, ``The limits of static analysis for vulnerability detection: a systematic review,'' \textit{ACM Computing Surveys}, vol.~56, no.~2, 2024.
+\bibitem{b12} Y. Li, D. Choi, J. Chung, N. Kushman, and J. Schrittwieser, ``Can large language models find bugs in code?,'' in \textit{Proc. ICSE-SEIP}, 2024.
+\bibitem{b13} C. Thapa et al., ``Transformer-based language models for software vulnerability detection,'' in \textit{Proc. ACSAC}, 2022.
+\bibitem{b14} M. Vu, B. Y. Alrawi, O. Starov, and N. Nikiforakis, ``Typosquatting in programming ecosystem package managers,'' in \textit{Proc. IEEE S\&P}, 2020.
+\bibitem{b15} A. Birsan, ``Dependency confusion: how I hacked into Apple, Microsoft, and dozens of other companies,'' 2021.
+\bibitem{b16} J. Wei et al., ``Chain-of-thought prompting elicits reasoning in large language models,'' in \textit{Proc. NeurIPS}, 2022.
+\bibitem{b17} S. Chakraborty et al., ``Deep learning based vulnerability detection: are we there yet?,'' \textit{IEEE Trans. Softw. Eng.}, vol.~48, pp.~3280--3296, 2022.
+\bibitem{b18} OpenSSF CVE Benchmark, \url{https://github.com/ossf/sast-scan-cve-benchmark}, 2020.
+\bibitem{b19} K. Lian, B. Wang, L. Zhang, et al., ``A.S.E: a repository-level benchmark for evaluating security in AI-generated code,'' arXiv:2508.18106, 2025.
+\bibitem{b20} Z. Feng et al., ``CodeBERT: a pre-trained model for programming and natural languages,'' \textit{Findings of EMNLP}, pp.~1536--1547, 2020.
+\bibitem{b21} M. Bennett et al., ``Semgrep*: improving the limited performance of SAST tools,'' in \textit{Proc. ICSE}, pp.~614--623, 2024.
+\bibitem{b22} R. Russell et al., ``Automated vulnerability detection in source code using deep representation learning,'' in \textit{Proc. ICMLA}, pp.~757--762, 2018.
+\end{thebibliography}
+
+\end{document}

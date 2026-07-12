@@ -18,6 +18,20 @@ const PasswordManager = () => {
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [newPassword, setNewPassword] = useState({ site: '', username: '', password: '', category: 'General' });
 
+    const getStrength = (pwd) => {
+        let str = 0;
+        if (pwd.length > 7) str++;
+        if (pwd.length > 11) str++;
+        if (/[A-Z]/.test(pwd)) str++;
+        if (/[0-9]/.test(pwd)) str++;
+        if (/[^A-Za-z0-9]/.test(pwd)) str++;
+        return Math.min(5, str);
+    };
+
+    const strength = getStrength(newPassword.password);
+    const strengthColor = strength <= 2 ? 'bg-red-500 text-red-500' : strength <= 3 ? 'bg-yellow-500 text-yellow-500' : 'bg-green-500 text-green-500';
+    const strengthLabel = strength <= 2 ? 'Weak' : strength <= 3 ? 'Moderate' : 'Strong';
+
     useEffect(() => {
         checkAuth();
     }, []);
@@ -195,8 +209,8 @@ const PasswordManager = () => {
                         <Lock size={120} />
                     </div>
 
-                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary relative z-10 border border-primary/20">
-                        <KeyRound size={28} />
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 text-primary relative z-10 border border-primary/20 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+                        <KeyRound size={28} className="animate-pulse" />
                     </div>
 
                     <h2 className="text-2xl font-bold text-white mb-2 relative z-10">Secure Password Vault</h2>
@@ -212,7 +226,7 @@ const PasswordManager = () => {
                             value={masterPassword}
                             onChange={(e) => setMasterPassword(e.target.value)}
                             placeholder="Master Password"
-                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary outline-none text-center tracking-widest mb-4"
+                            className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-primary focus:shadow-[0_0_20px_rgba(59,130,246,0.2)] outline-none text-center tracking-widest mb-4 transition-all duration-300"
                             autoFocus
                         />
 
@@ -222,7 +236,7 @@ const PasswordManager = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-primary hover:bg-primary/90 text-black font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                            className="w-full bg-primary hover:bg-primary/90 text-black font-bold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:scale-[1.02]"
                         >
                             <Lock size={18} />
                             {authStatus.hasMaster ? "Unlock Vault" : "Create Vault"}
@@ -244,7 +258,7 @@ const PasswordManager = () => {
                         placeholder="Search passwords..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full bg-surface border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:border-primary/50 outline-none transition-colors"
+                        className="w-full bg-surface border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:border-primary/50 focus:bg-black/30 focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] outline-none transition-all duration-300"
                     />
                 </div>
                 <div className="flex items-center gap-3">
@@ -253,7 +267,7 @@ const PasswordManager = () => {
                     </div>
                     <button
                         onClick={() => setIsAddModalOpen(true)}
-                        className="bg-primary text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors"
+                        className="bg-primary text-black font-bold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-all duration-300 hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-[1.02]"
                     >
                         <Plus size={20} />
                         Add Password
@@ -275,7 +289,7 @@ const PasswordManager = () => {
                     </thead>
                     <tbody className="divide-y divide-white/5">
                         {filteredPasswords.map((item) => (
-                            <tr key={item.id} className="hover:bg-white/5 transition-colors group">
+                            <tr key={item.id} className="hover:bg-white/5 transition-all duration-300 group hover:shadow-[inset_4px_0_0_rgba(59,130,246,0.5)] cursor-pointer">
                                 <td className="p-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded bg-white/10 flex items-center justify-center text-white font-bold">
@@ -361,7 +375,7 @@ const PasswordManager = () => {
                                         type="text"
                                         value={newPassword.site}
                                         onChange={e => setNewPassword({ ...newPassword, site: e.target.value })}
-                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary outline-none"
+                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] outline-none transition-all duration-300"
                                         placeholder="e.g. google.com"
                                     />
                                 </div>
@@ -371,7 +385,7 @@ const PasswordManager = () => {
                                         type="text"
                                         value={newPassword.username}
                                         onChange={e => setNewPassword({ ...newPassword, username: e.target.value })}
-                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary outline-none"
+                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] outline-none transition-all duration-300"
                                         placeholder="e.g. user@email.com"
                                     />
                                 </div>
@@ -381,16 +395,26 @@ const PasswordManager = () => {
                                         type="password"
                                         value={newPassword.password}
                                         onChange={e => setNewPassword({ ...newPassword, password: e.target.value })}
-                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary outline-none tracking-widest"
+                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] outline-none tracking-widest transition-all duration-300"
                                         placeholder="••••••••"
                                     />
+                                    {newPassword.password && (
+                                        <div className="mt-3 flex items-center gap-3">
+                                            <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden flex">
+                                                <div className={`h-full transition-all duration-300 ${strengthColor.split(' ')[0]}`} style={{ width: `${(strength / 5) * 100}%` }} />
+                                            </div>
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider ${strengthColor.split(' ')[1]}`}>
+                                                {strengthLabel}
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <label className="block text-sm text-gray-400 mb-1">Category</label>
                                     <select
                                         value={newPassword.category}
                                         onChange={e => setNewPassword({ ...newPassword, category: e.target.value })}
-                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary outline-none"
+                                        className="w-full bg-black/20 border border-white/10 rounded-lg p-2 text-white focus:border-primary focus:shadow-[0_0_15px_rgba(59,130,246,0.15)] outline-none transition-all duration-300"
                                     >
                                         <option value="General">General</option>
                                         <option value="Social">Social</option>
@@ -409,7 +433,7 @@ const PasswordManager = () => {
                                 </button>
                                 <button
                                     onClick={handleAddPassword}
-                                    className="bg-primary text-black font-bold px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+                                    className="bg-primary text-black font-bold px-6 py-2 rounded-lg hover:bg-primary/90 transition-all duration-300 flex items-center gap-2 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:scale-[1.02]"
                                 >
                                     <Save size={18} />
                                     Save Password

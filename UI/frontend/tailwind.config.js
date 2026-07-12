@@ -7,13 +7,13 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#00F3FF', // Cyan
-                secondary: '#BC13FE', // Neon Purple
-                background: '#050B14', // Deep Dark Blue/Black
-                surface: '#0F1926', // Lighter Dark
-                success: '#00FF9D', // Neon Green
-                warning: '#FFB800',
-                error: '#FF003C', // Neon Red
+                primary: '#3B82F6', // Professional Blue
+                secondary: '#8B5CF6', // Muted Violet
+                background: '#0F1117', // Clean near-black
+                surface: '#1A1D27', // Charcoal panel
+                success: '#22C55E', // Natural Green
+                warning: '#F59E0B', // Amber
+                error: '#EF4444', // Standard Red
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],

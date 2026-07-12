@@ -1,0 +1,85 @@
+╔═══════════════════════════════════════════════════════════════════╗
+║         CYBERGUARD PRO - EXECUTABLE BUILD INSTRUCTIONS           ║
+╚═══════════════════════════════════════════════════════════════════╝
+
+📦 EXECUTABLE FILE LOCATION
+──────────────────────────────────────────────────────────────────────
+   dist\CyberGuardPro.exe    (~55 MB)
+
+
+🚀 QUICK BUILD
+──────────────────────────────────────────────────────────────────────
+   Simply double-click:  BUILD.bat
+
+   Or run in terminal:   python build_exe.py
+
+
+📋 MANUAL BUILD (if needed)
+──────────────────────────────────────────────────────────────────────
+   python -m PyInstaller --name=CyberGuardPro --onefile --windowed ^
+       --exclude-module=tensorflow --exclude-module=torch ^
+       --add-data="database/schema.sql;database" ^
+       --hidden-import=PyQt5.QtCore main.py
+
+
+💡 RUNNING THE EXECUTABLE
+──────────────────────────────────────────────────────────────────────
+   1. Navigate to the 'dist' folder
+   2. Double-click CyberGuardPro.exe
+   3. First launch may take 5-10 seconds (extracting files)
+   4. Login window will appear - create your master account
+
+
+⚙️ BUILD REQUIREMENTS
+──────────────────────────────────────────────────────────────────────
+   - Python 3.11+
+   - PyInstaller 6.16.0+
+   - PyQt5
+   - cryptography
+   - psutil
+
+   Install: pip install pyinstaller PyQt5 cryptography psutil
+
+
+📁 DISTRIBUTION
+──────────────────────────────────────────────────────────────────────
+   The executable is PORTABLE and STANDALONE:
+   
+   ✓ No Python installation required on target machine
+   ✓ No additional dependencies needed
+   ✓ Single .exe file contains everything
+   ✓ Database created automatically on first run
+   ✓ Works on any Windows 10/11 system
+
+
+🔧 TROUBLESHOOTING
+──────────────────────────────────────────────────────────────────────
+   Issue: "Build failed"
+   → Ensure PyInstaller is installed: pip install pyinstaller
+   
+   Issue: "Missing modules"
+   → Install dependencies: pip install -r requirements.txt
+   
+   Issue: Executable won't run
+   → Windows Defender may block it - allow in security settings
+   → Run as Administrator if needed
+
+
+📊 BUILD OUTPUT
+──────────────────────────────────────────────────────────────────────
+   build/              - Temporary build files (can delete)
+   dist/               - Final executable location
+   CyberGuardPro.spec  - PyInstaller configuration (auto-generated)
+
+
+🎯 CLEAN BUILD
+──────────────────────────────────────────────────────────────────────
+   To clean and rebuild from scratch:
+   
+   1. Delete: build/, dist/, CyberGuardPro.spec
+   2. Run: BUILD.bat or python build_exe.py
+
+
+╔═══════════════════════════════════════════════════════════════════╗
+║  For support or issues, check the main README.md file            ║
+╚═══════════════════════════════════════════════════════════════════╝

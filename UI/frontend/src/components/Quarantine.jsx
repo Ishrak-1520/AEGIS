@@ -61,9 +61,10 @@ const Quarantine = () => {
 
     return (
         <div className="space-y-6">
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 flex items-start gap-4">
-                <ShieldAlert className="text-red-500 shrink-0" size={32} />
-                <div className="flex-1">
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 flex items-start gap-4 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-24 bg-red-500/5 blur-[80px] rounded-full pointer-events-none transition-opacity duration-500 opacity-50 group-hover:opacity-100"></div>
+                <ShieldAlert className="text-red-500 shrink-0 filter drop-shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse relative z-10" size={32} />
+                <div className="flex-1 relative z-10">
                     <h3 className="text-lg font-bold text-white mb-1">Quarantined Items</h3>
                     <p className="text-gray-400 text-sm">
                         These items have been isolated to prevent harm to your system. You can choose to restore them if you believe they are safe, or delete them permanently.
@@ -71,7 +72,7 @@ const Quarantine = () => {
                 </div>
                 <button
                     onClick={handleSimulateQuarantine}
-                    className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-colors border border-red-500/30 text-sm font-medium whitespace-nowrap"
+                    className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 rounded-lg transition-all duration-300 border border-red-500/30 text-sm font-bold whitespace-nowrap hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] hover:scale-105 relative z-10"
                 >
                     Test: Simulate Threat
                 </button>
@@ -86,9 +87,9 @@ const Quarantine = () => {
                 </div>
                 <div className="divide-y divide-white/5">
                     {quarantinedItems.map((item) => (
-                        <div key={item.id} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                        <div key={item.id} className="p-4 flex items-center justify-between hover:bg-white/5 transition-all duration-300 group hover:shadow-[inset_4px_0_0_rgba(239,68,68,0.5)]">
                             <div className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500">
+                                <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500 group-hover:bg-red-500/20 transition-colors shadow-[0_0_10px_rgba(239,68,68,0.1)] group-hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]">
                                     <AlertTriangle size={20} />
                                 </div>
                                 <div>
@@ -98,7 +99,7 @@ const Quarantine = () => {
                                         <span className="text-xs text-gray-400">
                                             {item.quarantined_at ? new Date(item.quarantined_at).toLocaleString() : 'Unknown Date'}
                                         </span>
-                                        <span className="text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">
+                                        <span className="text-xs font-bold text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20 group-hover:border-red-500/40 transition-colors shadow-[0_0_5px_rgba(239,68,68,0.1)]">
                                             {item.threat_type || 'Unknown Threat'}
                                         </span>
                                     </div>
@@ -107,14 +108,14 @@ const Quarantine = () => {
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => handleRestore(item.id)}
-                                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-colors text-sm font-medium"
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition-all duration-300 text-sm font-medium hover:shadow-[0_0_10px_rgba(255,255,255,0.1)] hover:scale-105"
                                 >
                                     <RotateCcw size={16} />
                                     Restore
                                 </button>
                                 <button
                                     onClick={() => handleDelete(item.id)}
-                                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-colors text-sm font-medium"
+                                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-all duration-300 text-sm font-medium hover:shadow-[0_0_10px_rgba(239,68,68,0.3)] hover:scale-105"
                                 >
                                     <Trash2 size={16} />
                                     Delete
@@ -123,8 +124,10 @@ const Quarantine = () => {
                         </div>
                     ))}
                     {quarantinedItems.length === 0 && (
-                        <div className="p-8 text-center text-gray-500">
-                            No quarantined items found. Your system is clean.
+                        <div className="p-16 flex flex-col items-center justify-center text-center text-gray-500">
+                            <ShieldAlert size={64} className="mb-4 text-green-500/50 filter drop-shadow-[0_0_15px_rgba(34,197,94,0.2)]" />
+                            <h4 className="text-xl font-bold text-white mb-2">Zero Threats Found</h4>
+                            <p>No quarantined items found. Your system is fully clean and secure.</p>
                         </div>
                     )}
                 </div>

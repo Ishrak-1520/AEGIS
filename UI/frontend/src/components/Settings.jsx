@@ -10,8 +10,8 @@ const Toggle = ({ enabled, onChange, disabled, loading }) => (
     <button
         onClick={() => !disabled && !loading && onChange(!enabled)}
         disabled={disabled || loading}
-        className={`w-12 h-6 rounded-full p-1 transition-colors relative ${
-            enabled ? 'bg-primary' : 'bg-white/10'
+        className={`w-12 h-6 rounded-full p-1 transition-all duration-300 relative ${
+            enabled ? 'bg-primary shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-white/10 hover:bg-white/20'
         } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
         {loading ? (
@@ -21,7 +21,7 @@ const Toggle = ({ enabled, onChange, disabled, loading }) => (
         ) : (
             <motion.div
                 layout
-                className="w-4 h-4 bg-white rounded-full"
+                className="w-4 h-4 bg-white rounded-full shadow-sm"
                 animate={{ x: enabled ? 24 : 0 }}
             />
         )}
@@ -168,10 +168,10 @@ const Settings = () => {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className={`fixed top-4 right-4 px-4 py-3 rounded-lg flex items-center gap-2 z-50 ${
+                        className={`fixed top-4 right-4 px-4 py-3 rounded-lg flex items-center gap-2 z-50 shadow-lg ${
                             saveStatus === 'success' 
-                                ? 'bg-green-500/20 border border-green-500/50 text-green-400'
-                                : 'bg-red-500/20 border border-red-500/50 text-red-400'
+                                ? 'bg-green-500/20 border border-green-500/50 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.3)]'
+                                : 'bg-red-500/20 border border-red-500/50 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.3)]'
                         }`}
                     >
                         {saveStatus === 'success' ? (
@@ -193,18 +193,26 @@ const Settings = () => {
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`mb-6 p-4 rounded-xl border flex items-center justify-between ${
+                className={`mb-6 p-5 rounded-xl border flex items-center justify-between transition-all duration-500 ${
                     rtpActive 
-                        ? 'bg-green-500/10 border-green-500/30'
-                        : 'bg-red-500/10 border-red-500/30'
+                        ? 'bg-green-500/10 border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.1)]'
+                        : 'bg-red-500/10 border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)]'
                 }`}
             >
-                <div className="flex items-center gap-3">
-                    {rtpActive ? (
-                        <ShieldCheck className="text-green-400" size={32} />
-                    ) : (
-                        <ShieldOff className="text-red-400" size={32} />
-                    )}
+                <div className="flex items-center gap-4">
+                    <div className="relative">
+                        {rtpActive ? (
+                            <>
+                                <div className="absolute inset-0 bg-green-500/20 blur-md rounded-full animate-pulse"></div>
+                                <ShieldCheck className="text-green-400 relative z-10" size={32} />
+                            </>
+                        ) : (
+                            <>
+                                <div className="absolute inset-0 bg-red-500/20 blur-md rounded-full animate-pulse"></div>
+                                <ShieldOff className="text-red-400 relative z-10" size={32} />
+                            </>
+                        )}
+                    </div>
                     <div>
                         <h3 className={`font-bold ${rtpActive ? 'text-green-400' : 'text-red-400'}`}>
                             {rtpActive ? 'Protection Active' : 'Protection Disabled'}
@@ -220,8 +228,8 @@ const Settings = () => {
                 <div className="flex items-center gap-4">
                     {rtpActive && (
                         <div className="flex items-center gap-2 text-sm">
-                            <Wifi size={16} className={nidsActive ? 'text-cyan-400' : 'text-gray-500'} />
-                            <span className={nidsActive ? 'text-cyan-400' : 'text-gray-500'}>
+                            <Wifi size={16} className={nidsActive ? 'text-blue-400' : 'text-gray-500'} />
+                            <span className={nidsActive ? 'text-blue-400' : 'text-gray-500'}>
                                 NIDS {nidsActive ? 'Online' : 'Offline'}
                             </span>
                         </div>
@@ -275,14 +283,14 @@ const Settings = () => {
                             <button
                                 key={level}
                                 onClick={() => updateSetting('threatSensitivity', level)}
-                                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                                className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all duration-300 hover:scale-[1.05] ${
                                     settings.threatSensitivity === level
                                         ? level === 'LOW' 
-                                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50'
+                                            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.3)]'
                                             : level === 'MEDIUM'
-                                                ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                                                : 'bg-red-500/20 text-red-400 border border-red-500/50'
-                                        : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10'
+                                                ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50 shadow-[0_0_15px_rgba(234,179,8,0.3)]'
+                                                : 'bg-red-500/20 text-red-400 border border-red-500/50 shadow-[0_0_15px_rgba(239,68,68,0.3)]'
+                                        : 'bg-white/5 text-gray-400 border border-white/10 hover:bg-white/10 hover:text-white'
                                 }`}
                             >
                                 {level}
@@ -367,7 +375,7 @@ const Settings = () => {
                 <button 
                     onClick={handleSaveAll}
                     disabled={saving}
-                    className="bg-primary text-black font-bold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    className="bg-primary text-black font-bold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-primary/90 transition-all duration-300 disabled:opacity-50 hover:shadow-[0_0_15px_rgba(59,130,246,0.4)] hover:scale-[1.02]"
                 >
                     {saving ? (
                         <Loader2 size={20} className="animate-spin" />

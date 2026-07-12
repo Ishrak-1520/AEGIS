@@ -65,9 +65,9 @@ const Reports = () => {
                 <button
                     onClick={fetchLogs}
                     disabled={loading}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+                    className="p-2.5 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] group"
                 >
-                    <RefreshCw size={20} className={loading ? "animate-spin" : ""} />
+                    <RefreshCw size={20} className={`transition-transform duration-500 ${loading ? "animate-spin text-primary" : "group-hover:rotate-180"}`} />
                 </button>
             </div>
 
@@ -84,7 +84,7 @@ const Reports = () => {
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {logs.map((log, index) => (
-                                <tr key={log.id || index} className="hover:bg-white/5 transition-colors">
+                                <tr key={log.id || index} className="even:bg-white/[0.02] odd:bg-transparent hover:bg-white/[0.05] transition-all duration-300 group hover:shadow-[inset_4px_0_0_rgba(255,255,255,0.2)]">
                                     <td className="p-4 text-gray-400 font-mono text-sm whitespace-nowrap">
                                         <div className="flex items-center gap-2">
                                             <Clock size={14} />
@@ -92,7 +92,7 @@ const Reports = () => {
                                         </div>
                                     </td>
                                     <td className="p-4">
-                                        <span className={`px-2 py-1 rounded text-xs font-bold border ${getColor(log.level)}`}>
+                                        <span className={`px-2.5 py-1 rounded-md text-[11px] font-black uppercase tracking-wider border shadow-sm ${getColor(log.level)}`}>
                                             {log.level}
                                         </span>
                                     </td>
@@ -109,8 +109,10 @@ const Reports = () => {
                             ))}
                             {logs.length === 0 && !loading && (
                                 <tr>
-                                    <td colSpan="4" className="p-8 text-center text-gray-500">
-                                        No logs found.
+                                    <td colSpan="4" className="p-16 text-center text-gray-500">
+                                        <FileText size={64} className="mx-auto mb-4 opacity-50" />
+                                        <h4 className="text-xl font-bold text-white mb-2">No Logs Found</h4>
+                                        <p>The system log is currently empty. Activities will appear here.</p>
                                     </td>
                                 </tr>
                             )}

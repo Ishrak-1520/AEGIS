@@ -59,6 +59,7 @@ const NetworkMonitor = () => {
     // Toggle state
     const [isToggling, setIsToggling] = useState(false);
     const [expandedAlert, setExpandedAlert] = useState(null);
+    const [ipError, setIpError] = useState(null);
 
     // Ref for tracking previous packet count
     const prevPacketsRef = useRef(0);
@@ -144,11 +145,12 @@ const NetworkMonitor = () => {
     // Handle manual IP block
     const handleBlockIp = async () => {
         if (!newBlockIp.trim()) return;
+        setIpError(null);
         
         // Basic IP validation
         const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
         if (!ipRegex.test(newBlockIp.trim())) {
-            alert('Invalid IP address format');
+            setIpError('Invalid IP address format');
             return;
         }
         
@@ -159,11 +161,11 @@ const NetworkMonitor = () => {
                 setBlockedIps(prev => [...prev, newBlockIp.trim()]);
                 setNewBlockIp('');
             } else {
-                alert(result.error || 'Failed to block IP');
+                setIpError(result.error || 'Failed to block IP');
             }
         } catch (error) {
             console.error("Failed to block IP:", error);
-            alert('Failed to block IP: ' + error.message);
+            setIpError('Failed to block IP: ' + error.message);
         }
         setBlockingIp(null);
     };
@@ -263,7 +265,7 @@ const NetworkMonitor = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`border rounded-xl p-6 ${isActive && !hasError
-                        ? 'bg-cyan-500/10 border-cyan-500/30'
+                        ? 'bg-blue-500/10 border-blue-500/30'
                         : 'bg-gray-500/10 border-gray-500/30'
                     }`}
             >
@@ -274,13 +276,13 @@ const NetworkMonitor = () => {
                                 animate={{ scale: [1, 1.1, 1] }}
                                 transition={{ repeat: Infinity, duration: 2 }}
                             >
-                                <Wifi className="text-cyan-400" size={48} />
+                                <Wifi className="text-blue-400" size={48} />
                             </motion.div>
                         ) : (
                             <WifiOff className="text-gray-400" size={48} />
                         )}
                         <div>
-                            <h2 className={`text-2xl font-bold ${isActive && !hasError ? 'text-cyan-400' : 'text-gray-400'
+                            <h2 className={`text-2xl font-bold ${isActive && !hasError ? 'text-blue-400' : 'text-gray-400'
                                 }`}>
                                 {isActive && !hasError
                                     ? 'Network Sniffer Active'
@@ -308,7 +310,7 @@ const NetworkMonitor = () => {
                                 </div>
                                 <div className="w-px bg-white/10"></div>
                                 <div>
-                                    <div className="text-2xl font-bold text-cyan-400">
+                                    <div className="text-2xl font-bold text-blue-400">
                                         {nidsStatus.total_flows.toLocaleString()}
                                     </div>
                                     <div className="text-xs text-gray-400 mt-1">Flows Analyzed</div>
@@ -319,7 +321,7 @@ const NetworkMonitor = () => {
                             onClick={handleToggleNids}
                             disabled={isToggling || hasError}
                             className={`px-4 py-2 rounded-lg font-bold cursor-pointer transition-all hover:scale-105 active:scale-95 flex items-center gap-2 ${isActive && !hasError
-                                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50 hover:bg-cyan-500/30'
+                                ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50 hover:bg-blue-500/30'
                                 : 'bg-gray-500/20 text-gray-400 border border-gray-500/50 hover:bg-gray-500/30'
                             } ${isToggling ? 'opacity-50 cursor-wait' : ''} ${hasError ? 'cursor-not-allowed' : ''}`}
                         >
@@ -338,14 +340,14 @@ const NetworkMonitor = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group"
+                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:border-white/10 transition-all duration-300"
                 >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-cyan-400">
-                        <Activity size={64} />
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 text-blue-400">
+                        <Activity size={72} />
                     </div>
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 rounded-lg bg-white/5 text-cyan-400">
+                            <div className="p-2 rounded-lg bg-white/5 text-blue-400">
                                 <Activity size={20} />
                             </div>
                             <span className="text-gray-400 text-sm font-medium">Total Packets</span>
@@ -355,7 +357,7 @@ const NetworkMonitor = () => {
                                 {nidsStatus.total_packets.toLocaleString()}
                             </span>
                             {isActive && !hasError && (
-                                <span className="text-xs font-medium text-cyan-500 mb-1 bg-cyan-500/10 px-2 py-0.5 rounded-full">
+                                <span className="text-xs font-medium text-blue-500 mb-1 bg-blue-500/10 px-2 py-0.5 rounded-full">
                                     Live
                                 </span>
                             )}
@@ -365,10 +367,10 @@ const NetworkMonitor = () => {
 
                 <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group"
+                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:shadow-[0_0_15px_rgba(168,85,247,0.1)] hover:border-white/10 transition-all duration-300"
                 >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-purple-400">
-                        <RefreshCw size={64} />
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 text-purple-400">
+                        <RefreshCw size={72} />
                     </div>
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-2">
@@ -387,10 +389,10 @@ const NetworkMonitor = () => {
 
                 <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group"
+                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:border-white/10 transition-all duration-300"
                 >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-red-400">
-                        <ShieldAlert size={64} />
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 text-red-400">
+                        <ShieldAlert size={72} />
                     </div>
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-2">
@@ -414,10 +416,10 @@ const NetworkMonitor = () => {
 
                 <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group"
+                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:shadow-[0_0_15px_rgba(249,115,22,0.1)] hover:border-white/10 transition-all duration-300"
                 >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-orange-400">
-                        <Ban size={64} />
+                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 text-orange-400">
+                        <Ban size={72} />
                     </div>
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-2">
@@ -446,7 +448,7 @@ const NetworkMonitor = () => {
                 <div className="lg:col-span-2 bg-surface border border-white/5 rounded-xl p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                            <Activity className="text-cyan-400" size={20} />
+                            <Activity className="text-blue-400" size={20} />
                             Network Traffic (Packets/sec)
                         </h3>
                         <span className="text-xs text-gray-400 bg-white/5 px-3 py-1 rounded-full">
@@ -459,11 +461,11 @@ const NetworkMonitor = () => {
                                 <AreaChart data={trafficData}>
                                     <defs>
                                         <linearGradient id="colorPps" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#00F3FF" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#00F3FF" stopOpacity={0} />
+                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#2D3040" opacity={0.2} />
                                     <XAxis
                                         dataKey="time"
                                         stroke="#94a3b8"
@@ -480,18 +482,18 @@ const NetworkMonitor = () => {
                                     />
                                     <Tooltip
                                         contentStyle={{
-                                            backgroundColor: '#0F1926',
-                                            border: '1px solid #334155',
+                                            backgroundColor: '#1A1D27',
+                                            border: '1px solid #2D3040',
                                             borderRadius: '8px'
                                         }}
-                                        itemStyle={{ color: '#00F3FF' }}
+                                        itemStyle={{ color: '#3B82F6' }}
                                         labelStyle={{ color: '#94a3b8' }}
                                     />
                                     <Area
                                         type="monotone"
                                         dataKey="pps"
                                         name="Packets/sec"
-                                        stroke="#00F3FF"
+                                        stroke="#3B82F6"
                                         strokeWidth={2}
                                         fillOpacity={1}
                                         fill="url(#colorPps)"
@@ -500,9 +502,13 @@ const NetworkMonitor = () => {
                             </ResponsiveContainer>
                         ) : (
                             <div className="h-full flex items-center justify-center text-gray-500">
-                                <div className="text-center">
-                                    <Activity size={48} className="mx-auto mb-3 opacity-30" />
-                                    <p>Waiting for traffic data...</p>
+                                <div className="text-center flex flex-col items-center">
+                                    <div className="relative mb-4">
+                                        <Activity size={48} className="text-blue-500/30" />
+                                        <div className="absolute inset-0 border-2 border-blue-500/20 rounded-full animate-ping"></div>
+                                    </div>
+                                    <p className="text-sm font-medium animate-pulse">Waiting for traffic data...</p>
+                                    <p className="text-xs text-gray-600 mt-1">Make sure sniffer is ONLINE</p>
                                 </div>
                             </div>
                         )}
@@ -545,10 +551,10 @@ const NetworkMonitor = () => {
                                         <>
                                             {/* Alert Header */}
                                             <div 
-                                                className="p-3 cursor-pointer hover:bg-white/5 transition-colors"
+                                                className="p-4 cursor-pointer hover:bg-white/10 transition-all duration-200 group/alert"
                                                 onClick={() => setExpandedAlert(expandedAlert === index ? null : index)}
                                             >
-                                                <div className="flex items-center justify-between mb-1">
+                                                <div className="flex items-center justify-between mb-1.5">
                                                     <div className="flex items-center gap-2">
                                                         {alert.xai?.risk_level && (
                                                             <span className={`text-xs px-2 py-0.5 rounded border ${getRiskColor(alert.xai.risk_level)}`}>
@@ -564,9 +570,9 @@ const NetworkMonitor = () => {
                                                             {alert.confidence ? `${(alert.confidence * 100).toFixed(0)}%` : ''}
                                                         </span>
                                                         {expandedAlert === index ? (
-                                                            <ChevronUp size={14} className="text-gray-400" />
+                                                            <ChevronUp size={16} className="text-gray-400 group-hover/alert:text-white transition-colors" />
                                                         ) : (
-                                                            <ChevronDown size={14} className="text-gray-400" />
+                                                            <ChevronDown size={16} className="text-gray-400 group-hover/alert:text-white transition-colors" />
                                                         )}
                                                     </div>
                                                 </div>
@@ -579,7 +585,7 @@ const NetworkMonitor = () => {
                                                     <Clock size={10} />
                                                     <span>{new Date(alert.timestamp).toLocaleTimeString()}</span>
                                                     {alert.blocked && (
-                                                        <span className="ml-2 px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded text-[10px]">
+                                                        <span className="px-2 py-1 bg-blue-500/10 text-blue-400 text-xs rounded-full border border-blue-500/20">
                                                             BLOCKED
                                                         </span>
                                                     )}
@@ -598,7 +604,7 @@ const NetworkMonitor = () => {
                                                         <div className="p-4 space-y-3">
                                                             {/* Simple Explanation */}
                                                             <div className="flex items-start gap-2">
-                                                                <Info size={16} className="text-cyan-400 mt-0.5 flex-shrink-0" />
+                                                                <Info size={16} className="text-blue-400 mt-0.5 flex-shrink-0" />
                                                                 <div>
                                                                     <p className="text-xs text-gray-500 mb-1">What's happening:</p>
                                                                     <p className="text-sm text-white">
@@ -682,7 +688,7 @@ const NetworkMonitor = () => {
                         <button
                             onClick={handleToggleAutoBlock}
                             className={`relative w-12 h-6 rounded-full transition-colors ${
-                                ipsStatus.auto_block_enabled ? 'bg-cyan-500' : 'bg-gray-600'
+                                ipsStatus.auto_block_enabled ? 'bg-blue-500' : 'bg-gray-600'
                             }`}
                         >
                             <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${
@@ -692,19 +698,27 @@ const NetworkMonitor = () => {
                     </div>
 
                     {/* Manual IP Block Input */}
-                    <div className="flex gap-2">
-                        <input
-                            type="text"
-                            value={newBlockIp}
-                            onChange={(e) => setNewBlockIp(e.target.value)}
-                            placeholder="Enter IP to block (e.g., 192.168.1.100)"
-                            className="flex-1 px-4 py-2 bg-dark border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500"
-                            onKeyPress={(e) => e.key === 'Enter' && handleBlockIp()}
-                        />
+                    <div className="flex gap-2 items-start">
+                        <div className="flex-1">
+                            <input
+                                type="text"
+                                value={newBlockIp}
+                                onChange={(e) => { setNewBlockIp(e.target.value); setIpError(null); }}
+                                placeholder="Enter IP to block (e.g., 192.168.1.100)"
+                                className={`w-full px-4 py-2 bg-dark border ${ipError ? 'border-red-500/50 focus:border-red-500' : 'border-white/10 focus:border-blue-500'} rounded-lg text-white placeholder-gray-500 focus:outline-none transition-colors`}
+                                onKeyPress={(e) => e.key === 'Enter' && handleBlockIp()}
+                            />
+                            {ipError && (
+                                <div className="inline-error">
+                                    <AlertCircle size={12} />
+                                    <span>{ipError}</span>
+                                </div>
+                            )}
+                        </div>
                         <button
                             onClick={handleBlockIp}
                             disabled={blockingIp || !newBlockIp.trim()}
-                            className="px-4 py-2 bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 hover:bg-red-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-4 py-2 h-[42px] bg-red-500/20 border border-red-500/50 rounded-lg text-red-400 hover:bg-red-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
                             {blockingIp ? (
                                 <Loader2 size={16} className="animate-spin" />
@@ -760,10 +774,10 @@ const NetworkMonitor = () => {
                                 </motion.div>
                             ))
                         ) : (
-                            <div className="text-center py-8 text-gray-500">
-                                <Shield size={32} className="mx-auto mb-2 opacity-30" />
-                                <p className="text-sm">No IPs currently blocked</p>
-                                <p className="text-xs mt-1">Threats will be auto-blocked when detected</p>
+                            <div className="text-center py-10 text-gray-500 bg-black/20 rounded-lg border border-white/5 border-dashed">
+                                <Shield size={40} className="mx-auto mb-3 opacity-20 text-green-500" />
+                                <p className="text-sm font-medium text-gray-400">No IPs currently blocked</p>
+                                <p className="text-xs mt-1 text-gray-600">Threats will be auto-blocked when detected</p>
                             </div>
                         )}
                     </div>

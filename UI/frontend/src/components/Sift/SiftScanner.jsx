@@ -58,6 +58,14 @@ const SiftScanner = () => {
     const [copiedIndex, setCopiedIndex] = useState(null);
 
     const fileInputRef = useRef(null);
+    const textareaRef = useRef(null);
+    const lineNumbersRef = useRef(null);
+
+    const handleScroll = () => {
+        if (lineNumbersRef.current && textareaRef.current) {
+            lineNumbersRef.current.scrollTop = textareaRef.current.scrollTop;
+        }
+    };
 
     const copyToClipboard = (text, index) => {
         navigator.clipboard.writeText(text).then(() => {
@@ -211,21 +219,35 @@ const SiftScanner = () => {
 
                 {/* Input Area */}
                 <div className="space-y-4">
-                    <div className="relative group">
+                    <div className="relative group flex bg-black/40 border border-white/10 rounded-lg overflow-hidden focus-within:border-primary/50 focus-within:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all duration-300 h-80">
+                        {/* Line Numbers */}
+                        <div 
+                            ref={lineNumbersRef}
+                            className="w-12 bg-[#0C0E14]/80 text-right pr-3 py-4 text-gray-600 font-mono text-sm select-none border-r border-white/5 overflow-hidden leading-relaxed"
+                        >
+                            {Array.from({ length: Math.max(1, code.split('\n').length) }, (_, i) => (
+                                <div key={i}>{i + 1}</div>
+                            ))}
+                        </div>
+
+                        {/* Textarea */}
                         <textarea
+                            ref={textareaRef}
                             value={code}
                             onChange={(e) => setCode(e.target.value)}
+                            onScroll={handleScroll}
                             placeholder="Paste your code here to begin analysis..."
-                            className="w-full h-80 bg-black/40 border border-white/10 rounded-lg p-4 font-mono text-sm text-gray-300 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 resize-none transition-all custom-scrollbar"
+                            className="w-full h-full bg-transparent p-4 font-mono text-sm text-gray-300 focus:outline-none resize-none custom-scrollbar leading-relaxed"
+                            wrap="off"
                         />
 
                         {/* File Upload Overlay/Button */}
                         <div className="absolute bottom-4 right-4 flex items-center gap-2">
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-gray-400 transition-colors backdrop-blur-sm"
+                                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 hover:bg-primary/30 border border-primary/30 text-xs font-bold text-primary transition-all duration-300 backdrop-blur-md hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] hover:scale-105"
                             >
-                                <Upload className="w-3 h-3" />
+                                <Upload className="w-4 h-4" />
                                 Load File
                             </button>
                             <input
@@ -245,9 +267,9 @@ const SiftScanner = () => {
                         <button
                             onClick={handleAnalyze}
                             disabled={!code.trim() || isAnalyzing}
-                            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all transform active:scale-95 ${!code.trim() || isAnalyzing
+                            className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold transition-all duration-300 transform active:scale-95 ${!code.trim() || isAnalyzing
                                 ? 'bg-white/5 text-gray-500 cursor-not-allowed'
-                                : 'bg-primary text-background hover:bg-primary-hover shadow-lg shadow-primary/20'
+                                : 'bg-primary text-black hover:bg-primary/90 shadow-[0_0_15px_rgba(59,130,246,0.2)] hover:shadow-[0_0_25px_rgba(59,130,246,0.4)] hover:scale-[1.02]'
                                 }`}
                         >
                             {isAnalyzing ? (
@@ -292,12 +314,17 @@ const SiftScanner = () => {
 
                             <h3 className="text-lg font-semibold text-white mb-6">Security Score</h3>
 
-                            <div className={`relative w-40 h-40 rounded-full flex items-center justify-center border-4 ${getScoreColor(analysisResult.score).split(' ')[1]} mb-6`}>
+                            <motion.div 
+                                initial={{ scale: 0.5, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                                className={`relative w-40 h-40 rounded-full flex items-center justify-center border-4 ${getScoreColor(analysisResult.score).split(' ')[1]} mb-6 shadow-[0_0_30px_currentColor]`}
+                            >
                                 <div className={`absolute inset-0 rounded-full opacity-20 ${getScoreColor(analysisResult.score).split(' ')[2]}`} />
                                 <span className={`text-5xl font-bold ${getScoreColor(analysisResult.score).split(' ')[0]}`}>
                                     {analysisResult.score}
                                 </span>
-                            </div>
+                            </motion.div>
 
                             {/* Score label */}
                             <p className={`text-sm font-medium mt-2 ${analysisResult.score >= 80 ? 'text-green-400' :

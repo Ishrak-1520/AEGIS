@@ -16,10 +16,10 @@ const data = [
 const StatCard = ({ title, value, icon: Icon, color, trend }) => (
     <motion.div
         whileHover={{ scale: 1.02 }}
-        className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group"
+        className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:shadow-[0_0_15px_rgba(255,255,255,0.03)] hover:border-white/10 transition-all duration-300"
     >
-        <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${color}`}>
-            <Icon size={64} />
+        <div className={`absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-15 group-hover:scale-110 transition-all duration-500 ${color}`}>
+            <Icon size={72} />
         </div>
         <div className="relative z-10">
             <div className="flex items-center gap-3 mb-2">
@@ -166,7 +166,7 @@ const Dashboard = () => {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className={`border rounded-xl p-6 ${isProtected
+                className={`border rounded-xl p-5 ${isProtected
                     ? 'bg-green-500/10 border-green-500/30'
                     : 'bg-red-500/10 border-red-500/30'
                     }`}
@@ -174,40 +174,40 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         {isProtected ? (
-                            <ShieldCheck className="text-green-400" size={48} />
+                            <ShieldCheck className="text-green-400" size={40} />
                         ) : (
-                            <ShieldAlert className="text-red-400" size={48} />
+                            <ShieldAlert className="text-red-400" size={40} />
                         )}
                         <div>
-                            <h2 className={`text-2xl font-bold ${isProtected ? 'text-green-400' : 'text-red-400'}`}>
+                            <h2 className={`text-xl font-bold tracking-wide ${isProtected ? 'text-green-400' : 'text-red-400'}`}>
                                 {isProtected ? 'Real-Time Protection Active' : 'Real-Time Protection Disabled'}
                             </h2>
-                            <p className="text-gray-400 text-sm mt-1">
+                            <p className="text-gray-400 text-sm mt-0.5">
                                 {isProtected
                                     ? 'Your system is actively protected against threats'
                                     : 'Click the button to enable protection'}
                             </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-8">
                         {isProtected && (
-                            <div className="flex gap-6 text-center">
+                            <div className="flex gap-8 text-center">
                                 <div>
-                                    <div className="text-2xl font-bold text-white">{filesMonitored.toLocaleString()}</div>
-                                    <div className="text-xs text-gray-400 mt-1">Files Monitored</div>
+                                    <div className="text-xl font-bold text-white">{filesMonitored.toLocaleString()}</div>
+                                    <div className="text-xs text-gray-400 mt-0.5 font-medium">Files Monitored</div>
                                 </div>
                                 <div className="w-px bg-white/10"></div>
                                 <div>
-                                    <div className="text-2xl font-bold text-green-400">{threatsBlocked}</div>
-                                    <div className="text-xs text-gray-400 mt-1">Threats Blocked</div>
+                                    <div className="text-xl font-bold text-green-400">{threatsBlocked}</div>
+                                    <div className="text-xs text-gray-400 mt-0.5 font-medium">Threats Blocked</div>
                                 </div>
                             </div>
                         )}
                         <button
                             onClick={handleToggleProtection}
-                            className={`px-6 py-3 rounded-lg font-bold transition-all ${isProtected
-                                ? 'bg-red-500/20 text-red-400 border-2 border-red-500/50 hover:bg-red-500/30'
-                                : 'bg-green-500/20 text-green-400 border-2 border-green-500/50 hover:bg-green-500/30'
+                            className={`px-5 py-2.5 text-sm rounded-lg font-bold transition-all ${isProtected
+                                ? 'bg-red-500/20 text-red-400 border border-red-500/50 hover:bg-red-500/30 shadow-[0_0_10px_rgba(239,68,68,0.1)]'
+                                : 'bg-green-500/20 text-green-400 border border-green-500/50 hover:bg-green-500/30 shadow-[0_0_10px_rgba(34,197,94,0.1)]'
                                 }`}
                         >
                             {isProtected ? 'Disable Protection' : 'Enable Protection'}
@@ -263,33 +263,40 @@ const Dashboard = () => {
                             <option value={30}>Last 30 Days</option>
                         </select>
                     </div>
-                    <div className="h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={chartData}>
-                                <defs>
-                                    <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#00F3FF" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#00F3FF" stopOpacity={0} />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} />
-                                <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
-                                <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#0F1926', border: '1px solid #334155', borderRadius: '8px' }}
-                                    itemStyle={{ color: '#00F3FF' }}
-                                />
-                                <Area
-                                    type="monotone"
-                                    dataKey="threats"
-                                    stroke="#00F3FF"
-                                    strokeWidth={2}
-                                    fillOpacity={1}
-                                    fill="url(#colorThreats)"
-                                    animationDuration={1500}
-                                />
-                            </AreaChart>
-                        </ResponsiveContainer>
+                    <div className="h-[300px] w-full relative">
+                        {chartData.length === 0 ? (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                <div className="w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin mb-3"></div>
+                                <span className="text-sm text-gray-500 font-medium animate-pulse">Gathering telemetry...</span>
+                            </div>
+                        ) : (
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={chartData}>
+                                    <defs>
+                                        <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
+                                            <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#2D3040" opacity={0.2} />
+                                    <XAxis dataKey="name" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
+                                    <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#1A1D27', border: '1px solid #2D3040', borderRadius: '8px' }}
+                                        itemStyle={{ color: '#3B82F6' }}
+                                    />
+                                    <Area
+                                        type="monotone"
+                                        dataKey="threats"
+                                        stroke="#3B82F6"
+                                        strokeWidth={2}
+                                        fillOpacity={1}
+                                        fill="url(#colorThreats)"
+                                        animationDuration={1500}
+                                    />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        )}
                     </div>
                 </div>
 
@@ -305,20 +312,20 @@ const Dashboard = () => {
                         <div className="space-y-3 relative z-10">
                             <button
                                 onClick={handleQuickScan}
-                                className="w-full bg-primary/5 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 rounded-lg p-3 flex items-center justify-between transition-all group/btn shadow-[0_0_10px_rgba(0,0,0,0.2)]"
+                                className="w-full bg-primary/5 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 rounded-lg p-3 flex items-center justify-between transition-all duration-300 group/btn shadow-[0_0_10px_rgba(0,0,0,0.1)] hover:shadow-[0_0_15px_rgba(59,130,246,0.2)]"
                             >
                                 <span className="font-bold tracking-tight text-sm">INITIATE QUICK SCAN</span>
-                                <Zap size={16} className="group-hover/btn:animate-pulse" />
+                                <Zap size={16} className="group-hover/btn:scale-125 transition-transform duration-300" />
                             </button>
                             <button
                                 onClick={handleRecalibrate}
                                 disabled={isRecalibrating}
-                                className={`w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all group/btn ${isRecalibrating ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={`w-full bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 rounded-lg p-3 flex items-center justify-between transition-all duration-300 group/btn ${isRecalibrating ? 'opacity-50 cursor-not-allowed' : ''}`}
                             >
-                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white">
+                                <span className="font-bold tracking-tight text-sm text-gray-400 group-hover/btn:text-white transition-colors">
                                     {isRecalibrating ? 'RECALIBRATING...' : 'RECALIBRATE DETECTION'}
                                 </span>
-                                <CheckCircle size={16} className={`text-green-500/50 group-hover/btn:text-green-500 ${isRecalibrating ? 'animate-spin' : ''}`} />
+                                <CheckCircle size={16} className={`text-green-500/50 group-hover/btn:text-green-500 group-hover/btn:scale-110 transition-all duration-300 ${isRecalibrating ? 'animate-spin' : ''}`} />
                             </button>
                         </div>
                     </div>
@@ -330,7 +337,7 @@ const Dashboard = () => {
                             borderColor: ['rgba(255, 255, 255, 0.1)', 'rgba(239, 68, 68, 0.5)', 'rgba(255, 255, 255, 0.1)'],
                             boxShadow: ['0 0 0px rgba(79, 139, 249, 0)', '0 0 20px rgba(239, 68, 68, 0.2)', '0 0 0px rgba(79, 139, 249, 0)']
                         } : volatileStatus.is_active ? {
-                            boxShadow: ['0 0 5px rgba(79, 139, 249, 0.1)', '0 0 15px rgba(79, 139, 249, 0.2)', '0 0 5px rgba(79, 139, 249, 0.1)']
+                            boxShadow: ['0 0 5px rgba(59, 130, 246, 0.1)', '0 0 15px rgba(59, 130, 246, 0.2)', '0 0 5px rgba(59, 130, 246, 0.1)']
                         } : {}}
                         transition={{ repeat: Infinity, duration: 2 }}
                         className={`bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden ${!volatileStatus.is_active ? 'opacity-70' : ''}`}
@@ -356,7 +363,7 @@ const Dashboard = () => {
                                         src="/assets/bat4-final.png"
                                         className={`w-6 h-auto ${volatileStatus.is_active && volatileStatus.inference.is_threat ? 'invert-[20%] sepia-[100%] saturate-[500%] hue-rotate-[320deg]' : 'invert-[30%] sepia-[100%] saturate-[1000%] hue-rotate-[190deg] brightness-[1.2]'}`}
                                         alt="icon"
-                                        style={{ filter: `drop-shadow(0 0 4px ${volatileStatus.is_active && volatileStatus.inference.is_threat ? '#FF5252' : '#4F8BF9'})` }}
+                                        style={{ filter: `drop-shadow(0 0 4px ${volatileStatus.is_active && volatileStatus.inference.is_threat ? '#FF5252' : '#3B82F6'})` }}
                                     />
                                 </div>
                                 <h3 className="text-lg font-bold text-white tracking-tight">
@@ -364,7 +371,7 @@ const Dashboard = () => {
                                 </h3>
                             </div>
                             {volatileStatus.is_active && volatileStatus.inference.is_threat && (
-                                <span className="text-[10px] font-black bg-red-500 text-white px-2 py-0.5 rounded shadow-[0_0_10px_rgba(239,68,68,0.5)]">INTRUSION</span>
+                                <span className="text-[11px] font-black bg-red-500 text-white px-2 py-0.5 rounded shadow-[0_0_10px_rgba(239,68,68,0.5)] tracking-wider">INTRUSION</span>
                             )}
                         </div>
 
@@ -373,8 +380,8 @@ const Dashboard = () => {
                                 <svg className="w-full h-full transform -rotate-90">
                                     <defs>
                                         <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" stopColor="#4F8BF9" />
-                                            <stop offset="100%" stopColor="#00F3FF" />
+                                            <stop offset="0%" stopColor="#3B82F6" />
+                                            <stop offset="100%" stopColor="#60A5FA" />
                                         </linearGradient>
                                         <linearGradient id="threatGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                                             <stop offset="0%" stopColor="#FF5252" />
@@ -396,14 +403,14 @@ const Dashboard = () => {
                                         initial={{ strokeDashoffset: 364.4 }}
                                         animate={{ strokeDashoffset: 364.4 * (1 - (volatileStatus.is_active ? volatileStatus.inference.confidence_score : 0)) }}
                                         transition={{ duration: 1.5, ease: "easeOut" }}
-                                        className="drop-shadow-[0_0_8px_rgba(79,139,249,0.5)]"
+                                        className="drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"
                                     />
                                 </svg>
                                 <div className="absolute flex flex-col items-center">
                                     <span className={`text-2xl font-black ${volatileStatus.is_active && volatileStatus.inference.is_threat ? 'text-red-400' : 'text-white'}`}>
                                         {(volatileStatus.is_active ? (volatileStatus.inference.confidence_score * 100).toFixed(1) : "0.0")}%
                                     </span>
-                                    <span className="text-[9px] text-gray-500 uppercase font-black tracking-widest">Threat Prob</span>
+                                    <span className="text-[10px] text-gray-500 uppercase font-black tracking-widest mt-1">Threat Prob</span>
                                 </div>
                             </div>
                         </div>
@@ -415,9 +422,9 @@ const Dashboard = () => {
                                 { label: "Resource Locks", key: "handles.nmutant" },
                                 { label: "Loaded Components", key: "dlllist.avg_dlls_per_proc" }
                             ].map((item, idx) => (
-                                <div key={idx} className="flex justify-between text-[11px] group/item">
-                                    <span className="text-gray-500 group-hover/item:text-gray-300 transition-colors uppercase text-[8px] font-bold tracking-[0.1em]">{item.label}:</span>
-                                    <span className="text-white font-mono font-bold bg-white/5 px-1.5 rounded text-[10px]">{volatileStatus.telemetry[item.key]}</span>
+                                <div key={idx} className="flex justify-between items-center text-[12px] group/item py-0.5">
+                                    <span className="text-gray-500 group-hover/item:text-gray-300 transition-colors uppercase text-[10px] font-bold tracking-[0.05em]">{item.label}:</span>
+                                    <span className="text-white font-mono font-medium bg-white/5 px-2 py-0.5 rounded text-[11px]">{volatileStatus.telemetry[item.key]}</span>
                                 </div>
                             ))}
                         </div>

@@ -25,6 +25,16 @@ const ThreatAlertDialog = ({ threat, onClose, onAction }) => {
         }
     };
 
+    const getLevelShadow = (level) => {
+        switch (level) {
+            case 'CRITICAL': return 'shadow-[0_0_40px_rgba(239,68,68,0.3)]';
+            case 'HIGH': return 'shadow-[0_0_40px_rgba(249,115,22,0.3)]';
+            case 'MEDIUM': return 'shadow-[0_0_40px_rgba(234,179,8,0.3)]';
+            case 'LOW': return 'shadow-[0_0_40px_rgba(74,222,128,0.3)]';
+            default: return 'shadow-[0_0_40px_rgba(96,165,250,0.3)]';
+        }
+    };
+
     return (
         <AnimatePresence>
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -42,13 +52,14 @@ const ThreatAlertDialog = ({ threat, onClose, onAction }) => {
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="relative w-full max-w-2xl bg-[#111a22] border border-white/10 rounded-2xl shadow-2xl overflow-hidden"
+                    className={`relative w-full max-w-2xl bg-[#0C0E14] border border-white/10 rounded-2xl overflow-hidden ${getLevelShadow(threat.level)}`}
                 >
                     {/* Header */}
                     <div className={`p-6 border-b ${getLevelBg(threat.level)} flex items-center justify-between`}>
                         <div className="flex items-center gap-4">
-                            <div className={`p-3 rounded-xl bg-black/20 ${getLevelColor(threat.level)}`}>
-                                <AlertTriangle size={32} />
+                            <div className={`p-4 rounded-xl bg-black/20 ${getLevelColor(threat.level)} shadow-[inset_0_0_20px_currentColor] relative`}>
+                                <div className="absolute inset-0 blur-md bg-current opacity-20 rounded-xl animate-pulse"></div>
+                                <AlertTriangle size={36} className="relative z-10 filter drop-shadow-[0_0_8px_currentColor]" />
                             </div>
                             <div>
                                 <h2 className={`text-2xl font-bold ${getLevelColor(threat.level)}`}>
@@ -156,10 +167,10 @@ const ThreatAlertDialog = ({ threat, onClose, onAction }) => {
                     </div>
 
                     {/* Footer / Actions */}
-                    <div className="p-6 border-t border-white/10 bg-surface/50 flex justify-end gap-4">
+                    <div className="p-6 border-t border-white/10 bg-surface/80 flex justify-end gap-4 backdrop-blur-md relative z-10">
                         <button
                             onClick={() => onAction('DISMISS')}
-                            className="px-6 py-3 rounded-lg font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-colors"
+                            className="px-6 py-3 rounded-lg font-bold text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                         >
                             Dismiss Alert
                         </button>
@@ -167,9 +178,9 @@ const ThreatAlertDialog = ({ threat, onClose, onAction }) => {
                         {(threat.level === 'HIGH' || threat.level === 'CRITICAL') && (
                             <button
                                 onClick={() => onAction('BLOCK')}
-                                className="px-6 py-3 rounded-lg font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20 transition-all flex items-center gap-2"
+                                className="px-6 py-3 rounded-lg font-black bg-red-500 hover:bg-red-400 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] hover:shadow-[0_0_30px_rgba(239,68,68,0.6)] hover:scale-[1.02] transition-all duration-300 flex items-center gap-2"
                             >
-                                <AlertOctagon size={18} />
+                                <AlertOctagon size={20} className="animate-pulse" />
                                 Block & Close
                             </button>
                         )}

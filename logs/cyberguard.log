@@ -1617,3 +1617,267 @@ NameError: name 'text' is not defined. Did you mean: 'next'?
 2026-02-27 17:26:18 - app - INFO - NIDS learning complete. Baseline: 3711 packets, 123 flows
 2026-02-27 17:26:34 - app - INFO - NIDS Engine stopped
 2026-02-27 17:26:36 - app - INFO - Real-Time Protection stopped. Scans: 31, Threats: 4
+2026-02-27 18:16:03 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 18:16:14 - app - INFO - Real-Time Protection initialized
+2026-02-27 18:16:14 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 18:16:24 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-02-27 18:16:24 - app - INFO - Real-Time Protection started
+2026-02-27 18:16:24 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-27 18:16:24 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-27 18:16:24 - app - INFO - NIDS Engine started
+2026-02-27 18:16:44 - app - INFO - HIDS Calibration Complete. Offset: [325.0, -7.0, -1432.0, -61.599999999999994, 0.0]
+2026-02-27 18:16:54 - app - INFO - NIDS learning complete. Baseline: 3245 packets, 49 flows
+2026-02-27 18:19:30 - app - INFO - NIDS Engine stopped
+2026-02-27 18:19:31 - app - INFO - Real-Time Protection stopped. Scans: 107, Threats: 3
+2026-02-27 18:20:29 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-02-27 18:20:29 - app - INFO - Real-Time Protection started
+2026-02-27 18:20:29 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-27 18:20:29 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-27 18:20:29 - app - INFO - NIDS Engine started
+2026-02-27 18:21:00 - app - INFO - NIDS learning complete. Baseline: 4647 packets, 63 flows
+2026-02-27 18:21:33 - app - INFO - NIDS Engine stopped
+2026-02-27 18:21:34 - app - INFO - Real-Time Protection stopped. Scans: 144, Threats: 4
+2026-02-27 19:30:32 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 19:30:33 - app - INFO - Real-Time Protection initialized
+2026-02-27 19:30:33 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 19:30:44 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-02-27 19:30:44 - app - INFO - Real-Time Protection started
+2026-02-27 19:30:44 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-02-27 19:30:44 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-02-27 19:30:44 - app - INFO - NIDS Engine started
+2026-02-27 19:31:05 - app - INFO - HIDS Calibration Complete. Offset: [324.0, -8.0, -1539.8, -56.400000000000006, 0.0]
+2026-02-27 19:31:14 - app - INFO - NIDS learning complete. Baseline: 6424 packets, 28 flows
+2026-02-27 19:41:11 - app - INFO - NIDS Engine stopped
+2026-02-27 19:41:11 - app - INFO - Real-Time Protection stopped. Scans: 352, Threats: 4
+2026-02-27 20:49:12 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 20:49:14 - app - INFO - Real-Time Protection initialized
+2026-02-27 20:49:14 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 20:53:47 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 20:53:48 - app - INFO - Real-Time Protection initialized
+2026-02-27 20:53:48 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 21:14:29 - app - INFO - Compiled 1 YARA rule files.
+2026-02-27 21:14:30 - app - INFO - Real-Time Protection initialized
+2026-02-27 21:14:30 - app - INFO - Compiled 1 YARA rule files.
+2026-04-02 21:46:48 - app - INFO - Compiled 1 YARA rule files.
+2026-04-02 21:47:02 - app - INFO - Real-Time Protection initialized
+2026-04-02 21:47:02 - app - INFO - Compiled 1 YARA rule files.
+2026-04-02 21:47:25 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-04-02 21:47:25 - app - INFO - Real-Time Protection started
+2026-04-02 21:47:25 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-04-02 21:47:25 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-04-02 21:47:25 - app - INFO - NIDS Engine started
+2026-04-02 21:47:46 - app - INFO - HIDS Calibration Complete. Offset: [333.0, -7.0, -1517.4, -64.8, 0.0]
+2026-04-02 21:47:55 - app - INFO - NIDS learning complete. Baseline: 11402 packets, 39 flows
+2026-04-02 21:48:16 - app - INFO - NIDS Engine stopped
+2026-04-02 21:48:17 - app - INFO - Real-Time Protection stopped. Scans: 22, Threats: 2
+2026-06-08 00:21:58 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 00:22:10 - app - INFO - Real-Time Protection initialized
+2026-06-08 00:22:10 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 04:06:04 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 04:06:17 - app - INFO - Real-Time Protection initialized
+2026-06-08 04:06:17 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 04:07:39 - app - INFO - Volatile HIDS recalibration triggered.
+2026-06-08 04:08:31 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 04:08:31 - app - INFO - Real-Time Protection started
+2026-06-08 04:08:31 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 04:08:31 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 04:08:31 - app - INFO - NIDS Engine started
+2026-06-08 04:08:52 - app - INFO - HIDS Calibration Complete. Offset: [330.0, -4.0, -1454.4, -48.400000000000006, 0.0]
+2026-06-08 04:09:01 - app - INFO - NIDS learning complete. Baseline: 6147 packets, 121 flows
+2026-06-08 04:10:01 - app - INFO - NIDS Engine stopped
+2026-06-08 04:10:02 - app - INFO - Real-Time Protection stopped. Scans: 59, Threats: 1
+2026-06-08 04:12:16 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 04:12:18 - app - INFO - Real-Time Protection initialized
+2026-06-08 04:12:18 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 15:11:50 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 15:12:03 - app - INFO - Real-Time Protection initialized
+2026-06-08 15:12:03 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 16:01:28 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 16:01:29 - app - INFO - Real-Time Protection initialized
+2026-06-08 16:01:29 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 16:30:34 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 16:30:34 - app - INFO - Real-Time Protection started
+2026-06-08 16:30:34 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 16:30:34 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 16:30:34 - app - INFO - NIDS Engine started
+2026-06-08 16:30:54 - app - INFO - HIDS Calibration Complete. Offset: [331.4, -15.0, -1489.4, -51.599999999999994, 0.0]
+2026-06-08 16:31:04 - app - INFO - NIDS learning complete. Baseline: 8327 packets, 29 flows
+2026-06-08 16:33:02 - app - INFO - NIDS Engine stopped
+2026-06-08 16:33:03 - app - INFO - Real-Time Protection stopped. Scans: 72, Threats: 2
+2026-06-08 18:28:39 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:28:51 - app - INFO - Real-Time Protection initialized
+2026-06-08 18:28:51 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:39:46 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:39:47 - app - INFO - Real-Time Protection initialized
+2026-06-08 18:39:47 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:40:35 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 18:40:35 - app - INFO - Real-Time Protection started
+2026-06-08 18:40:36 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 18:40:36 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 18:40:37 - app - INFO - NIDS Engine started
+2026-06-08 18:40:57 - app - INFO - HIDS Calibration Complete. Offset: [329.8, -15.0, -1504.8, -43.599999999999994, 0.0]
+2026-06-08 18:41:07 - app - INFO - NIDS learning complete. Baseline: 1648 packets, 81 flows
+2026-06-08 18:46:32 - app - INFO - NIDS Engine stopped
+2026-06-08 18:46:45 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:46:46 - app - INFO - Real-Time Protection initialized
+2026-06-08 18:46:46 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:50:02 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:50:03 - app - INFO - Real-Time Protection initialized
+2026-06-08 18:50:03 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:58:36 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 18:58:51 - app - INFO - Real-Time Protection initialized
+2026-06-08 18:58:51 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 19:40:19 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 19:40:19 - app - INFO - Real-Time Protection started
+2026-06-08 19:40:20 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 19:40:20 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 19:40:20 - app - INFO - NIDS Engine started
+2026-06-08 19:40:41 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -5.0, -1580.4, -35.400000000000006, 0.0]
+2026-06-08 19:40:50 - app - INFO - NIDS learning complete. Baseline: 232 packets, 11 flows
+2026-06-08 19:42:03 - app - INFO - NIDS Engine stopped
+2026-06-08 19:42:05 - app - INFO - Real-Time Protection stopped. Scans: 52, Threats: 1
+2026-06-08 19:44:42 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 19:44:42 - app - INFO - Real-Time Protection started
+2026-06-08 19:44:42 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 19:44:42 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 19:44:42 - app - INFO - NIDS Engine started
+2026-06-08 19:45:12 - app - INFO - NIDS learning complete. Baseline: 406 packets, 17 flows
+2026-06-08 19:45:45 - app - INFO - NIDS Engine stopped
+2026-06-08 19:45:45 - app - INFO - Real-Time Protection stopped. Scans: 81, Threats: 2
+2026-06-08 19:46:36 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 19:46:36 - app - INFO - Real-Time Protection started
+2026-06-08 19:46:37 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 19:46:37 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 19:46:37 - app - INFO - NIDS Engine started
+2026-06-08 19:47:07 - app - INFO - NIDS learning complete. Baseline: 166 packets, 10 flows
+2026-06-08 19:49:55 - app - INFO - HIDS Calibration Complete. Offset: [250.0, 1.0, 0.0, 0.0, 0.0]
+2026-06-08 19:49:56 - app - INFO - HIDS Calibration Complete. Offset: [330.0, -5.0, -1600.0, -87.0, 0.0]
+2026-06-08 19:49:56 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 19:49:56 - app - INFO - Real-Time Protection initialized
+2026-06-08 19:50:33 - app - INFO - NIDS Engine stopped
+2026-06-08 19:50:33 - app - INFO - Real-Time Protection stopped. Scans: 213, Threats: 4
+2026-06-08 19:54:33 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 19:54:33 - app - INFO - Real-Time Protection started
+2026-06-08 19:54:33 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 19:54:33 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 19:54:33 - app - INFO - NIDS Engine started
+2026-06-08 19:54:58 - app - INFO - NIDS Engine stopped
+2026-06-08 19:54:59 - app - INFO - Real-Time Protection stopped. Scans: 230, Threats: 4
+2026-06-08 20:08:31 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 20:08:31 - app - INFO - Real-Time Protection started
+2026-06-08 20:08:32 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 20:08:32 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 20:08:32 - app - INFO - NIDS Engine started
+2026-06-08 20:09:02 - app - INFO - NIDS learning complete. Baseline: 279 packets, 18 flows
+2026-06-08 20:09:32 - app - INFO - NIDS Engine stopped
+2026-06-08 20:09:32 - app - INFO - Real-Time Protection stopped. Scans: 270, Threats: 5
+2026-06-08 20:09:48 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 20:09:48 - app - INFO - Real-Time Protection started
+2026-06-08 20:09:48 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 20:09:48 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 20:09:48 - app - INFO - NIDS Engine started
+2026-06-08 20:10:18 - app - INFO - NIDS learning complete. Baseline: 547 packets, 15 flows
+2026-06-08 20:10:56 - app - INFO - NIDS Engine stopped
+2026-06-08 20:11:12 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 20:11:24 - app - INFO - Real-Time Protection initialized
+2026-06-08 20:11:24 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 20:11:42 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 20:11:42 - app - INFO - Real-Time Protection started
+2026-06-08 20:11:42 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 20:11:42 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 20:11:42 - app - INFO - NIDS Engine started
+2026-06-08 20:12:03 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -5.0, -1856.1999999999998, -24.400000000000006, 0.0]
+2026-06-08 20:12:12 - app - INFO - NIDS learning complete. Baseline: 290 packets, 17 flows
+2026-06-08 20:19:30 - app - INFO - NIDS Engine stopped
+2026-06-08 20:19:31 - app - INFO - Real-Time Protection stopped. Scans: 236, Threats: 10
+2026-06-08 20:19:38 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 20:19:39 - app - INFO - Real-Time Protection initialized
+2026-06-08 20:19:39 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 20:19:44 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 20:19:44 - app - INFO - Real-Time Protection started
+2026-06-08 20:19:44 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 20:19:44 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 20:19:44 - app - INFO - NIDS Engine started
+2026-06-08 20:20:04 - app - INFO - HIDS Calibration Complete. Offset: [326.0, -5.0, -2580.0, -15.799999999999997, 0.0]
+2026-06-08 20:20:14 - app - INFO - NIDS learning complete. Baseline: 1081 packets, 23 flows
+2026-06-08 20:31:04 - app - INFO - NIDS Engine stopped
+2026-06-08 20:31:16 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 20:31:18 - app - INFO - Real-Time Protection initialized
+2026-06-08 20:31:18 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 20:31:28 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 20:31:28 - app - INFO - Real-Time Protection started
+2026-06-08 20:31:28 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 20:31:28 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 20:31:28 - app - INFO - NIDS Engine started
+2026-06-08 20:31:49 - app - INFO - HIDS Calibration Complete. Offset: [325.8, -5.0, -1891.1999999999998, -52.599999999999994, 0.0]
+2026-06-08 20:31:58 - app - INFO - NIDS learning complete. Baseline: 209 packets, 15 flows
+2026-06-08 20:34:24 - app - INFO - NIDS Engine stopped
+2026-06-08 20:34:26 - app - INFO - Real-Time Protection stopped. Scans: 106, Threats: 1
+2026-06-08 21:19:43 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 21:19:55 - app - INFO - Real-Time Protection initialized
+2026-06-08 21:19:55 - app - INFO - Compiled 1 YARA rule files.
+2026-06-08 21:32:27 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-06-08 21:32:27 - app - INFO - Real-Time Protection started
+2026-06-08 21:32:27 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-06-08 21:32:27 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-06-08 21:32:27 - app - INFO - NIDS Engine started
+2026-06-08 21:32:48 - app - INFO - HIDS Calibration Complete. Offset: [331.0, -4.0, -1208.0, -39.0, 0.0]
+2026-06-08 21:32:57 - app - INFO - NIDS learning complete. Baseline: 191 packets, 16 flows
+2026-06-08 21:37:14 - app - INFO - NIDS Engine stopped
+2026-06-08 21:37:15 - app - INFO - Real-Time Protection stopped. Scans: 191, Threats: 7
+2026-06-09 22:23:34 - app - INFO - Compiled 1 YARA rule files.
+2026-06-09 22:23:51 - app - INFO - Real-Time Protection initialized
+2026-06-09 22:23:51 - app - INFO - Compiled 1 YARA rule files.
+2026-07-12 23:55:42 - app - INFO - Compiled 1 YARA rule files.
+2026-07-12 23:55:54 - app - INFO - Real-Time Protection initialized
+2026-07-12 23:55:54 - app - INFO - Compiled 1 YARA rule files.
+2026-07-12 23:56:01 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-07-12 23:56:01 - app - INFO - Real-Time Protection started
+2026-07-12 23:56:02 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-07-12 23:56:02 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-07-12 23:56:02 - app - INFO - NIDS Engine started
+2026-07-12 23:56:23 - app - INFO - HIDS Calibration Complete. Offset: [328.0, -8.0, -1377.4, -48.0, 0.0]
+2026-07-12 23:56:32 - app - INFO - NIDS learning complete. Baseline: 4504 packets, 56 flows
+2026-07-12 23:58:33 - app - INFO - NIDS Engine stopped
+2026-07-12 23:58:34 - app - INFO - Real-Time Protection stopped. Scans: 101, Threats: 3
+2026-07-12 23:58:36 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-07-12 23:58:36 - app - INFO - Real-Time Protection started
+2026-07-12 23:58:36 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-07-12 23:58:36 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-07-12 23:58:36 - app - INFO - NIDS Engine started
+2026-07-12 23:59:06 - app - INFO - NIDS learning complete. Baseline: 694 packets, 57 flows
+2026-07-12 23:59:14 - app - INFO - NIDS Engine stopped
+2026-07-12 23:59:15 - app - INFO - Real-Time Protection stopped. Scans: 127, Threats: 3
+2026-07-12 23:59:53 - app - INFO - Compiled 1 YARA rule files.
+2026-07-12 23:59:54 - app - INFO - Real-Time Protection initialized
+2026-07-12 23:59:54 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:15:43 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:15:44 - app - INFO - Real-Time Protection initialized
+2026-07-13 00:15:44 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:17:01 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:17:02 - app - INFO - Real-Time Protection initialized
+2026-07-13 00:17:02 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:26:52 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:26:53 - app - INFO - Real-Time Protection initialized
+2026-07-13 00:26:53 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:27:11 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-07-13 00:27:11 - app - INFO - Real-Time Protection started
+2026-07-13 00:27:11 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-07-13 00:27:11 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-07-13 00:27:11 - app - INFO - NIDS Engine started
+2026-07-13 00:27:33 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -8.0, -1503.4, -52.400000000000006, 0.0]
+2026-07-13 00:27:42 - app - INFO - NIDS learning complete. Baseline: 541 packets, 29 flows
+2026-07-13 00:36:50 - app - INFO - NIDS Engine stopped
+2026-07-13 00:36:50 - app - INFO - Real-Time Protection stopped. Scans: 381, Threats: 2
+2026-07-13 00:46:58 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:46:59 - app - INFO - Real-Time Protection initialized
+2026-07-13 00:46:59 - app - INFO - Compiled 1 YARA rule files.
+2026-07-13 00:47:04 - app - INFO - Volatile Memory HIDS monitoring loop started
+2026-07-13 00:47:04 - app - INFO - Real-Time Protection started
+2026-07-13 00:47:04 - app - INFO - NIDS model loaded: C:\xampp\htdocs\CGP-2\core\network\RT-XNIDS_FInal\model_live.pkl
+2026-07-13 00:47:04 - app - INFO - NIDS Engine initialized (IPS: Available)
+2026-07-13 00:47:04 - app - INFO - NIDS Engine started
+2026-07-13 00:47:25 - app - INFO - HIDS Calibration Complete. Offset: [327.0, -8.0, -1493.6, -31.799999999999997, 0.0]
+2026-07-13 00:47:34 - app - INFO - NIDS learning complete. Baseline: 1642 packets, 34 flows
+2026-07-13 00:53:43 - app - INFO - NIDS Engine stopped
+2026-07-13 00:53:43 - app - INFO - Real-Time Protection stopped. Scans: 254, Threats: 6

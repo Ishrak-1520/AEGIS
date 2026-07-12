@@ -173,7 +173,7 @@ const NLPAnalyzer = () => {
                     </div>
                     <button
                         onClick={() => setShowHistory(!showHistory)}
-                        className={`ml-auto p-2 rounded-lg transition-colors ${showHistory ? 'bg-primary text-black' : 'bg-white/5 text-gray-400 hover:text-white'}`}
+                        className={`ml-auto p-2 rounded-lg transition-all duration-300 ${showHistory ? 'bg-primary text-black shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'}`}
                     >
                         <History size={20} />
                     </button>
@@ -192,12 +192,12 @@ const NLPAnalyzer = () => {
                             value={text}
                             onChange={(e) => setText(e.target.value)}
                             placeholder="Paste suspicious email, message, or content here..."
-                            className="flex-1 bg-black/20 border border-white/10 rounded-lg p-4 text-white resize-none focus:border-primary/50 outline-none transition-colors mb-4 font-mono text-sm"
+                            className="flex-1 bg-black/20 border border-white/10 rounded-lg p-4 text-white resize-none focus:border-primary/50 focus:shadow-[0_0_20px_rgba(59,130,246,0.15)] focus:bg-black/30 outline-none transition-all duration-300 mb-4 font-mono text-sm"
                         />
                         <button
                             onClick={handleAnalyze}
                             disabled={loading || !text}
-                            className="bg-primary text-black font-bold px-6 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                            className="bg-primary text-black font-bold px-6 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none shrink-0"
                         >
                             {loading ? (
                                 <motion.div
@@ -220,8 +220,8 @@ const NLPAnalyzer = () => {
 
                         {!result && !loading && (
                             <div className="h-full flex flex-col items-center justify-center text-gray-500 opacity-50">
-                                <Shield size={64} className="mb-4" />
-                                <p>Ready to analyze</p>
+                                <Shield size={64} className="mb-4 text-gray-600" />
+                                <p className="font-medium">Ready to analyze</p>
                             </div>
                         )}
 
@@ -247,14 +247,14 @@ const NLPAnalyzer = () => {
                                 <div className="flex items-center justify-between bg-white/5 rounded-xl p-4">
                                     <div className="flex items-center gap-4">
                                         <div className="relative w-16 h-16 flex items-center justify-center">
-                                            <svg className="w-full h-full transform -rotate-90">
-                                                <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-gray-700" />
+                                            <svg className="w-full h-full transform -rotate-90 filter drop-shadow-[0_0_8px_currentColor]">
+                                                <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-gray-700/50" />
                                                 <circle
                                                     cx="32" cy="32" r="28"
                                                     stroke="currentColor" strokeWidth="4" fill="transparent"
                                                     strokeDasharray={175.93}
                                                     strokeDashoffset={175.93 - (175.93 * (result.threat_score || 0)) / 100}
-                                                    className={getThreatColor(result.threat_level)}
+                                                    className={`${getThreatColor(result.threat_level)} drop-shadow-[0_0_5px_currentColor] transition-all duration-1000 ease-out`}
                                                 />
                                             </svg>
                                             <span className={`absolute text-sm font-bold ${getThreatColor(result.threat_level)}`}>
@@ -277,8 +277,8 @@ const NLPAnalyzer = () => {
                                 </div>
 
                                 {/* Highlighted Text View */}
-                                <div className="bg-black/30 rounded-lg p-4 border border-white/10">
-                                    <h4 className="text-xs font-bold text-gray-500 uppercase mb-2">Analyzed Content</h4>
+                                <div className="bg-[#0C0E14] rounded-lg p-5 border border-white/5 shadow-inner">
+                                    <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">Analyzed Content</h4>
                                     {renderHighlightedText()}
                                 </div>
 
@@ -339,7 +339,7 @@ const NLPAnalyzer = () => {
                                     <button
                                         key={i}
                                         onClick={() => loadFromHistory(item)}
-                                        className="w-full text-left bg-white/5 hover:bg-white/10 p-3 rounded-lg border border-white/5 transition-colors group"
+                                        className="w-full text-left bg-surface hover:bg-white/5 p-3 rounded-lg border border-white/5 hover:border-white/20 hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] transition-all duration-200 group"
                                     >
                                         <div className="flex justify-between items-start mb-2">
                                             <span className={`text-xs font-bold px-2 py-0.5 rounded ${item.threat_level === 'SAFE' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'

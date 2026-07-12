@@ -8,6 +8,7 @@ const Scanner = () => {
     const [currentFile, setCurrentFile] = useState('');
     const [results, setResults] = useState([]);
     const [scanStats, setScanStats] = useState(null);
+    const [isDragging, setIsDragging] = useState(false);
 
     const stopScan = async () => {
         try {
@@ -96,11 +97,19 @@ const Scanner = () => {
     const handleDragOver = (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
     };
 
     const handleDrop = async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        setIsDragging(false);
 
         // Note: Getting full path from drag & drop in webview is restricted.
         // We encourage using the click-to-browse for now.
@@ -124,7 +133,7 @@ const Scanner = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => startScan('quick')}
                     disabled={scanning}
-                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-primary/50 transition-colors group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-primary/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] transition-all duration-300 group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <div className="bg-primary/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                         <ZapIcon className="text-primary" size={24} />
@@ -138,10 +147,10 @@ const Scanner = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={() => startScan('full')}
                     disabled={scanning}
-                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-purple-500/50 transition-colors group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-violet-500/50 hover:shadow-[0_0_20px_rgba(139,92,246,0.15)] transition-all duration-300 group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                    <div className="bg-purple-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-500/20 transition-colors">
-                        <FileSearch className="text-purple-500" size={24} />
+                    <div className="bg-violet-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-violet-500/20 transition-colors">
+                        <FileSearch className="text-violet-500" size={24} />
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">Full Scan</h3>
                     <p className="text-sm text-gray-400">Deep scan of the entire system. This may take a while.</p>
@@ -152,7 +161,7 @@ const Scanner = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCustomScan}
                     disabled={scanning}
-                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-green-500/50 transition-colors group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={`bg-surface border border-white/5 rounded-xl p-6 text-left hover:border-green-500/50 hover:shadow-[0_0_20px_rgba(34,197,94,0.15)] transition-all duration-300 group ${scanning ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     <div className="bg-green-500/10 w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-500/20 transition-colors">
                         <FolderOpen className="text-green-500" size={24} />
@@ -164,13 +173,22 @@ const Scanner = () => {
 
             {/* Drag & Drop Zone */}
             <div
-                className="border-2 border-dashed border-white/10 rounded-xl p-12 flex flex-col items-center justify-center text-center hover:border-primary/30 hover:bg-white/5 transition-all cursor-pointer"
+                className={`border-2 border-dashed rounded-xl p-16 flex flex-col items-center justify-center text-center transition-all duration-300 cursor-pointer ${
+                    isDragging 
+                        ? 'border-primary bg-primary/5 shadow-[0_0_30px_rgba(59,130,246,0.1)] scale-[1.02]' 
+                        : 'border-white/10 hover:border-primary/50 hover:bg-white/5 hover:shadow-[0_0_20px_rgba(59,130,246,0.05)]'
+                }`}
                 onClick={handleFileSelect}
                 onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
-                <Upload className="text-gray-500 mb-4" size={48} />
-                <h3 className="text-xl font-bold text-white mb-2">Drag & Drop Files Here</h3>
+                <div className={`p-4 rounded-full mb-4 transition-all duration-300 ${isDragging ? 'bg-primary/20 scale-110' : 'bg-white/5'}`}>
+                    <Upload className={isDragging ? 'text-primary animate-bounce' : 'text-gray-400'} size={48} />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">
+                    {isDragging ? 'Drop Files Here' : 'Drag & Drop Files Here'}
+                </h3>
                 <p className="text-gray-400">or click to browse your computer</p>
             </div>
 
@@ -184,9 +202,12 @@ const Scanner = () => {
                         className="bg-surface border border-white/5 rounded-xl p-6"
                     >
                         <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                                <div className="animate-spin text-primary">
-                                    <Play size={20} />
+                            <div className="flex items-center gap-4">
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-primary/20 blur-md rounded-full animate-pulse"></div>
+                                    <div className="animate-spin text-primary relative z-10">
+                                        <Play size={24} />
+                                    </div>
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-white">Scanning...</h4>
@@ -203,12 +224,14 @@ const Scanner = () => {
                                 </button>
                             </div>
                         </div>
-                        <div className="h-2 bg-background rounded-full overflow-hidden">
+                        <div className="h-3 bg-dark/50 border border-white/5 rounded-full overflow-hidden relative">
                             <motion.div
-                                className="h-full bg-primary"
+                                className="h-full bg-gradient-to-r from-primary to-blue-400 relative"
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
-                            />
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+                            </motion.div>
                         </div>
                     </motion.div>
                 )}
@@ -219,23 +242,28 @@ const Scanner = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-surface border border-white/5 rounded-xl p-6"
+                    className="bg-surface border border-white/5 rounded-xl p-6 relative overflow-hidden"
                 >
-                    <h3 className="font-bold text-white mb-4">Scan Summary</h3>
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-white/5 rounded-lg p-4 text-center">
-                            <p className="text-gray-400 text-sm mb-1">Status</p>
-                            <p className="text-xl font-bold text-white capitalize">{scanStats.status}</p>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+                    <h3 className="font-bold text-lg text-white mb-6">Scan Summary</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition-colors">
+                            <p className="text-gray-400 text-sm font-medium uppercase tracking-wider mb-2">Status</p>
+                            <p className="text-2xl font-bold text-white capitalize">{scanStats.status}</p>
                         </div>
-                        <div className="bg-white/5 rounded-lg p-4 text-center">
-                            <p className="text-gray-400 text-sm mb-1">Threats Found</p>
-                            <p className={`text-xl font-bold ${scanStats.threatsFound > 0 ? 'text-red-500' : 'text-green-500'}`}>
+                        <div className={`border rounded-xl p-6 text-center transition-colors ${
+                            scanStats.threatsFound > 0 
+                                ? 'bg-red-500/10 border-red-500/30 shadow-[0_0_20px_rgba(239,68,68,0.1)] hover:bg-red-500/20' 
+                                : 'bg-green-500/10 border-green-500/30 shadow-[0_0_20px_rgba(34,197,94,0.1)] hover:bg-green-500/20'
+                        }`}>
+                            <p className={`text-sm font-medium uppercase tracking-wider mb-2 ${scanStats.threatsFound > 0 ? 'text-red-400' : 'text-green-400'}`}>Threats Found</p>
+                            <p className={`text-4xl font-black ${scanStats.threatsFound > 0 ? 'text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'text-green-500 drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]'}`}>
                                 {scanStats.threatsFound}
                             </p>
                         </div>
-                        <div className="bg-white/5 rounded-lg p-4 text-center">
-                            <p className="text-gray-400 text-sm mb-1">Files Scanned</p>
-                            <p className="text-xl font-bold text-white">Check Logs</p>
+                        <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center hover:bg-white/10 transition-colors">
+                            <p className="text-gray-400 text-sm font-medium uppercase tracking-wider mb-2">Files Scanned</p>
+                            <p className="text-2xl font-bold text-white">Check Logs</p>
                         </div>
                     </div>
                 </motion.div>
