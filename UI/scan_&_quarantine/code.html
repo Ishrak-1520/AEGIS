@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>File Security Scan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f8f9fa",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white">
+<div class="flex h-screen">
+<aside class="flex flex-col w-64 bg-[#111a22] p-4 text-white">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuARoF2U1Uq7D5P5hY2xXI9vN2fmNtK2anz96RTv-55fL2mlZf2oIyt_f3z7s1R5uQlNZopDLoaOe0hrJbgGOhXd8MAwM1paPxw8tQvwq6AZlXpSqtIbqeTJuEbNP1DfqE450-tjWgmgzaZ8A3Im5Yor0hyX3PcQwnC1m5cHyU5jEm3QhQ6j4j5X_X4XYGE_-ua1kak9BMlVRuvVEJ0K28NXAXytO8MujFB3021BdNy4EFElvXDSbNz-idaMpe8BZE9xqq1A-QKT8Ho");'></div>
+<div>
+<h1 class="text-base font-medium leading-normal">John Doe</h1>
+<p class="text-[#92adc9] text-sm font-normal leading-normal">Premium User</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#233648]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span class="text-sm font-medium">File Security</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]" href="#">
+<span class="material-symbols-outlined">wifi</span>
+<span class="text-sm font-medium">Network Protection</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<button class="mt-auto flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Upgrade</span>
+</button>
+</aside>
+<main class="flex-1 p-8 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<div class="mb-8">
+<h1 class="text-4xl font-black leading-tight tracking-[-0.033em]">Scan &amp; Quarantine</h1>
+</div>
+<div class="bg-white dark:bg-[#111a22] rounded-lg p-6 mb-8">
+<h2 class="text-xl font-bold mb-4">Start a New Scan</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-5xl text-primary mb-4">description</span>
+<h3 class="text-lg font-bold mb-2">Scan Individual Files</h3>
+<p class="text-sm text-gray-500 dark:text-[#92adc9] mb-4">Select one or more files to check for threats.</p>
+<button class="w-full flex items-center justify-center min-w-[84px] max-w-[480px] cursor-pointer overflow-hidden rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em]">
+                                Select Files
+                            </button>
+</div>
+<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 flex flex-col items-center justify-center text-center hover:border-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-5xl text-primary mb-4">folder_open</span>
+<h3 class="text-lg font-bold mb-2">Scan a Directory</h3>
+<p class="text-sm text-gray-500 dark:text-[#92adc9] mb-4">Choose a folder to scan all its contents.</p>
+<button class="w-full flex items-center justify-center min-w-[84px] max-w-[480px] cursor-pointer overflow-hidden rounded-lg h-12 px-5 bg-[#233648] hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em]">
+                                Select Directory
+                            </button>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#111a22] rounded-lg p-6 mb-8">
+<h2 class="text-xl font-bold mb-4">Scan in Progress</h2>
+<div class="flex items-center gap-6 mb-4">
+<div class="relative size-32">
+<svg class="size-full" height="36" viewBox="0 0 36 36" width="36" xmlns="http://www.w3.org/2000/svg">
+<circle class="stroke-current text-gray-200 dark:text-[#324d67]" cx="18" cy="18" fill="none" r="16" stroke-width="2"></circle>
+<circle class="stroke-current text-primary animate-pulse" cx="18" cy="18" fill="none" r="16" stroke-dasharray="100" stroke-dashoffset="25" stroke-linecap="round" stroke-width="2"></circle>
+</svg>
+<div class="absolute inset-0 flex items-center justify-center text-2xl font-bold text-primary">75%</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-base font-medium">Scanning Directory: /Users/JohnDoe/Documents/</p>
+<p class="text-sm font-bold text-orange-500">3 threats found</p>
+</div>
+<div class="w-full bg-gray-200 dark:bg-[#324d67] rounded-full h-2.5 mb-2">
+<div class="bg-primary h-2.5 rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-sm text-gray-500 dark:text-[#92adc9] truncate">Currently scanning: C:/Users/JohnDoe/Documents/Reports/Q3_financials_draft.docx</p>
+</div>
+<button class="flex items-center justify-center min-w-[84px] cursor-pointer overflow-hidden rounded-lg h-12 px-5 bg-red-600 hover:bg-red-700 text-white text-base font-bold">
+                            Stop Scan
+                        </button>
+</div>
+</div>
+<div class="bg-white dark:bg-[#111a22] rounded-lg p-6 mb-8">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-xl font-bold">Detected Threats (3)</h2>
+<div>
+<button class="flex items-center justify-center min-w-[84px] cursor-pointer overflow-hidden rounded-lg h-10 px-4 bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold mr-2">
+                                Quarantine All
+                            </button>
+<button class="flex items-center justify-center min-w-[84px] cursor-pointer overflow-hidden rounded-lg h-10 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-bold">
+                                Remove All
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-[#233648] dark:text-gray-400">
+<tr>
+<th class="px-6 py-3" scope="col">File &amp; Path</th>
+<th class="px-6 py-3" scope="col">Threat Details</th>
+<th class="px-6 py-3" scope="col">File Hash (SHA-256)</th>
+<th class="px-6 py-3 text-right" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b dark:border-gray-700">
+<td class="px-6 py-4 font-medium">
+<div>installer.exe</div>
+<div class="text-xs text-gray-500 dark:text-[#92adc9]">C:/.../Downloads/</div>
+</td>
+<td class="px-6 py-4">
+<div class="font-medium">Trojan.Generic.123</div>
+<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">High Severity</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-gray-500 dark:text-[#92adc9]">e3b0c442...a591e0a2</td>
+<td class="px-6 py-4 text-right">
+<button class="font-medium text-primary hover:underline">Quarantine</button>
+</td>
+</tr>
+<tr class="border-b dark:border-gray-700">
+<td class="px-6 py-4 font-medium">
+<div>extension.crx</div>
+<div class="text-xs text-gray-500 dark:text-[#92adc9]">C:/.../AppData/</div>
+</td>
+<td class="px-6 py-4">
+<div class="font-medium">Adware.Browser.Hijacker</div>
+<span class="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-orange-900 dark:text-orange-300">Medium Severity</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-gray-500 dark:text-[#92adc9]">a2c4e68e...f2b5a1c3</td>
+<td class="px-6 py-4 text-right">
+<button class="font-medium text-primary hover:underline">Quarantine</button>
+</td>
+</tr>
+<tr class="border-b dark:border-gray-700">
+<td class="px-6 py-4 font-medium">
+<div>sysclean.exe</div>
+<div class="text-xs text-gray-500 dark:text-[#92adc9]">C:/.../Temp/</div>
+</td>
+<td class="px-6 py-4">
+<div class="font-medium">PUP.Optional.SystemCleaner</div>
+<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Low Severity</span>
+</td>
+<td class="px-6 py-4 font-mono text-xs text-gray-500 dark:text-[#92adc9]">f8a9d0b6...d3e4c5f6</td>
+<td class="px-6 py-4 text-right">
+<button class="font-medium text-primary hover:underline">Quarantine</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="bg-white dark:bg-[#111a22] rounded-lg p-6">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-xl font-bold">Quarantined Threats (1)</h2>
+<div>
+<button class="flex items-center justify-center min-w-[84px] cursor-pointer overflow-hidden rounded-lg h-10 px-4 bg-primary/20 hover:bg-primary/30 text-primary text-sm font-bold mr-2">
+                                Restore All
+                            </button>
+<button class="flex items-center justify-center min-w-[84px] cursor-pointer overflow-hidden rounded-lg h-10 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-bold">
+                                Delete All Permanently
+                            </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left">
+<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-[#233648] dark:text-gray-400">
+<tr>
+<th class="px-6 py-3" scope="col">File Name</th>
+<th class="px-6 py-3" scope="col">Threat Type</th>
+<th class="px-6 py-3" scope="col">Date Quarantined</th>
+<th class="px-6 py-3 text-right" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b dark:border-gray-700">
+<td class="px-6 py-4 font-medium">malicious_script.js</td>
+<td class="px-6 py-4">
+<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">High Severity</span>
+</td>
+<td class="px-6 py-4 text-gray-500 dark:text-[#92adc9]">2023-10-27 14:30</td>
+<td class="px-6 py-4 text-right">
+<button class="font-medium text-primary hover:underline mr-4">Restore</button>
+<button class="font-medium text-red-500 hover:underline">Delete</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

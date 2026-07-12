@@ -9,12 +9,19 @@ export default function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-[#0D0D0E]/90 backdrop-blur-md border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 sm:px-10 h-20 flex items-center justify-between">
-        {/* Brand */}
-        <a href="#" className="flex items-center gap-2 group">
-          <span className="text-xl font-bold tracking-tight text-white uppercase">AEGIS</span>
-          <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-white/20 text-neutral-400">
-            v2.0.0
-          </span>
+        {/* Brand with uploaded Logo */}
+        <a href="#" className="flex items-center gap-3 group">
+          <img
+            src="/logo.jpg"
+            alt="AEGIS Shield Logo"
+            className="w-9 h-9 rounded-lg object-cover border border-white/20 shadow-md group-hover:scale-105 transition-transform"
+          />
+          <div className="flex items-center gap-2">
+            <span className="text-xl font-bold tracking-tight text-white uppercase">AEGIS</span>
+            <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-white/20 text-neutral-400">
+              v2.0.0
+            </span>
+          </div>
         </a>
 
         {/* Desktop Navigation */}

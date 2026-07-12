@@ -17,6 +17,11 @@ export const metadata = {
   title: "AEGIS — Advanced Endpoint Guard & Intelligence System",
   description:
     "An open-source cybersecurity suite combining local machine learning PE inspection, real-time network packet filtering, bilingual scam detection, and LLM code auditing for Windows.",
+  icons: {
+    icon: "/logo.jpg",
+    shortcut: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
 };
 
 export default function RootLayout({ children }) {

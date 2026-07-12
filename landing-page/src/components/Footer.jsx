@@ -9,8 +9,15 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
         <div className="flex flex-col lg:flex-row items-start lg:items-end justify-between pb-16 border-b border-white/10 gap-8">
           <div>
-            <div className="text-xs font-mono uppercase tracking-widest text-neutral-400 mb-4">
-              OPEN SOURCE DEFENSIVE SECURITY
+            <div className="flex items-center gap-3 mb-6">
+              <img
+                src="/logo.jpg"
+                alt="AEGIS Shield Logo"
+                className="w-10 h-10 rounded-lg object-cover border border-white/20 shadow-md"
+              />
+              <span className="text-xs font-mono uppercase tracking-widest text-neutral-400">
+                OPEN SOURCE DEFENSIVE SECURITY
+              </span>
             </div>
             <h2 className="text-4xl sm:text-7xl font-light tracking-tight leading-none">
               AEGIS <em className="font-editorial italic">S</em>tudio.

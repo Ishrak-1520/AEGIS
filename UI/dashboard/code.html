@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cybersecurity Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1173d4",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white">
+<div class="flex h-screen">
+<!-- SideNavBar -->
+<aside class="w-64 bg-[#111a22] flex flex-col p-4">
+<div class="flex items-center gap-3 mb-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="John Doe's profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDuA9ObSZVdkq5YLZ9-0htj6ed4IXUtb71Y-dEJbSssk3rucvPnzBn9aT62320GwdkZ_gm7usiwzb98DZGvgK1lczNqNRIDTei-uL5ZawttElQHaxHegB8cNiLEqNpKR2uK0eEtmGBoKLVSCzNTr4xQl50ZOatekb4di0nTspWtod6ZvSrwXY8iKkoJi8GhHhU6h2Q-kZwyS9Za4wGe6DkrNPEtsSWJRgM4ClpzSIL5Z43kvZ8P0Pm8gQi8z8rkGi1GberhBJvy3-c");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">John Doe</h1>
+<p class="text-[#92adc9] text-sm font-normal leading-normal">john.doe@example.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#233648]" href="#">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">dashboard</span>
+<p class="text-white text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">document_scanner</span>
+<p class="text-white text-sm font-medium leading-normal">Scan</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">vpn_key</span>
+<p class="text-white text-sm font-medium leading-normal">VPN</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">settings</span>
+<p class="text-white text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">account_circle</span>
+<p class="text-white text-sm font-medium leading-normal">Account</p>
+</a>
+</nav>
+<div class="mt-auto">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-white" style="font-size: 24px;">logout</span>
+<p class="text-white text-sm font-medium leading-normal">Logout</p>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+<div class="flex flex-col gap-1">
+<p class="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Dashboard</p>
+<p class="text-[#92adc9] text-base font-normal leading-normal">Welcome back, John! Your system is currently protected.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined text-white cursor-pointer" style="font-size: 24px;">notifications</span>
+<span class="absolute -top-1 -right-1 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+</span>
+</div>
+<input class="bg-[#233648] text-white placeholder:text-[#92adc9] rounded-lg border-none focus:ring-2 focus:ring-primary h-10 text-sm" placeholder="Search..." type="search"/>
+</div>
+</div>
+<!-- Main Status and Quick Actions -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+<div class="lg:col-span-1 bg-[#111a22] border border-[#324d67] rounded-xl p-6 flex flex-col items-center justify-center text-center">
+<div class="w-32 h-32 rounded-full border-4 border-green-500 flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-green-500" style="font-size: 64px;">verified_user</span>
+</div>
+<h2 class="text-2xl font-bold text-white mb-1">System is Protected</h2>
+<p class="text-[#92adc9]">Last scan completed successfully.</p>
+</div>
+<div class="lg:col-span-2 bg-[#111a22] border border-[#324d67] rounded-xl p-6 flex flex-col justify-center">
+<p class="text-lg font-bold text-white mb-4">Quick Actions</p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="flex-1 flex items-center justify-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-12 px-5 bg-primary text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined">shield</span>
+<span class="truncate">Run Full Scan</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-12 px-5 bg-[#233648] text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#324d67] transition-colors">
+<span class="material-symbols-outlined">vpn_lock</span>
+<span class="truncate">Enable VPN</span>
+</button>
+<button class="flex-1 flex items-center justify-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-12 px-5 bg-[#233648] text-white text-base font-bold leading-normal tracking-[0.015em] hover:bg-[#324d67] transition-colors">
+<span class="material-symbols-outlined">update</span>
+<span class="truncate">Check for Updates</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Charts -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mb-8">
+<div class="flex min-w-72 flex-1 flex-col gap-2 rounded-xl border border-[#324d67] p-6 bg-[#111a22]">
+<p class="text-white text-base font-medium leading-normal">Threats Blocked</p>
+<p class="text-white tracking-light text-[32px] font-bold leading-tight truncate">5</p>
+<div class="flex gap-1">
+<p class="text-[#92adc9] text-sm font-normal leading-normal">Last 7 Days</p>
+<p class="text-[#0bda5b] text-sm font-medium leading-normal">+2%</p>
+</div>
+<div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
+<svg fill="none" height="148" preserveaspectratio="none" viewbox="-3 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H326.769H0V109Z" fill="url(#paint0_linear_1131_5935)"></path>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#1173d4" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="paint0_linear_1131_5935" x1="236" x2="236" y1="1" y2="149">
+<stop stop-color="#1173d4" stop-opacity="0.3"></stop>
+<stop offset="1" stop-color="#1173d4" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="flex justify-around">
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Mon</p>
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Tue</p>
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Wed</p>
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Thu</p>
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Fri</p>
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Sat</p>
+<p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Sun</p>
+</div>
+</div>
+</div>
+<div class="flex min-w-72 flex-1 flex-col gap-2 rounded-xl border border-[#324d67] p-6 bg-[#111a22]">
+<p class="text-white text-base font-medium leading-normal">Files Scanned</p>
+<p class="text-white tracking-light text-[32px] font-bold leading-tight truncate">12,345</p>
+<div class="flex gap-1">
+<p class="text-[#92adc9] text-sm font-normal leading-normal">Last 7 Days</p>
+<p class="text-[#fa6238] text-sm font-medium leading-normal">-1%</p>
+</div>
+<div class="grid min-h-[180px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3 pt-12 pb-4">
+<div class="bg-primary/30 w-full rounded-t-sm" style="height: 40%;"></div><p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Mon</p>
+<div class="bg-primary/30 w-full rounded-t-sm" style="height: 10%;"></div><p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Tue</p>
+<div class="bg-primary/30 w-full rounded-t-sm" style="height: 10%;"></div><p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Wed</p>
+<div class="bg-primary w-full rounded-t-sm" style="height: 70%;"></div><p class="text-primary text-[13px] font-bold leading-normal tracking-[0.015em]">Thu</p>
+<div class="bg-primary/30 w-full rounded-t-sm" style="height: 80%;"></div><p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Fri</p>
+<div class="bg-primary/30 w-full rounded-t-sm" style="height: 60%;"></div><p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Sat</p>
+<div class="bg-primary/30 w-full rounded-t-sm" style="height: 80%;"></div><p class="text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Sun</p>
+</div>
+</div>
+<div class="flex min-w-72 flex-1 flex-col gap-2 rounded-xl border border-[#324d67] p-6 bg-[#111a22] md:col-span-2 xl:col-span-1">
+<p class="text-white text-base font-medium leading-normal">Vulnerabilities Found</p>
+<p class="text-white tracking-light text-[32px] font-bold leading-tight truncate">3</p>
+<div class="flex gap-1">
+<p class="text-[#92adc9] text-sm font-normal leading-normal">Last 7 Days</p>
+<p class="text-[#0bda5b] text-sm font-medium leading-normal">+5%</p>
+</div>
+<div class="grid min-h-[180px] gap-x-4 gap-y-6 grid-cols-[auto_1fr] items-center py-3 pt-12 pb-4">
+<p class="text-red-500 text-[13px] font-bold leading-normal tracking-[0.015em]">Critical</p><div class="h-2 flex-1 bg-[#233648] rounded-full"><div class="bg-red-500 h-full rounded-full" style="width: 30%;"></div></div>
+<p class="text-orange-400 text-[13px] font-bold leading-normal tracking-[0.015em]">High</p><div class="h-2 flex-1 bg-[#233648] rounded-full"><div class="bg-orange-400 h-full rounded-full" style="width: 50%;"></div></div>
+<p class="text-yellow-400 text-[13px] font-bold leading-normal tracking-[0.015em]">Medium</p><div class="h-2 flex-1 bg-[#233648] rounded-full"><div class="bg-yellow-400 h-full rounded-full" style="width: 80%;"></div></div>
+<p class="text-blue-400 text-[13px] font-bold leading-normal tracking-[0.015em]">Low</p><div class="h-2 flex-1 bg-[#233648] rounded-full"><div class="bg-blue-400 h-full rounded-full" style="width: 20%;"></div></div>
+</div>
+</div>
+</div>
+<!-- Real-Time Threat Feed -->
+<div class="bg-[#111a22] border border-[#324d67] rounded-xl p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-white">Real-Time Threat Feed</h3>
+<button class="text-sm font-medium leading-normal text-primary hover:underline">View all</button>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-4 bg-[#111a22] px-4 min-h-[72px] py-2 justify-between rounded-lg hover:bg-[#233648]/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-red-500 flex items-center justify-center rounded-lg bg-[#233648] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 24px;">bug_report</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal line-clamp-1">Malicious website blocked</p>
+<p class="text-[#92adc9] text-sm font-normal leading-normal line-clamp-2">Threat from evil-site.com was blocked successfully.</p>
+</div>
+</div>
+<p class="text-sm text-[#92adc9] shrink-0">2 min ago</p>
+</div>
+<div class="flex items-center gap-4 bg-[#111a22] px-4 min-h-[72px] py-2 justify-between rounded-lg hover:bg-[#233648]/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-yellow-500 flex items-center justify-center rounded-lg bg-[#233648] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 24px;">description</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal line-clamp-1">Suspicious file detected</p>
+<p class="text-[#92adc9] text-sm font-normal leading-normal line-clamp-2">"invoice.exe" quarantined for review.</p>
+</div>
+</div>
+<p class="text-sm text-[#92adc9] shrink-0">1 hour ago</p>
+</div>
+<div class="flex items-center gap-4 bg-[#111a22] px-4 min-h-[72px] py-2 justify-between rounded-lg hover:bg-[#233648]/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-green-500 flex items-center justify-center rounded-lg bg-[#233648] shrink-0 size-12">
+<span class="material-symbols-outlined" style="font-size: 24px;">security</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-white text-base font-medium leading-normal line-clamp-1">Firewall rule updated</p>
+<p class="text-[#92adc9] text-sm font-normal leading-normal line-clamp-2">New rule added for enhanced protection.</p>
+</div>
+</div>
+<p class="text-sm text-[#92adc9] shrink-0">3 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

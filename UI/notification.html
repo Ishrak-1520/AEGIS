@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEGIS Threat Alert</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: transparent;
+      overflow: hidden;
+    }
+    
+    #notification-root {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="notification-root"></div>
+  
+  <script type="module">
+    // This will be populated by Python when the window is created
+    window.threatData = null;
+    
+    // Wait for pywebview API to be ready
+    window.addEventListener('pywebviewready', function() {
+      console.log('Notification window ready');
+    });
+  </script>
+</body>
+</html>

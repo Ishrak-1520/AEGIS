@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cyber Security Reports</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3498DB",
+                        "background-light": "#F5F7FA",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="flex flex-1">
+<aside class="w-64 bg-[#2C3E50]/20 dark:bg-background-dark p-4">
+<div class="flex flex-col gap-4">
+<div class="flex gap-3 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Cyber Security logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDkZczRcxoWo3NhbMSg5CI8TJfBBT8_y5wk1jVg2wWQaawXexgfZgXSMC4ZeAwCQ4YMe1WssLHOdF9H76Fo36KT4sZwT2m1bLS0dVGjFgZrKaGimjTJbdxDeCY6LA_bynSVwm6l7A_SLRVFv6jyK-rICKusAIhrgqFwm3xn_A4fJU__vOSpvsepBYK5yc-2L8Iyl-HUavkwNXXkKBlpdH2D500aKPQhzlpClXttrgGmDz4C4BSGGlfZuLsVHdBAKW9RzLLzLREwh4");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">Cyber Security</h1>
+<p class="text-gray-400 dark:text-[#92adc9] text-sm font-normal leading-normal">user@email.com</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 mt-6">
+<div class="flex items-center gap-3 px-3 py-2 text-gray-400 dark:text-[#92adc9] hover:bg-primary/20 hover:text-white rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-gray-400 dark:text-[#92adc9] hover:bg-primary/20 hover:text-white rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">shield</span>
+<p class="text-sm font-medium leading-normal">Scan</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-white">
+<span class="material-symbols-outlined">description</span>
+<p class="text-sm font-medium leading-normal">Reports</p>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-gray-400 dark:text-[#92adc9] hover:bg-primary/20 hover:text-white rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</div>
+</div>
+</div>
+<div class="mt-auto absolute bottom-4 w-56">
+<button class="flex w-full min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Upgrade to Pro</span>
+</button>
+</div>
+</aside>
+<main class="flex-1 p-8">
+<div class="flex flex-wrap justify-between gap-4 items-center mb-8">
+<div class="flex flex-col gap-1">
+<p class="text-black dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Security Reports</p>
+<p class="text-gray-500 dark:text-[#92adc9] text-base font-normal leading-normal">Monitor security status, generate reports, and view history.</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-100 dark:bg-[#2C3E50]/40 text-black dark:text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2 border border-gray-300 dark:border-[#324d67]">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="truncate">Generate Report</span>
+</button>
+<div class="relative">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] gap-2" id="export-button">
+<span class="material-symbols-outlined">download</span>
+<span class="truncate">Export</span>
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+<div class="absolute top-12 right-0 w-32 bg-white dark:bg-[#2C3E50] border border-gray-200 dark:border-[#324d67] rounded-lg shadow-lg z-10 hidden" id="export-menu">
+<a class="flex items-center gap-2 px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-[#324d67]" href="#">
+<span class="material-symbols-outlined text-base">picture_as_pdf</span> PDF
+                                </a>
+<a class="flex items-center gap-2 px-4 py-2 text-sm text-black dark:text-white hover:bg-gray-100 dark:hover:bg-[#324d67]" href="#">
+<span class="material-symbols-outlined text-base">description</span> CSV
+                                </a>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<div class="lg:col-span-1 p-6 rounded-xl bg-white dark:bg-[#1A242E] border border-gray-200 dark:border-[#324d67] flex flex-col items-center justify-center text-center">
+<span class="material-symbols-outlined text-6xl text-green-500">verified_user</span>
+<h3 class="text-2xl font-bold text-black dark:text-white mt-4">System Secure</h3>
+<p class="text-gray-500 dark:text-gray-400 mt-1">Real-time protection is active.</p>
+<p class="text-xs text-gray-400 dark:text-gray-500 mt-4">Last scan: 2 hours ago</p>
+</div>
+<div class="lg:col-span-2 grid grid-cols-2 gap-6">
+<div class="flex flex-col gap-2 rounded-lg p-6 border border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#2C3E50]/20">
+<p class="text-gray-600 dark:text-white text-base font-medium leading-normal">Threats Detected (30d)</p>
+<p class="text-black dark:text-white tracking-light text-2xl font-bold leading-tight">1,234</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-6 border border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#2C3E50]/20">
+<p class="text-gray-600 dark:text-white text-base font-medium leading-normal">Scans Performed (30d)</p>
+<p class="text-black dark:text-white tracking-light text-2xl font-bold leading-tight">56</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-6 border border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#2C3E50]/20">
+<p class="text-gray-600 dark:text-white text-base font-medium leading-normal">Files Quarantined</p>
+<p class="text-black dark:text-white tracking-light text-2xl font-bold leading-tight">78</p>
+</div>
+<div class="flex flex-col gap-2 rounded-lg p-6 border border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#2C3E50]/20">
+<p class="text-gray-600 dark:text-white text-base font-medium leading-normal">Security Score</p>
+<p class="text-[#2ECC71] tracking-light text-2xl font-bold leading-tight">92%</p>
+</div>
+</div>
+</div>
+<div class="rounded-lg border border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#2C3E50]/20 overflow-hidden mb-8">
+<div class="p-4 flex flex-wrap justify-between items-center gap-4 border-b border-gray-200 dark:border-[#324d67]">
+<h3 class="text-black dark:text-white font-semibold">Security Metrics &amp; Trends</h3>
+<div class="flex items-center gap-2 text-sm text-gray-500 dark:text-[#92adc9]">
+                                    Last 30 Days
+                                    <span class="material-symbols-outlined text-base">expand_more</span>
+</div>
+</div>
+<div class="p-6">
+<div class="flex min-h-[220px] flex-1 flex-col gap-8">
+<svg fill="none" height="100%" preserveAspectRatio="none" viewBox="-3 0 478 150" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H0V109Z" fill="url(#paint0_linear_chart)"></path>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#3498DB" stroke-linecap="round" stroke-width="3"></path>
+<defs>
+<linearGradient gradientUnits="userSpaceOnUse" id="paint0_linear_chart" x1="236" x2="236" y1="1" y2="149">
+<stop stop-color="#3498DB" stop-opacity="0.3"></stop>
+<stop offset="1" stop-color="#3498DB" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+</svg>
+<div class="flex justify-around">
+<p class="text-gray-400 dark:text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Week 1</p>
+<p class="text-gray-400 dark:text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Week 2</p>
+<p class="text-gray-400 dark:text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Week 3</p>
+<p class="text-gray-400 dark:text-[#92adc9] text-[13px] font-bold leading-normal tracking-[0.015em]">Week 4</p>
+</div>
+</div>
+</div>
+</div>
+<div class="rounded-lg border border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#2C3E50]/20 overflow-hidden">
+<div class="p-4 flex flex-wrap justify-between items-center gap-4 border-b border-gray-200 dark:border-[#324d67]">
+<h3 class="text-black dark:text-white font-semibold">Scan History &amp; Threat Logs</h3>
+<div class="flex gap-2">
+<select class="bg-gray-100 dark:bg-background-dark border border-gray-300 dark:border-[#324d67] rounded-md px-3 py-1.5 text-sm text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-primary">
+<option>Type: All</option>
+<option>Quick Scan</option>
+<option>Full Scan</option>
+<option>Custom Scan</option>
+</select>
+<select class="bg-gray-100 dark:bg-background-dark border border-gray-300 dark:border-[#324d67] rounded-md px-3 py-1.5 text-sm text-black dark:text-white focus:outline-none focus:ring-1 focus:ring-primary">
+<option>Threats: All</option>
+<option>High</option>
+<option>Medium</option>
+<option>Low</option>
+</select>
+</div>
+</div>
+<table class="w-full text-left" id="threat-table">
+<thead class="text-xs text-gray-500 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-700/20">
+<tr>
+<th class="px-6 py-3" scope="col">Date &amp; Time</th>
+<th class="px-6 py-3" scope="col">Action</th>
+<th class="px-6 py-3" scope="col">Threat Details</th>
+<th class="px-6 py-3" scope="col">Risk Level</th>
+<th class="px-6 py-3" scope="col">Explanation</th>
+</tr>
+</thead>
+<tbody class="text-sm text-black dark:text-white">
+<tr class="border-b border-gray-200 dark:border-[#324d67] hover:bg-gray-50 dark:hover:bg-[#2C3E50]/40 cursor-pointer" onclick="toggleDetails(this)">
+<td class="px-6 py-4 font-medium">2023-10-28 14:30</td>
+<td class="px-6 py-4">File Blocked</td>
+<td class="px-6 py-4">wacatac.b!ml</td>
+<td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-white bg-[#E74C3C] text-xs">High</span></td>
+<td class="px-6 py-4">
+<button class="flex items-center gap-1 text-primary hover:underline">
+<span class="material-symbols-outlined text-lg">psychology</span>
+<span>X-AI Analysis</span>
+</button>
+</td>
+</tr>
+<tr class="hidden">
+<td class="p-0" colspan="5">
+<div class="bg-primary/5 dark:bg-primary/10 p-6">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-2xl mt-1">smart_toy</span>
+<div class="flex-1">
+<h4 class="font-bold text-lg text-black dark:text-white">X-AI Threat Explanation</h4>
+<p class="text-sm text-gray-600 dark:text-gray-300 mt-1">The file `invoice_2023.exe` was blocked due to a high-confidence match with a known malware signature.</p>
+<div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+<div>
+<p class="font-semibold text-black dark:text-white">Analysis Details:</p>
+<ul class="list-disc list-inside text-gray-500 dark:text-gray-400 mt-1 space-y-1">
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Detection Method:</span> Malware Signature</li>
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Signature ID:</span> Trojan:Win32/Wacatac.B!ml</li>
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Trigger:</span> Heuristic analysis identified suspicious packing algorithm.</li>
+</ul>
+</div>
+<div>
+<p class="font-semibold text-black dark:text-white">Confidence Score:</p>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+<div class="bg-red-500 h-2.5 rounded-full" style="width: 98%"></div>
+</div>
+<span class="font-bold text-red-500">98%</span>
+</div>
+<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">High confidence suggests a definitive threat.</p>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-primary/20">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Was this explanation helpful?</p>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/60 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"><span class="material-symbols-outlined text-base">thumb_up</span>Yes</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/60 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"><span class="material-symbols-outlined text-base">thumb_down</span>No</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="border-b border-gray-200 dark:border-[#324d67] hover:bg-gray-50 dark:hover:bg-[#2C3E50]/40 cursor-pointer" onclick="toggleDetails(this)">
+<td class="px-6 py-4 font-medium">2023-10-27 10:05</td>
+<td class="px-6 py-4">Process Quarantined</td>
+<td class="px-6 py-4">svchost.exe (PID 1234)</td>
+<td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-black bg-[#F1C40F] text-xs">Medium</span></td>
+<td class="px-6 py-4">
+<button class="flex items-center gap-1 text-primary hover:underline">
+<span class="material-symbols-outlined text-lg">psychology</span>
+<span>X-AI Analysis</span>
+</button>
+</td>
+</tr>
+<tr class="hidden">
+<td class="p-0" colspan="5">
+<div class="bg-primary/5 dark:bg-primary/10 p-6">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-2xl mt-1">smart_toy</span>
+<div class="flex-1">
+<h4 class="font-bold text-lg text-black dark:text-white">X-AI Threat Explanation</h4>
+<p class="text-sm text-gray-600 dark:text-gray-300 mt-1">Process `svchost.exe` was quarantined due to suspicious network behavior and unusual memory allocation.</p>
+<div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+<div>
+<p class="font-semibold text-black dark:text-white">Analysis Details:</p>
+<ul class="list-disc list-inside text-gray-500 dark:text-gray-400 mt-1 space-y-1">
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Detection Method:</span> Behavioral Analysis</li>
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Data Point:</span> Outbound connection to known C2 server (198.51.100.23).</li>
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Data Point:</span> Shellcode execution detected in process memory.</li>
+</ul>
+</div>
+<div>
+<p class="font-semibold text-black dark:text-white">Confidence Score:</p>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+<div class="bg-yellow-500 h-2.5 rounded-full" style="width: 76%"></div>
+</div>
+<span class="font-bold text-yellow-500">76%</span>
+</div>
+<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Medium confidence indicates suspicious, but not definitive, threat.</p>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-primary/20" x-data="{ feedback: '' }">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Was this explanation helpful?</p>
+<div class="flex items-center gap-2">
+<button @click="feedback = 'yes'" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/60 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"><span class="material-symbols-outlined text-base">thumb_up</span>Yes</button>
+<button @click="feedback = 'no'" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/60 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"><span class="material-symbols-outlined text-base">thumb_down</span>No</button>
+</div>
+<div class="mt-4" style="display: none;" x-show="feedback === 'no'">
+<textarea class="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-background-dark text-black dark:text-white p-2 text-sm focus:ring-primary focus:border-primary" placeholder="Please provide more details..." rows="3"></textarea>
+<button class="mt-2 flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-md h-8 px-3 bg-primary text-white text-xs font-bold leading-normal tracking-[0.015em]">Submit Feedback</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="border-b border-gray-200 dark:border-[#324d67] hover:bg-gray-50 dark:hover:bg-[#2C3E50]/40">
+<td class="px-6 py-4 font-medium">2023-10-27 09:00</td>
+<td class="px-6 py-4">Scan Completed</td>
+<td class="px-6 py-4">No threats found</td>
+<td class="px-6 py-4">-</td>
+<td class="px-6 py-4"><span class="text-gray-400 dark:text-gray-500">N/A</span></td>
+</tr>
+<tr class="border-b border-gray-200 dark:border-[#324d67] hover:bg-gray-50 dark:hover:bg-[#2C3E50]/40 cursor-pointer" onclick="toggleDetails(this)">
+<td class="px-6 py-4 font-medium">2023-10-26 18:45</td>
+<td class="px-6 py-4">Phishing Alert</td>
+<td class="px-6 py-4">Email from "support@micro-soft.io"</td>
+<td class="px-6 py-4"><span class="px-2 py-1 rounded-full text-black bg-[#2ECC71] text-xs">Low</span></td>
+<td class="px-6 py-4">
+<button class="flex items-center gap-1 text-primary hover:underline">
+<span class="material-symbols-outlined text-lg">psychology</span>
+<span>X-AI Analysis</span>
+</button>
+</td>
+</tr>
+<tr class="hidden">
+<td class="p-0" colspan="5">
+<div class="bg-primary/5 dark:bg-primary/10 p-6">
+<div class="flex items-start gap-4">
+<span class="material-symbols-outlined text-primary text-2xl mt-1">smart_toy</span>
+<div class="flex-1">
+<h4 class="font-bold text-lg text-black dark:text-white">X-AI Threat Explanation</h4>
+<p class="text-sm text-gray-600 dark:text-gray-300 mt-1">An incoming email was flagged as a potential phishing attempt based on NLP analysis of its content and sender.</p>
+<div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+<div>
+<p class="font-semibold text-black dark:text-white">Analysis Details:</p>
+<ul class="list-disc list-inside text-gray-500 dark:text-gray-400 mt-1 space-y-1">
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Detection Method:</span> NLP Threat Analysis</li>
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Trigger:</span> Sender domain (`micro-soft.io`) impersonates a known brand.</li>
+<li><span class="font-semibold text-gray-600 dark:text-gray-300">Trigger:</span> Email body contains urgent language and a suspicious link.</li>
+</ul>
+</div>
+<div>
+<p class="font-semibold text-black dark:text-white">Confidence Score:</p>
+<div class="flex items-center gap-2 mt-1">
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+<div class="bg-green-500 h-2.5 rounded-full" style="width: 55%"></div>
+</div>
+<span class="font-bold text-green-500">55%</span>
+</div>
+<p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Low confidence. User discretion advised.</p>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-primary/20">
+<p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Was this explanation helpful?</p>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/60 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"><span class="material-symbols-outlined text-base">thumb_up</span>Yes</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/60 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"><span class="material-symbols-outlined text-base">thumb_down</span>No</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</div>
+</div>
+</div>
+<script>
+    const exportButton = document.getElementById('export-button');
+    const exportMenu = document.getElementById('export-menu');
+    if (exportButton) {
+        exportButton.addEventListener('click', () => {
+            exportMenu.classList.toggle('hidden');
+        });
+    }
+    document.addEventListener('click', (event) => {
+        if (exportButton && !exportButton.contains(event.target) && exportMenu && !exportMenu.contains(event.target)) {
+            exportMenu.classList.add('hidden');
+        }
+    });
+    function toggleDetails(row) {
+        const detailsRow = row.nextElementSibling;
+        if (detailsRow) {
+            detailsRow.classList.toggle('hidden');
+        }
+    }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('feedbackForm', () => ({
+            feedback: null,
+            showFeedback(type) {
+                this.feedback = type;
+            }
+        }))
+    });
+</script>
+<script defer="" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body></html>

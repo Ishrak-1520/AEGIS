@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Password Manager</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0A2463",
+                        "accent": "#36B8A5",
+                        "background-light": "#F5F5F5",
+                        "background-dark": "#101922",
+                        "text-light": "#333333",
+                        "text-dark": "#FFFFFF"
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark">
+<div class="flex h-screen">
+<aside class="flex flex-col w-64 bg-white dark:bg-[#192633] border-r border-gray-200 dark:border-[#324d67]">
+<div class="flex items-center justify-center h-16 border-b border-gray-200 dark:border-[#324d67]">
+<span class="material-symbols-outlined text-primary dark:text-accent text-3xl">shield_lock</span>
+<h1 class="text-xl font-bold ml-2">CyberSecure</h1>
+</div>
+<div class="flex flex-col flex-1 p-4">
+<div class="flex items-center gap-3 mb-6">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBWezFuaPy7djj5vOMGhNge1dz30CsNgvBDGKvh6hIUCXbdaMMlRe-VLeGQeZlOYH3KLirPmLZtplmnKinM0JpxLkZkEP468WmIqmdUqGTAQrNZurvv6dpdKc0u_529FPEgXuupBFFURTZr5Mg1k-9fPhI9j2KLoO6GPBztn_FLDMXC0CV4NJDmJvPTxmZbE4ILByXo3C98CAyfXENNG2I5v9w0-MGTr-Rcpu7om8bQALFFaq6mIjc8mjs15eUHCv1seD3iX2Q6zI4");'></div>
+<div class="flex flex-col">
+<h2 class="font-medium">John Doe</h2>
+<p class="text-sm text-gray-500 dark:text-[#92adc9]">john.doe@email.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-[#233648]" href="#">
+<span class="material-symbols-outlined text-primary dark:text-white">lock</span>
+<p class="font-medium text-primary dark:text-white">Logins</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">credit_card</span>
+<p class="font-medium">Credit Cards</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">description</span>
+<p class="font-medium">Secure Notes</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="font-medium">Identities</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">password</span>
+<p class="font-medium">Password Generator</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-primary/20" href="#">
+<span class="material-symbols-outlined">health_and_safety</span>
+<p class="font-medium">Security Health</p>
+</a>
+</nav>
+<div class="flex-grow"></div>
+<div class="p-4 rounded-lg bg-primary/5 dark:bg-[#233648] text-center mt-4">
+<span class="material-symbols-outlined text-accent text-3xl">verified_user</span>
+<p class="text-sm font-medium mt-1 text-accent">Vault Secured with AES-256 Encryption</p>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col relative bg-background-light dark:bg-background-dark">
+<header class="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-[#324d67] bg-white dark:bg-[#192633]">
+<div class="flex-1 max-w-xl">
+<label class="flex flex-col w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-10">
+<div class="text-gray-500 dark:text-[#92adc9] flex bg-gray-100 dark:bg-[#233648] items-center justify-center pl-3 rounded-l-lg border-y border-l border-gray-200 dark:border-transparent">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-text-light dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary focus:ring-inset border-y border-r border-gray-200 dark:border-transparent bg-gray-100 dark:bg-[#233648] h-full placeholder:text-gray-500 dark:placeholder:text-[#92adc9] px-4 text-sm" placeholder="Search your vault..." value=""/>
+</div>
+</label>
+</div>
+<button class="flex items-center justify-center gap-2 min-w-[84px] cursor-pointer rounded-lg h-10 px-4 bg-accent text-white text-sm font-bold tracking-wide hover:bg-accent/90">
+<span class="material-symbols-outlined">add</span>
+<span class="truncate">Add New</span>
+</button>
+</header>
+<div class="flex-1 flex">
+<div class="w-1/3 border-r border-gray-200 dark:border-[#324d67] overflow-y-auto">
+<div class="p-4 space-y-2">
+<div class="p-3 rounded-lg cursor-pointer bg-primary/10 dark:bg-[#233648]">
+<div class="flex justify-between items-center">
+<h3 class="font-bold text-sm">Google</h3>
+<span class="text-xs text-gray-500 dark:text-[#92adc9]">2 days ago</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-[#b0c7e2]">john.doe@gmail.com</p>
+</div>
+<div class="p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-primary/20">
+<div class="flex justify-between items-center">
+<h3 class="font-bold text-sm">Facebook</h3>
+<span class="text-xs text-gray-500 dark:text-[#92adc9]">1 week ago</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-[#b0c7e2]">johndoe</p>
+</div>
+<div class="p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-primary/20">
+<div class="flex justify-between items-center">
+<h3 class="font-bold text-sm">Amazon</h3>
+<span class="text-xs text-gray-500 dark:text-[#92adc9]">3 weeks ago</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-[#b0c7e2]">john.d@email.com</p>
+</div>
+<div class="p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-primary/20">
+<div class="flex justify-between items-center">
+<h3 class="font-bold text-sm">Twitter</h3>
+<span class="text-xs text-gray-500 dark:text-[#92adc9]">1 month ago</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-[#b0c7e2]">j_doe</p>
+</div>
+<div class="p-3 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-primary/20">
+<div class="flex justify-between items-center">
+<h3 class="font-bold text-sm">LinkedIn</h3>
+<span class="text-xs text-gray-500 dark:text-[#92adc9]">2 months ago</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-[#b0c7e2]">John Doe</p>
+</div>
+</div>
+</div>
+<div class="w-2/3 flex flex-col">
+<div class="flex-1 p-6 overflow-y-auto">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h1 class="text-2xl font-bold">Google</h1>
+<a class="text-sm text-accent hover:underline" href="#">https://www.google.com</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-primary/20"><span class="material-symbols-outlined">edit</span></button>
+<button class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-primary/20"><span class="material-symbols-outlined">delete</span></button>
+</div>
+</div>
+<div class="space-y-4">
+<div>
+<label class="text-sm font-medium text-gray-500 dark:text-[#92adc9]">Username</label>
+<div class="flex items-center mt-1">
+<input class="flex-grow bg-transparent border-none p-0 focus:ring-0" readonly="" type="text" value="john.doe@gmail.com"/>
+<button class="text-primary hover:text-primary/80 dark:text-accent dark:hover:text-accent/80 p-1 rounded-full"><span class="material-symbols-outlined">content_copy</span></button>
+</div>
+</div>
+<div>
+<label class="text-sm font-medium text-gray-500 dark:text-[#92adc9]">Password</label>
+<div class="flex items-center mt-1">
+<input class="flex-grow bg-transparent border-none p-0 focus:ring-0 tracking-widest" readonly="" type="password" value="SuperSecretPassword123"/>
+<button class="text-primary hover:text-primary/80 dark:text-accent dark:hover:text-accent/80 p-1 rounded-full"><span class="material-symbols-outlined">visibility_off</span></button>
+<button class="text-primary hover:text-primary/80 dark:text-accent dark:hover:text-accent/80 p-1 rounded-full"><span class="material-symbols-outlined">content_copy</span></button>
+</div>
+</div>
+<div class="pt-4">
+<div class="flex items-center justify-between">
+<p class="text-sm font-medium text-gray-500 dark:text-[#92adc9]">Password Strength</p>
+<p class="text-sm font-bold text-green-500">Strong</p>
+</div>
+<div class="w-full bg-gray-200 dark:bg-[#233648] rounded-full h-2 mt-2">
+<div class="bg-green-500 h-2 rounded-full" style="width: 90%"></div>
+</div>
+<ul class="text-xs text-gray-500 dark:text-[#92adc9] mt-2 list-disc list-inside space-y-1">
+<li><span class="text-green-500 material-symbols-outlined !text-sm !align-middle">check_circle</span> Includes uppercase and lowercase letters</li>
+<li><span class="text-green-500 material-symbols-outlined !text-sm !align-middle">check_circle</span> Includes numbers</li>
+<li><span class="text-green-500 material-symbols-outlined !text-sm !align-middle">check_circle</span> Is longer than 12 characters</li>
+<li><span class="text-red-500 material-symbols-outlined !text-sm !align-middle">cancel</span> Consider adding a symbol (!@#$%)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="p-6 border-t border-gray-200 dark:border-[#324d67] bg-gray-50 dark:bg-[#111a22]">
+<h2 class="text-lg font-bold mb-4">Password Generator</h2>
+<div class="relative mb-4">
+<input class="w-full h-10 px-4 pr-20 text-sm rounded-lg bg-gray-200 dark:bg-[#233648] border-transparent focus:ring-2 focus:ring-accent" type="text" value="G3n3r@t3d_P@ssw0rd!_2024"/>
+<button class="absolute right-2 top-2 text-primary dark:text-accent hover:text-primary/80 dark:hover:text-accent/80 p-1 rounded-full"><span class="material-symbols-outlined">refresh</span></button>
+</div>
+<div class="grid grid-cols-2 gap-4 text-sm mb-4">
+<div class="flex items-center justify-between">
+<label for="length">Password Length</label>
+<div class="flex items-center gap-2">
+<input class="w-16 h-8 text-center rounded-md bg-gray-200 dark:bg-[#233648] border-transparent focus:ring-2 focus:ring-accent" id="length" type="number" value="16"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<input checked="" class="form-checkbox h-4 w-4 rounded text-accent focus:ring-accent bg-gray-200 dark:bg-[#233648] border-transparent" id="uppercase" type="checkbox"/>
+<label for="uppercase">Uppercase (A-Z)</label>
+</div>
+<div class="flex items-center gap-2">
+<input checked="" class="form-checkbox h-4 w-4 rounded text-accent focus:ring-accent bg-gray-200 dark:bg-[#233648] border-transparent" id="lowercase" type="checkbox"/>
+<label for="lowercase">Lowercase (a-z)</label>
+</div>
+<div class="flex items-center gap-2">
+<input checked="" class="form-checkbox h-4 w-4 rounded text-accent focus:ring-accent bg-gray-200 dark:bg-[#233648] border-transparent" id="numbers" type="checkbox"/>
+<label for="numbers">Numbers (0-9)</label>
+</div>
+<div class="flex items-center gap-2">
+<input checked="" class="form-checkbox h-4 w-4 rounded text-accent focus:ring-accent bg-gray-200 dark:bg-[#233648] border-transparent" id="symbols" type="checkbox"/>
+<label for="symbols">Symbols (!@#$%^&amp;*)</label>
+</div>
+</div>
+<div class="flex justify-end gap-2">
+<button class="h-10 px-4 rounded-lg bg-primary/20 dark:bg-[#233648] text-sm font-bold hover:bg-primary/30">Copy Password</button>
+<button class="h-10 px-4 rounded-lg bg-accent text-white text-sm font-bold hover:bg-accent/90">Fill &amp; Save</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>
