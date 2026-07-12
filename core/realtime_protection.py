@@ -590,9 +590,14 @@ class RealTimeProtection:
             system_logger.log_info(f"Suppressed {threat_level} alert in Game Mode (Process: {process_name})", 'threat')
             return False
         
-        # Check if a threat at same level from same process was very recently detected (avoid spam)
-        threat_signature = f"{threat_level}:{process_name}"
-        if threat_signature in self.recent_threats:
+        # Clean up expired entries (> 60 seconds old) so threats can be re-detected after cooldown
+        now = time.time()
+        self.recent_threats = [entry for entry in self.recent_threats if (now - entry[1]) < 60.0]
+        
+        # Check if identical threat pattern from same process was recently alerted (avoid instant duplicate spam)
+        patterns_key = ",".join(sorted(result.get('patterns_detected', [])))
+        threat_signature = f"{threat_level}:{process_name}:{patterns_key}"
+        if any(entry[0] == threat_signature for entry in self.recent_threats):
             return False
         
         return True
@@ -631,9 +636,10 @@ class RealTimeProtection:
         # Add XAI explanation
         threat_data["xai"] = self._generate_nlp_xai_explanation(result, process_name)
         
-        # Add to recent threats (to avoid duplicate spam)
-        threat_signature = f"{threat_level}:{process_name}"
-        self.recent_threats.append(threat_signature)
+        # Add to recent threats with timestamp (to avoid instant duplicate spam within 60s)
+        patterns_key = ",".join(sorted(patterns))
+        threat_signature = f"{threat_level}:{process_name}:{patterns_key}"
+        self.recent_threats.append((threat_signature, time.time()))
         if len(self.recent_threats) > self.max_threat_history:
             self.recent_threats.pop(0)
         

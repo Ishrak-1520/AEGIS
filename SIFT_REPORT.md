@@ -31,8 +31,8 @@ This is the heart of the module.
 
 - **Initialization**
   - Accepts an `SIFT_API_KEY` used to construct an `openai.OpenAI` client
-    (via `base_url=https://api.longcat.chat/openai`).
-  - Uses a fixed model ID (`LongCat-Flash-Thinking-2601`).
+    (via `base_url=https://openrouter.ai/api/v1`).
+  - Uses a fixed model ID (`google/gemma-4-26b-a4b-it:free`).
 
 - **Language detection**
   - `detect_language()` uses [Pygments](https://pygments.org/) to guess the

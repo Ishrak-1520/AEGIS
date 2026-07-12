@@ -22,7 +22,7 @@
 Unlike traditional antivirus suites that rely solely on static signatures, AEGIS implements a **hybrid defense architecture**:
 1. **Host-Based Intrusion Detection (HIDS / Volatile Guardian):** Uses Machine Learning models trained on Windows Portable Executable (PE) Import Address Table (IAT) sequences to catch packed and obfuscated executables.
 2. **Real-Time Network Intrusion Detection (RT-XNIDS):** Captures live packet streams via Scapy, computes dynamic traffic baselines, and actively blocks malicious IPs through an automated Intrusion Prevention System (IPS).
-3. **LLM-Powered Code Auditing (SIFT):** Integrates the `LongCat-2.0-Preview` Large Language Model with static AST analysis and real-time PyPI registry checks to identify code vulnerabilities and slopsquatting/hallucinated dependencies.
+3. **LLM-Powered Code Auditing (SIFT):** Integrates the `Google Gemma 4` Large Language Model (via OpenRouter) with static AST analysis and real-time PyPI registry checks to identify code vulnerabilities and slopsquatting/hallucinated dependencies.
 4. **Explainable AI (XAI) Threat Detection:** Bilingual (English & Bangla) Natural Language Processing (NLP) engine that identifies phishing and social engineering attacks while highlighting contributing keywords with interpretability scores.
 
 ---
@@ -55,7 +55,7 @@ Unlike traditional antivirus suites that rely solely on static signatures, AEGIS
 * **Active IPS Mitigation:** Directly interfaces with Windows Firewall and OS network routing to block malicious external IP addresses and domains automatically upon threat detection.
 
 ### 3. SIFT AI Code Auditor
-* **LLM Vulnerability Reasoning:** Leverages the `LongCat-2.0-Preview` LLM to perform deep semantic code audits, flagging SQL injections, buffer overflows, insecure deserialization, and hardcoded secrets.
+* **LLM Vulnerability Reasoning:** Leverages the `Google Gemma 4` LLM (via OpenRouter) to perform deep semantic code audits, flagging SQL injections, buffer overflows, insecure deserialization, and hardcoded secrets.
 * **Real-Time Registry Verification:** Prevents software supply-chain attacks by checking PyPI dependencies in real-time, catching **"Slopsquatting"** (typosquatting or LLM-hallucinated package imports).
 * **Hybrid Analysis:** Combines Pygments lexical detection, AST parsing, and AI reasoning for minimal false positives.
 
@@ -133,7 +133,7 @@ graph TD
 
     HIDS_ENG --> MODELS
     SCAN_ENG --> MODELS
-    SIFT_ENG -->|OpenAI API| External_LLM[LongCat LLM / PyPI]
+    SIFT_ENG -->|OpenAI API| External_LLM[Gemma 4 LLM / PyPI]
     
     NIDS_ENG --> WIN_API
     RTP_ENG --> WIN_API
@@ -151,7 +151,7 @@ graph TD
 | **Desktop Bridge** | PyWebView 5.0+ (Native WinForms/EdgeWebView2 rendering) |
 | **Core Runtime** | Python 3.8+, Multi-threading, Concurrent Futures, Async Queue |
 | **Machine Learning & AI** | PyTorch, Scikit-Learn, Joblib, NumPy, Pandas, NLTK, spaCy, SHAP, LIME |
-| **LLM & Code Analysis** | OpenAI Python SDK (`LongCat-2.0-Preview`), Pygments Lexers, AST |
+| **LLM & Code Analysis** | OpenAI Python SDK (`Google Gemma 4` via OpenRouter), Pygments Lexers, AST |
 | **Network & Packet Sniffing**| Scapy 2.5+, Npcap, Windows Socket API |
 | **File Scanning & OCR** | YARA Python, Pillow (PIL), PyTesseract (Tesseract OCR), pefile |
 | **Cryptography & Storage** | Cryptography (AES-256-GCM, PBKDF2), SQLite3, SQLAlchemy |
@@ -249,7 +249,7 @@ cd ../..
 ```
 
 #### 4. Configure API Keys (Optional)
-To enable the **SIFT LLM Code Auditor**, create a `.env` file in the root directory (`CGP-2/.env`) and add your LongCat API key:
+To enable the **SIFT LLM Code Auditor**, create a `.env` file in the root directory (`CGP-2/.env`) and add your OpenRouter API key:
 ```env
 SIFT_API_KEY=your_api_key_here
 ```

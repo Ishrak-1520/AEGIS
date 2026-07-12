@@ -9,7 +9,7 @@ Fixes applied over v2:
   4. analyze_fixed_code() now also truncates large inputs
 
 Root cause of v2 failures:
-  LongCat-Flash-Lite returns empty content when the code payload is too large
+  Gemma 4 (via OpenRouter) returns empty content when the code payload is too large
   (svg_text_utils.js was 18,173 chars — over the model's practical limit).
   The OpenAI client then raises JSONDecodeError on the empty body.
 """
@@ -32,7 +32,7 @@ GITHUB_DELAY   = 0.5
 GITHUB_TOKEN   = os.environ.get("GITHUB_TOKEN", "")
 
 # Max characters to send to SIFT per analysis call.
-# LongCat-Flash-Lite struggles above ~8000 chars raw code.
+# Gemma 4 struggles above ~8000 chars raw code.
 MAX_CODE_CHARS = 8000
 
 # Retry settings for SIFT API calls

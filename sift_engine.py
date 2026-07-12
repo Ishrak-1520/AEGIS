@@ -23,12 +23,12 @@ class SiftEngine:
         Initialize the SiftEngine with the API and model.
         """
         self.client = openai.OpenAI(
-            base_url="https://api.longcat.chat/openai",
+            base_url="https://openrouter.ai/api/v1",
             api_key=api_key
         )
         
-        # Using the standard model ID for research benchmarks
-        self.model = "LongCat-2.0-Preview" 
+        # Using Google Gemma 4 via OpenRouter
+        self.model = "google/gemma-4-26b-a4b-it:free" 
         logger.info("SiftEngine initialized with model: %s", self.model)
 
     def detect_language(self, code_content: str) -> str:

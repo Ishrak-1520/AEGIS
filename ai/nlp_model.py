@@ -49,13 +49,15 @@ class NLPThreatDetector:
         # Phishing keywords - Bangla (বাংলা)
         self.phishing_keywords_bangla = [
             'অ্যাকাউন্ট যাচাই', 'পরিচয় নিশ্চিত', 'পেমেন্ট আপডেট',
-            'অ্যাকাউন্ট স্থগিত', 'অস্বাভাবিক কার্যকলাপ', 'এখনই ক্লিক করুন',
+            'অ্যাকাউন্ট স্থগিত', 'স্থগিত করা হয়েছে', 'লক করা হয়েছে',
+            'অস্বাভাবিক কার্যকলাপ', 'এখনই ক্লিক করুন', 'জরূরী নোটিশ',
             'আপনার অ্যাকাউন্ট যাচাই করুন', 'আপনার পরিচয় নিশ্চিত করুন',
-            'অ্যাকাউন্ট লক', 'জরুরি পদক্ষেপ প্রয়োজন', 'তথ্য যাচাই',
+            'অ্যাকাউন্ট লক', 'জরুরি পদক্ষেপ প্রয়োজন', 'তথ্য যাচাই', 'তথ্য হালনাগাদ',
             'পেমেন্ট প্রত্যাখ্যান', 'অ্যাকাউন্ট বন্ধ', 'পাসওয়ার্ড রিসেট',
-            'নিরাপত্তা সতর্কতা', 'লিংকে ক্লিক করুন', 'মেয়াদ শেষ',
-            'সীমিত সময়', 'এখনই কাজ করুন', 'অবিলম্বে পদক্ষেপ',
-            '২৪ ঘণ্টার মধ্যে', 'পুনরায় সক্রিয়', 'প্রমাণীকরণ প্রয়োজন'
+            'নিরাপত্তা সতর্কতা', 'লিঙ্কে ক্লিক করুন', 'লিঙ্কে ক্লিক করে', 'মেয়াদ শেষ',
+            'সীমিত সময়', 'এখনই কাজ করুন', 'অবিলম্বে পদক্ষেপ', 'ভেরিফাই করুন',
+            '২৪ ঘণ্টার মধ্যে', '১২ ঘণ্টার মধ্যে', 'পুনরায় সক্রিয়', 'প্রমাণীকরণ প্রয়োজন',
+            'বিকাশ অ্যাকাউন্ট', 'নগদ অ্যাকাউন্ট', 'রকেট অ্যাকাউন্ট'
         ]
         
         # Social engineering keywords (FR-NLP-03) - English
@@ -172,9 +174,10 @@ class NLPThreatDetector:
         
         # Urgency/threat phrases - Bangla (বাংলা)
         self.urgency_keywords_bangla = [
-            'এখনই', 'জরুরি', 'অবিলম্বে', 'আজই শেষ',
+            'এখনই', 'জরুরি', 'জরূরী', 'অবিলম্বে', 'আজই শেষ',
             'সীমিত সময়', 'তাড়াতাড়ি', 'অপেক্ষা করবেন না',
-            '২৪ ঘণ্টার মধ্যে', 'শেষ সুযোগ', 'শীঘ্রই শেষ'
+            '২৪ ঘণ্টার মধ্যে', '১২ ঘণ্টার মধ্যে', 'শেষ সুযোগ', 'শীঘ্রই শেষ',
+            'স্থায়ীভাবে বন্ধ'
         ]
         
         # Credential request - Bangla (বাংলা)
@@ -182,7 +185,8 @@ class NLPThreatDetector:
             'পাসওয়ার্ড লিখুন', 'পাসওয়ার্ড প্রদান করুন',
             'ইউজারনেম এবং পাসওয়ার্ড', 'লগইন তথ্য',
             'অ্যাকাউন্ট তথ্য', 'ক্রেডিট কার্ড', 'কার্ড নম্বর',
-            'পিন নম্বর', 'পাসওয়ার্ড যাচাই', 'সামাজিক নিরাপত্তা'
+            'পিন নম্বর', 'পিন (PIN)', 'ওটিপি (OTP)', 'পাসওয়ার্ড যাচাই', 'সামাজিক নিরাপত্তা',
+            'পিন এবং ওটিপি'
         ]
         
         # Financial request - Bangla (বাংলা)
@@ -346,7 +350,13 @@ class NLPThreatDetector:
         # PII Detection
         pii_matches_list = self._find_pii_with_indices(text)
         if pii_matches_list:
-            threat_score += len(pii_matches_list) * 25
+            # PII alone is NOT a threat — Gmail always shows email addresses,
+            # dashboards show IPs, etc. Only boost threat score if OTHER
+            # threat indicators (phishing, scam, etc.) are already present.
+            if patterns_detected:
+                # Cap contribution: max 3 PII matches, 10 pts each
+                threat_score += min(len(pii_matches_list), 3) * 10
+            
             pii_types = {}
             for m in pii_matches_list:
                 pii_type = m['type']
@@ -360,16 +370,33 @@ class NLPThreatDetector:
         # Classify threat level (FR-NLP-04)
         threat_class, threat_level, confidence = self._classify_threat(threat_score)
         
+        # --- KEYWORD DIVERSITY GATE ---
+        # Prevent single-category detections (e.g. ONLY PII, or ONLY one
+        # urgency word) from reaching HIGH/CRITICAL. Require at least 2
+        # distinct core threat categories for anything above MEDIUM.
+        core_threat_patterns = [
+            p for p in patterns_detected
+            if not p.startswith('PII Detected')
+            and p != 'Urgency Language'
+            and p != 'Cleared by AI Context Analysis'
+        ]
+        if len(core_threat_patterns) < 2 and threat_level in ('HIGH', 'CRITICAL'):
+            # Downgrade to MEDIUM so the AI verification gate can evaluate it
+            threat_class = 'MEDIUM_THREAT'
+            threat_level = 'MEDIUM'
+            confidence = min(confidence, 75.0)
+        
         description = self._generate_description(threat_class, patterns_detected)
 
-        # --- AI CONTEXT VERIFICATION (MEDIUM threats only) ---
-        # HIGH and CRITICAL are high-confidence keyword matches and alert IMMEDIATELY for speed.
-        # Only MEDIUM-level matches are ambiguous enough to require LLM context validation.
-        if threat_level == "MEDIUM":
+        # --- AI CONTEXT VERIFICATION (MEDIUM and HIGH threats) ---
+        # CRITICAL alerts fire immediately for speed (high confidence multi-category matches).
+        # MEDIUM and HIGH are ambiguous enough to benefit from LLM context validation
+        # which can override false positives (e.g. Gmail showing emails is not a threat).
+        if threat_level in ("MEDIUM", "HIGH"):
             sift_api_key = os.getenv('SIFT_API_KEY')
             if sift_api_key:
                 try:
-                    sift_engine = SiftEngine(api_key=sift_api_key, model="LongCat-2.0-Preview")
+                    sift_engine = SiftEngine(api_key=sift_api_key, model="google/gemma-4-26b-a4b-it:free")
                     # Limit text sent to LLM to prevent enormous token usage on huge screens
                     llm_text = text[:4000] if len(text) > 4000 else text
                     llm_result = sift_engine.analyze_screen_text(llm_text)

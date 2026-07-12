@@ -28,7 +28,7 @@ graph TB
     subgraph "External Services"
         PYPI["PyPI Registry<br/>pypi.org/pypi/PKG/json"]
         NPM["npm Registry<br/>registry.npmjs.org/PKG"]
-        AI["LLM Endpoint<br/>(LongCat API)"]
+        AI["LLM Endpoint<br/>(OpenRouter / Gemma 4)"]
     end
 
     UI -->|"window.pywebview.api"| API
@@ -46,8 +46,8 @@ graph TB
     style UI fill:#0d1b2a,stroke:#00f0ff,color:#fff
     style SE fill:#1b2a3d,stroke:#00f0ff,color:#fff
     style AI fill:#2d1b3d,stroke:#a855f7,color:#fff
-    style PYPI fill:#1b3d2a,stroke:#22c55e,color:#fff
-    style NPM fill:#1b3d2a,stroke:#22c55e,color:#fff
+    style PYPI fill:#1a5c2a,stroke:#4ade80,color:#fff
+    style NPM fill:#1a5c2a,stroke:#4ade80,color:#fff
 ```
 
 ---
