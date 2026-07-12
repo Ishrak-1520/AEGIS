@@ -48,9 +48,61 @@ const ThreatAlertManager = () => {
     }, [pendingAlerts, currentNotification, currentDialog]);
 
     const playAlertSound = (level) => {
-        // Simple beep logic or audio file could go here
-        // For now, just log
-        console.log(`Playing alert sound for ${level} threat`);
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+            if (level === 'CRITICAL' || level === 'HIGH') {
+                // Urgent descending siren — two rapid sweeps
+                const playBeep = (startTime, startFreq, endFreq, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(startFreq, ctx.currentTime + startTime);
+                    osc.frequency.linearRampToValueAtTime(endFreq, ctx.currentTime + startTime + duration);
+                    gain.gain.setValueAtTime(0.18, ctx.currentTime + startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + duration);
+                    osc.connect(gain).connect(ctx.destination);
+                    osc.start(ctx.currentTime + startTime);
+                    osc.stop(ctx.currentTime + startTime + duration);
+                };
+                // Two descending sweeps for urgency
+                playBeep(0, 1800, 400, 0.35);
+                playBeep(0.4, 1800, 400, 0.35);
+                // Third sharp stab for CRITICAL
+                if (level === 'CRITICAL') {
+                    playBeep(0.85, 2200, 600, 0.25);
+                }
+            } else if (level === 'MEDIUM') {
+                // Double-pulse warning beep
+                const playPulse = (startTime) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(880, ctx.currentTime + startTime);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime + startTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + startTime + 0.15);
+                    osc.connect(gain).connect(ctx.destination);
+                    osc.start(ctx.currentTime + startTime);
+                    osc.stop(ctx.currentTime + startTime + 0.15);
+                };
+                playPulse(0);
+                playPulse(0.2);
+            } else {
+                // Gentle single notification chime
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(660, ctx.currentTime);
+                osc.frequency.linearRampToValueAtTime(880, ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.12, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+                osc.connect(gain).connect(ctx.destination);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.4);
+            }
+        } catch (e) {
+            console.warn('Could not play alert sound:', e);
+        }
     };
 
     const handleDismissNotification = useCallback(() => {

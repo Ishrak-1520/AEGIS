@@ -19,7 +19,7 @@ class SiftEngine:
     real-time registry verification (Hybrid AI-Static Analysis).
     """
 
-    def __init__(self, api_key: str, model: str = "LongCat-Flash-Thinking"):
+    def __init__(self, api_key: str, model: str = "LongCat-2.0-Preview"):
         """
         Initialize the SiftEngine with the API and model.
         """
