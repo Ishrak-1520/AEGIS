@@ -19,12 +19,12 @@ class SiftEngine:
     real-time registry verification (Hybrid AI-Static Analysis).
     """
 
-    def __init__(self, api_key: str, model: str = "LongCat-2.0-Preview"):
+    def __init__(self, api_key: str, model: str = "google/gemma-4-26b-a4b-it:free"):
         """
         Initialize the SiftEngine with the API and model.
         """
         self.client = openai.OpenAI(
-            base_url="https://api.longcat.chat/openai",
+            base_url="https://openrouter.ai/api/v1",
             api_key=api_key
         )
         
@@ -274,8 +274,7 @@ class SiftEngine:
                     CODE TO ANALYZE:
                     {code_content}
                     """}
-                ],
-                response_format={"type": "json_object"}
+                ]
             )
 
             content = response.choices[0].message.content
@@ -333,8 +332,7 @@ class SiftEngine:
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": f"SCREEN TEXT TO ANALYZE:\n{text}"}
-                ],
-                response_format={"type": "json_object"}
+                ]
             )
 
             content = response.choices[0].message.content

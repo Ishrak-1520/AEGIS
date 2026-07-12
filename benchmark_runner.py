@@ -103,7 +103,7 @@ def sift_scan(path: str, sample_limit: int = 10) -> Tuple[List[int], List[int], 
             # PROGRESS TRACKER: Shows exact file count (e.g., [1/223])
             print(f"[{i}/{len(files)}] Scanning {os.path.basename(filepath)} with live SIFT Engine...")
             
-            # Call your live Longcat API!
+            # Call your live OpenRouter API (Gemma 4)!
             result = engine.analyze_code(code_content, filename=os.path.basename(filepath))
 
             # --- AUTO-STOP IF API OUT OF TOKENS ---

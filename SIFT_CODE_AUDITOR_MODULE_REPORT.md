@@ -128,7 +128,7 @@ While AEGIS primarily focuses on **system-level threat detection** (malware, rea
 │     External Services                          │
 │                                                 │
 │  - OpenAI API (gpt-4o model)                   │
-│  - LongCat Chat Endpoint                       │
+│  - OpenRouter API (Gemma 4 model)                │
 │  - PyPI Registry API                           │
 └─────────────────────────────────────────────────┘
 ```
@@ -293,7 +293,7 @@ response = self.client.chat.completions.create(
 
 **Configuration**:
 - **Model**: GPT-4o (state-of-the-art reasoning)
-- **Base URL**: `https://api.longcat.chat/openai` (research endpoint)
+- **Base URL**: `https://openrouter.ai/api/v1` (OpenRouter endpoint)
 - **Timeout**: Inherits from OpenAI client (default: 30 seconds)
 
 #### Step 5: JSON Parsing
@@ -360,10 +360,10 @@ import openai                         # OpenAI API client
 def __init__(self, api_key: str):
     """Initialize the SiftEngine with the API and model."""
     self.client = openai.OpenAI(
-        base_url="https://api.longcat.chat/openai",
+        base_url="https://openrouter.ai/api/v1",
         api_key=api_key
     )
-    self.model = "LongCat-Flash-Thinking-2601"
+    self.model = "google/gemma-4-26b-a4b-it:free"
     logger.info("SiftEngine initialized with model: %s", self.model)
 ```
 
@@ -853,7 +853,7 @@ app.get('/user/:id', (req, res) => {
 # OpenAI-compatible API key
 SIFT_API_KEY=your_api_key_here
 
-# Optional: Custom API endpoint (default: https://api.longcat.chat/openai)
+# Optional: Custom API endpoint (default: https://openrouter.ai/api/v1)
 # SIFT_API_ENDPOINT=https://custom-api.example.com
 ```
 
@@ -861,7 +861,7 @@ SIFT_API_KEY=your_api_key_here
 
 1. **Obtain API Key**:
    - Register at OpenAI (gpt-4o access required)
-   - Or use compatible endpoint (LongCat Chat)
+   - Or use compatible endpoint (OpenRouter with Gemma 4)
 
 2. **Configure Environment**:
    ```bash
