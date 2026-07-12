@@ -25,8 +25,17 @@ def build_frontend(force=False, dev_mode=False):
         force (bool): If True, forces a rebuild.
         dev_mode (bool): If True, skips build for dev server usage (if implemented).
     """
+    if getattr(sys, 'frozen', False):
+        # Running inside PyInstaller standalone bundle
+        bundle_root = sys._MEIPASS
+        for ui_folder in ('UI', 'ui'):
+            index_path = os.path.join(bundle_root, ui_folder, 'frontend', 'dist', 'index.html')
+            if os.path.exists(index_path):
+                return index_path
+        return os.path.join(bundle_root, 'UI', 'frontend', 'dist', 'index.html')
+
     project_root = os.path.dirname(os.path.abspath(__file__))
-    frontend_dir = os.path.join(project_root, 'ui', 'frontend')
+    frontend_dir = os.path.join(project_root, 'UI', 'frontend')
     dist_dir = os.path.join(frontend_dir, 'dist')
     index_path = os.path.join(dist_dir, 'index.html')
 
